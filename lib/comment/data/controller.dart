@@ -16,7 +16,7 @@ class CommentsController extends CursorClientDataController<Comment>
   }
 
   @override
-  final Client client;
+  final CommentClient client;
 
   final int postId;
 
@@ -54,6 +54,9 @@ class CommentsController extends CursorClientDataController<Comment>
     required bool replace,
   }) async {
     assertOwnsItem(comment);
+    if (comment is! CommentWithVotes || client is! CommentVoteClient) {
+      return false;
+    }
     if (comment.voteStatus == VoteStatus.unknown) {
       if (upvote) {
         comment = comment.copyWith(
@@ -95,7 +98,8 @@ class CommentsController extends CursorClientDataController<Comment>
     }
     replaceComment(comment);
     try {
-      await client.voteComment(comment.id, upvote, replace);
+      await assertType<CommentVoteClient>(client)
+          .voteComment(comment.id, upvote, replace);
       evictCache();
       return true;
     } on ClientException {
@@ -115,7 +119,7 @@ class CommentsProvider extends SubChangeNotifierProvider2<Client,
   CommentsProvider({required int postId, super.child, super.builder})
       : super(
           create: (context, client, denylist) => CommentsController(
-              client: client, postId: postId, denylist: denylist),
-          keys: (context) => [postId],
+              client: assertType<CommentClient>(client), postId: postId, denylist: denylist),
+    keys: (context) => [postId],
         );
 }

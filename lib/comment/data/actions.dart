@@ -1,8 +1,8 @@
 import 'package:e1547/client/client.dart';
 import 'package:e1547/comment/comment.dart';
 import 'package:e1547/dtext/dtext.dart';
+import 'package:e1547/interface/interface.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 Future<bool> replyComment({
   required BuildContext context,
@@ -46,14 +46,13 @@ Future<bool> writeComment({
         content: text ?? (comment?.body),
         onSubmit: (context, text) async {
           NavigatorState navigator = Navigator.of(context);
+          CommentClient client = assertType<CommentClient>(context.read<Client>());
           if (text.isNotEmpty) {
             try {
               if (comment == null) {
-                await context.read<Client>().postComment(postId, text);
+                await client.postComment(postId, text);
               } else {
-                await context
-                    .read<Client>()
-                    .updateComment(comment.id, postId, text);
+                await client.updateComment(comment.id, postId, text);
               }
               sent = true;
               navigator.maybePop();

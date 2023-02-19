@@ -10,6 +10,7 @@ export 'data/error.dart';
 export 'data/hosts.dart';
 export 'data/share.dart';
 export 'data/text.dart';
+export 'data/type.dart';
 // widgets
 export 'widgets/action.dart';
 export 'widgets/animation.dart';

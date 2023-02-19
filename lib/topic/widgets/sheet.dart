@@ -115,14 +115,6 @@ class TopicInfo extends StatelessWidget {
             ],
           ),
           textInfoRow(
-            'locked',
-            topic.isLocked ? 'yes' : 'no',
-          ),
-          textInfoRow(
-            'sticky',
-            topic.isSticky ? 'yes' : 'no',
-          ),
-          textInfoRow(
             'created',
             formatDateTime(topic.createdAt.toLocal()),
           ),

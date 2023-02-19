@@ -15,8 +15,9 @@ class ClientAvailabilityCheck extends StatelessWidget {
   final Loggy loggy = Loggy('ClientAvailability');
 
   Future<void> check(BuildContext context) async {
-    RouterDrawerController controller = context.read<RouterDrawerController>();
     Client client = context.read<Client>();
+    if (client is! AvailabilityClient) return;
+    RouterDrawerController controller = context.read<RouterDrawerController>();
     try {
       await client.availability();
       loggy.info('Client is available!');

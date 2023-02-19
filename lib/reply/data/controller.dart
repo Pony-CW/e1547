@@ -17,7 +17,7 @@ class RepliesController extends CursorClientDataController<Reply>
   }
 
   @override
-  final Client client;
+  final ReplyClient client;
 
   final int topicId;
   @override
@@ -60,7 +60,7 @@ class RepliesProvider extends SubChangeNotifierProvider2<Client,
     super.builder,
   }) : super(
           create: (context, client, denylist) => RepliesController(
-            client: client,
+            client: assertType<ReplyClient>(client),
             topicId: topicId,
             denylist: denylist,
             orderByOldest: orderByOldest,

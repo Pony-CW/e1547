@@ -40,7 +40,7 @@ class SingleFuturePostsProvider
               Future<PostsController>(() async {
             PostsController controller = PostsController.single(
               id: id,
-              client: client,
+              client: assertType<PostClient>(client),
               denylist: denylist,
             );
             await controller.loadFirstPage();

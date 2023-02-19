@@ -6,6 +6,7 @@ import 'package:e1547/interface/interface.dart';
 import 'package:e1547/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_sub/flutter_sub.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 
 class LoginPage extends StatefulWidget {
@@ -311,7 +312,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-class LoginLoadingDialog extends StatefulWidget {
+class LoginLoadingDialog extends StatelessWidget {
   const LoginLoadingDialog({
     required this.username,
     required this.password,
@@ -324,54 +325,49 @@ class LoginLoadingDialog extends StatefulWidget {
   final VoidCallback? onError;
   final VoidCallback? onDone;
 
-  @override
-  State<LoginLoadingDialog> createState() => _LoginLoadingDialogState();
-}
-
-class _LoginLoadingDialogState extends State<LoginLoadingDialog> {
-  @override
-  void initState() {
-    super.initState();
-    login();
-  }
-
-  Future<void> login() async {
+  Future<void> login(BuildContext context) async {
     NavigatorState navigator = Navigator.of(context);
     bool valid = await context.read<ClientService>().login(
           Credentials(
-            username: widget.username,
-            password: widget.password,
+            username: username,
+            password: password,
           ),
         );
     await navigator.maybePop();
     if (valid) {
-      widget.onDone?.call();
+      onDone?.call();
     } else {
-      widget.onError?.call();
+      onError?.call();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(4),
-              child: SizedBox(
-                height: 28,
-                width: 28,
-                child: CircularProgressIndicator(),
+    return SubEffect(
+      effect: () {
+        login(context);
+        return null;
+      },
+      child: Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(4),
+                child: SizedBox(
+                  height: 28,
+                  width: 28,
+                  child: CircularProgressIndicator(),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text('Logging in as ${widget.username}'),
-            )
-          ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text('Logging in as $username'),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -380,13 +376,14 @@ class _LoginLoadingDialogState extends State<LoginLoadingDialog> {
 
 Future<void> logout(BuildContext context) async {
   ClientService service = context.read<ClientService>();
-  String? name = service.credentials?.username;
+  if (service.credentials == null) return;
+  String name = service.credentials!.username;
   service.logout();
 
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       duration: const Duration(seconds: 1),
-      content: Text('Forgot login details ${name != null ? 'for $name' : ''}'),
+      content: Text('Forgot login details for $name'),
     ),
   );
 }

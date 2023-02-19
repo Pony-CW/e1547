@@ -1,49 +1,66 @@
 import 'package:e1547/interface/interface.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:e1547/ticket/ticket.dart';
 
-part 'comment.freezed.dart';
-part 'comment.g.dart';
+abstract class Comment {
+  int get id;
 
-@freezed
-class Comment with _$Comment {
-  const factory Comment({
-    required int id,
-    required DateTime createdAt,
-    required int postId,
-    required int creatorId,
-    required String body,
-    required int score,
-    required DateTime updatedAt,
-    required int updaterId,
-    required bool doNotBumpPost,
-    required bool isHidden,
-    required bool isSticky,
-    required WarningType? warningType,
-    required int? warningUserId,
-    required String creatorName,
-    required String updaterName,
-    @JsonKey(includeFromJson: false, includeToJson: false)
-    @Default(VoteStatus.unknown)
-    VoteStatus voteStatus,
-  }) = _Comment;
+  int get postId;
 
-  factory Comment.fromJson(dynamic json) => _$CommentFromJson(json);
+  String get body;
+
+  DateTime get createdAt;
+
+  DateTime get updatedAt;
+
+  int get creatorId;
+
+  String get creatorName;
+
+  Comment copyWith({
+    int? id,
+    int? postId,
+    String? body,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? creatorId,
+    String? creatorName,
+  });
 }
 
-@JsonEnum()
-enum WarningType {
-  warning,
-  record,
-  ban;
+abstract class CommentWithVotes extends Comment {
+  int get score;
 
-  String get message {
-    switch (this) {
-      case warning:
-        return 'User received a warning for this message';
-      case record:
-        return 'User received a record for this message';
-      case ban:
-        return 'User was banned for this message';
-    }
-  }
+  VoteStatus get voteStatus;
+
+  @override
+  Comment copyWith({
+    int? id,
+    int? postId,
+    String? body,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? creatorId,
+    String? creatorName,
+    int? score,
+    VoteStatus? voteStatus,
+  });
+}
+
+abstract class CommentWithWarning extends Comment {
+  WarningType? get warningType;
+
+  int? get warningUserId;
+
+  @override
+  Comment copyWith({
+    int? id,
+    int? postId,
+    String? body,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? creatorId,
+    String? creatorName,
+    WarningType? warningType,
+    int? warningUserId,
+  });
 }

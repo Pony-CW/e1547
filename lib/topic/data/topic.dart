@@ -1,23 +1,19 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+abstract class Topic {
+  int get id;
+  int get creatorId;
+  String get title;
+  int get responseCount;
+  DateTime get createdAt;
+  DateTime get updatedAt;
+  int get categoryId;
 
-part 'topic.freezed.dart';
-part 'topic.g.dart';
-
-@freezed
-class Topic with _$Topic {
-  const factory Topic({
-    required int id,
-    required int creatorId,
-    required int updaterId,
-    required String title,
-    required int responseCount,
-    required bool isSticky,
-    required bool isLocked,
-    required bool isHidden,
-    required DateTime createdAt,
-    required DateTime updatedAt,
-    required int categoryId,
-  }) = _Topic;
-
-  factory Topic.fromJson(dynamic json) => _$TopicFromJson(json);
+  Topic copyWith({
+    int? id,
+    int? creatorId,
+    String? title,
+    int? responseCount,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? categoryId,
+  });
 }

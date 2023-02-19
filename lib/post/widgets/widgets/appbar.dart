@@ -17,7 +17,7 @@ List<PopupMenuItem<VoidCallback>> postMenuPostActions(
       title: 'Share',
       icon: Icons.share,
     ),
-    if (post.file.url != null)
+    if (post.file != null)
       PopupMenuTile(
         value: () => postDownloadingNotification(context, {post}),
         title: 'Download',
@@ -35,6 +35,7 @@ List<PopupMenuItem<VoidCallback>> postMenuUserActions(
   BuildContext context,
   Post post,
 ) {
+  Client client = context.watch<Client>();
   return [
     if (context.read<PostEditingController?>() != null)
       PopupMenuTile(
@@ -46,49 +47,53 @@ List<PopupMenuItem<VoidCallback>> postMenuUserActions(
           error: 'You must be logged in to edit posts!',
         ),
       ),
-    PopupMenuTile(
-      title: 'Comment',
-      icon: Icons.comment,
-      value: () => guardWithLogin(
-        context: context,
-        callback: () async {
-          PostsController controller = context.read<PostsController>();
-          bool success = await writeComment(context: context, postId: post.id);
-          if (success) {
-            controller.replacePost(
-              post.copyWith(commentCount: post.commentCount + 1),
-            );
-          }
-        },
-        error: 'You must be logged in to comment!',
-      ),
-    ),
-    PopupMenuTile(
-      title: 'Report',
-      icon: Icons.report,
-      value: () => guardWithLogin(
-        context: context,
-        callback: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => PostReportScreen(post: post),
-          ),
+    if (client is CommentClient)
+      PopupMenuTile(
+        title: 'Comment',
+        icon: Icons.comment,
+        value: () => guardWithLogin(
+          context: context,
+          callback: () async {
+            PostsController controller = context.read<PostsController>();
+            bool success =
+                await writeComment(context: context, postId: post.id);
+            if (success && post is PostWithComments) {
+              controller.replacePost(
+                post.copyWith(commentCount: post.commentCount + 1),
+              );
+            }
+          },
+          error: 'You must be logged in to comment!',
         ),
-        error: 'You must be logged in to report posts!',
       ),
-    ),
-    PopupMenuTile(
-      title: 'Flag',
-      icon: Icons.flag,
-      value: () => guardWithLogin(
-        context: context,
-        callback: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => PostFlagScreen(post: post),
+    if (client is PostTicketClient)
+      PopupMenuTile(
+        title: 'Report',
+        icon: Icons.report,
+        value: () => guardWithLogin(
+          context: context,
+          callback: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PostReportScreen(post: post),
+            ),
           ),
+          error: 'You must be logged in to report posts!',
         ),
-        error: 'You must be logged in to flag posts!',
       ),
-    ),
+    if (client is PostTicketClient)
+      PopupMenuTile(
+        title: 'Flag',
+        icon: Icons.flag,
+        value: () => guardWithLogin(
+          context: context,
+          callback: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PostFlagScreen(post: post),
+            ),
+          ),
+          error: 'You must be logged in to flag posts!',
+        ),
+      ),
   ];
 }
 

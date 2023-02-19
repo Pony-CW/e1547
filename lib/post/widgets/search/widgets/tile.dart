@@ -83,7 +83,7 @@ class PostImageTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (post.file.ext == 'gif') {
+    if (post.ext == 'gif') {
       return const ColoredBox(
         color: Colors.black12,
         child: Icon(
@@ -123,7 +123,7 @@ class PostTileOverlay extends StatelessWidget {
         if (post.type == PostType.unsupported) {
           return const Center(child: Text('unsupported'));
         }
-        if (post.file.url == null) {
+        if (post.file == null) {
           return const Center(child: Text('unavailable'));
         }
         if (controller?.isDenied(post) ?? false) {
@@ -272,7 +272,7 @@ class PostComicTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: post.file.width / post.file.height,
+      aspectRatio: post.width / post.height,
       child: PostImageTile(
         post: post,
         size: post.type == PostType.video
@@ -389,7 +389,7 @@ class PostFeedTile extends StatelessWidget {
         iconSize: 18,
         onSelected: (value) => value(),
         itemBuilder: (context) => [
-          if (post.file.url != null)
+          if (post.file != null)
             PopupMenuTile(
               value: () => postDownloadingNotification(context, {post}),
               title: 'Download',
@@ -408,7 +408,7 @@ class PostFeedTile extends StatelessWidget {
       return ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 400),
         child: AspectRatio(
-          aspectRatio: max(post.file.width / post.file.height, 0.9),
+          aspectRatio: max(post.width / post.height, 0.9),
           child: PostImageTile(
             post: post,
             onTap: () {

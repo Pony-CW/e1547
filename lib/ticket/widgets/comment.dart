@@ -1,5 +1,6 @@
 import 'package:e1547/client/client.dart';
 import 'package:e1547/comment/comment.dart';
+import 'package:e1547/interface/data/type.dart';
 import 'package:e1547/ticket/ticket.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,10 +15,11 @@ class CommentReportScreen extends StatelessWidget {
     return ReasonReportScreen(
       title: Text('Comment #${comment.id}'),
       onReport: (reason) => validateCall(
-        () => context.read<Client>().reportComment(
-              comment.id,
-              reason,
-            ),
+        () => assertType<CommentReportClient>(context.read<Client>())
+            .reportComment(
+          comment.id,
+          reason,
+        ),
       ),
       onSuccess: 'Reported comment #${comment.id}',
       onFailure: 'Failed to report user #${comment.id}',
@@ -29,7 +31,7 @@ class CommentReportScreen extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             child: CommentTile(
               comment: comment,
-              hasActions: false,
+              withActions: false,
             ),
           ),
         ),

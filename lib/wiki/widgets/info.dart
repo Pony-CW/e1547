@@ -21,6 +21,9 @@ class WikiInfo extends StatelessWidget {
       );
     }
 
+    String? category =
+        context.watch<TagClient>().tagCategoryName(wiki.category);
+
     return DefaultTextStyle(
       style: TextStyle(
         color: dimTextColor(context),
@@ -29,7 +32,7 @@ class WikiInfo extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          textInfoRow('category', TagCategory.byId(wiki.categoryId).name),
+          if (category != null) textInfoRow('category', category),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -54,10 +57,6 @@ class WikiInfo extends StatelessWidget {
             ],
           ),
           textInfoRow(
-            'alias',
-            wiki.otherNames.join(', '),
-          ),
-          textInfoRow(
             'created',
             formatDateTime(wiki.createdAt.toLocal()),
           ),
@@ -68,10 +67,6 @@ class WikiInfo extends StatelessWidget {
                     wiki.updatedAt!.toLocal(),
                   )
                 : 'never',
-          ),
-          textInfoRow(
-            'locked',
-            wiki.isLocked ? 'yes' : 'no',
           ),
         ],
       ),

@@ -1,8 +1,8 @@
-import 'dart:io';
 import 'dart:math';
+import 'dart:io';
 
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:e1547/client/client.dart';
+import 'package:e1547/user/user.dart';
 import 'package:flutter/foundation.dart';
 
 class ClientService extends ChangeNotifier {
@@ -81,11 +81,16 @@ class ClientService extends ChangeNotifier {
       await Future.delayed(
         Duration(seconds: 1, milliseconds: Random().nextInt(300)),
       );
+      // Remove this once hosts can be freely assigned to [ApiType]s
       if (!allowedHosts.contains(value)) {
         throw CustomHostIncompatibleException(host: value);
       }
       if (value == defaultHost) {
         throw CustomHostDefaultException(host: value);
+      }
+      ApiType? api = getApiTypeForHost(value);
+      if (api == null) {
+        throw CustomHostIncompatibleException(host: value);
       }
       customHost = value;
     }
@@ -101,14 +106,17 @@ class ClientService extends ChangeNotifier {
   }
 
   Future<bool> tryLogin(Credentials value) async {
-    Client client = Client(
-      host: host,
-      credentials: value,
-      userAgent: userAgent,
-      cache: cache,
-      memoryCache: memoryCache,
-      cookies: cookies,
+    Client? client = getApiTypeForHost(host)?.createClient(
+      ClientConfig(
+        host: host,
+        credentials: value,
+        userAgent: userAgent,
+        cache: cache,
+        memoryCache: memoryCache,
+        cookies: cookies,
+      ),
     );
+    if (client is! UserClient) return false;
     try {
       await client.currentUser();
       return true;

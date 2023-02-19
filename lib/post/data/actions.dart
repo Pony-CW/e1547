@@ -25,7 +25,7 @@ extension PostTagging on Post {
           }
           break;
         case 'type':
-          if (file.ext.toLowerCase() == value.toLowerCase()) {
+          if (ext.toLowerCase() == value.toLowerCase()) {
             return true;
           }
           break;
@@ -123,7 +123,7 @@ extension PostDenying on Post {
     return deniers;
   }
 
-  bool isIgnored() => (file.url == null && !flags.deleted) || file.ext == 'swf';
+  bool isIgnored() => (file == null && !flags.deleted) || ext == 'swf';
 }
 
 enum PostType {
@@ -150,9 +150,9 @@ extension PostTyping on Post {
 }
 
 extension PostVideoPlaying on Post {
-  VideoConfig? get videoConfig => type == PostType.video && file.url != null
+  VideoConfig? get videoConfig => type == PostType.video && file != null
       ? VideoConfig(
-          url: file.url!,
+          url: file!,
           size: file.size,
         )
       : null;
@@ -209,7 +209,7 @@ mixin PostsActionController<KeyType> on ClientDataController<KeyType, Post> {
       ),
     );
     try {
-      await client.addFavorite(post.id);
+      await assertType<PostFavoriteClient>(client).addFavorite(post.id);
       evictCache();
       return true;
     } on ClientException {
@@ -232,7 +232,7 @@ mixin PostsActionController<KeyType> on ClientDataController<KeyType, Post> {
       ),
     );
     try {
-      await client.removeFavorite(post.id);
+      await assertType<PostFavoriteClient>(client).removeFavorite(post.id);
       evictCache();
       return true;
     } on ClientException {
@@ -313,7 +313,8 @@ mixin PostsActionController<KeyType> on ClientDataController<KeyType, Post> {
     }
     replacePost(post);
     try {
-      await client.votePost(post.id, upvote, replace);
+      await assertType<PostVoteClient>(client)
+          .votePost(post.id, upvote, replace);
       evictCache();
       return true;
     } on ClientException {
@@ -323,14 +324,15 @@ mixin PostsActionController<KeyType> on ClientDataController<KeyType, Post> {
 
   Future<void> resetPost(Post post) async {
     assertOwnsItem(post);
-    replacePost(await client.post(post.id, force: true));
+    replacePost(
+        await assertType<PostVoteClient>(client).post(post.id, force: true));
     evictCache();
   }
 
   // TODO: create a PostUpdate Object instead of a Map
   Future<void> updatePost(Post post, Map<String, String?> body) async {
     assertOwnsItem(post);
-    await client.updatePost(post.id, body);
+    await assertType<PostUpdateClient>(client).updatePost(post.id, body);
     await resetPost(post);
   }
 }

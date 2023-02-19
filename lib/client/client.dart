@@ -1,9 +1,11 @@
 // data
 export 'data/actions.dart';
+export 'data/availability.dart';
 export 'data/client.dart';
 export 'data/controller.dart';
 export 'data/cookies.dart';
 export 'data/credentials.dart';
+export 'data/host.dart';
 export 'data/service.dart';
 // widgets
 export 'widgets/availability.dart';

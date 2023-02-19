@@ -48,7 +48,7 @@ class FavoritePostsController extends PostsController {
       force: force,
       cancelToken: cancelToken,
     );
-    posts.removeWhere((e) => e.file.url == null && !e.flags.deleted);
+    posts.removeWhere((e) => e.file == null && !e.flags.deleted);
     return posts;
   }
 
@@ -68,6 +68,7 @@ class FavoritePostsController extends PostsController {
     if (error is NoUserLoginException) {
       Credentials? credentials = client.credentials;
       if (credentials != null) {
+        // TODO: make this abstract; part of the client?
         search.value = 'fav:${client.credentials?.username}';
       }
     }
@@ -93,7 +94,7 @@ class FavoritePostsProvider extends SubChangeNotifierProvider2<Client,
     super.builder,
   }) : super(
           create: (context, client, denylist) => FavoritePostsController(
-            client: client,
+            client: assertType<PostClient>(client),
             denylist: denylist,
           ),
         );

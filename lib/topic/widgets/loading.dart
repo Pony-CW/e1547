@@ -15,7 +15,8 @@ class TopicLoadingPage extends StatefulWidget {
 }
 
 class _TopicLoadingPageState extends State<TopicLoadingPage> {
-  late Future<Topic> topic = context.read<Client>().topic(widget.id);
+  late Future<Topic> topic =
+      assertType<TopicClient>(context.read<Client>()).topic(widget.id);
 
   @override
   Widget build(BuildContext context) {

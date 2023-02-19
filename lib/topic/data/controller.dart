@@ -11,7 +11,7 @@ class TopicsController extends PageClientDataController<Topic>
   }
 
   @override
-  final Client client;
+  final TopicClient client;
 
   @override
   late ValueNotifier<String> search;
@@ -48,8 +48,8 @@ class TopicsProvider
     extends SubChangeNotifierProvider<Client, TopicsController> {
   TopicsProvider({String? search, super.child, super.builder})
       : super(
-          create: (context, client) =>
-              TopicsController(client: client, search: search),
-          keys: (context) => [search],
+          create: (context, client) => TopicsController(
+              client: assertType<TopicClient>(client), search: search),
+    keys: (context) => [search],
         );
 }

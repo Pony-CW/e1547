@@ -4,14 +4,8 @@ import 'package:e1547/interface/interface.dart';
 class ClientProvider extends SubProvider<ClientService, Client> {
   ClientProvider({super.child, super.builder})
       : super(
-          create: (context, service) => Client(
-            host: service.host,
-            credentials: service.credentials,
-            userAgent: service.userAgent,
-            cache: service.cache,
-            memoryCache: service.memoryCache,
-            cookies: service.cookies,
-          ),
+          create: (context, service) =>
+              getApiTypeForHost(service.host)!.createClientFromService(service),
           keys: (context) {
             ClientService service = context.watch<ClientService>();
             return [

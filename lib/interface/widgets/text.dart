@@ -4,6 +4,7 @@ import 'package:relative_time/relative_time.dart';
 Color dimTextColor(BuildContext context, [double opacity = 0.35]) =>
     Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(opacity);
 
+// TODO: make this nicer. somehow. ThemeExtensions?
 double smallIconSize(BuildContext context) => 18;
 
 class TimedText extends StatelessWidget {

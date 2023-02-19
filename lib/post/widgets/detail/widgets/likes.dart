@@ -81,7 +81,7 @@ class LikeDisplay extends StatelessWidget {
 class FavoriteButton extends StatelessWidget {
   const FavoriteButton({required this.post});
 
-  final Post post;
+  final PostWithFavorites post;
 
   @override
   Widget build(BuildContext context) {

@@ -13,7 +13,8 @@ class WikiLoadingPage extends StatefulWidget {
 }
 
 class _WikiLoadingPageState extends State<WikiLoadingPage> {
-  late Future<Wiki> wiki = context.read<Client>().wiki(widget.id);
+  late Future<Wiki> wiki =
+      assertType<WikiClient>(context.read<Client>()).wiki(widget.id);
 
   @override
   Widget build(BuildContext context) {

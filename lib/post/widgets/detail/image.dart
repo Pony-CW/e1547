@@ -74,7 +74,7 @@ class PostDetailImageToggle extends StatelessWidget {
       post: post,
       builder: (context, post) {
         if (post.flags.deleted) return const SizedBox.shrink();
-        if (post.file.url == null) return const SizedBox.shrink();
+        if (post.file == null) return const SizedBox.shrink();
         PostsController controller = context.watch<PostsController>();
         return CrossFade.builder(
           showChild: (!post.isFavorited && controller.isDenied(post)) ||
@@ -136,12 +136,12 @@ class PostDetailImageActions extends StatelessWidget {
         VoidCallback? onTap;
 
         PostsController controller = context.watch<PostsController>();
-        bool visible = post.file.url != null &&
+        bool visible = post.file != null &&
             (!controller.isDenied(post) || post.isFavorited);
 
         if (visible) {
           onTap = post.type == PostType.unsupported
-              ? () => launch(post.file.url!)
+              ? () => launch(post.file!)
               : onOpen;
         }
 
@@ -172,7 +172,7 @@ class PostDetailImageActions extends StatelessWidget {
 
         Widget muteButton() {
           return CrossFade.builder(
-            showChild: post.type == PostType.video && post.file.url != null,
+            showChild: post.type == PostType.video && post.file != null,
             builder: (context) => const Card(
               elevation: 0,
               color: Colors.black12,

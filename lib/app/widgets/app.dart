@@ -66,10 +66,15 @@ class App extends StatelessWidget {
                         actions: [
                           (_) => initializeDateFormatting(),
                           (_) => context.read<DenylistService>().pull(),
-                          (_) => context.read<FollowsUpdater>().update(
-                                client: context.read<Client>(),
-                                denylist: context.read<DenylistService>().items,
-                              ),
+                          (_) async {
+                            Client client = context.read<Client>();
+                            if (client is! FollowClient) return;
+                            return context.read<FollowsUpdater>().update(
+                                  client: client,
+                                  denylist:
+                                      context.read<DenylistService>().items,
+                                );
+                          },
                           initializeCurrentUserAvatar,
                         ],
                         onError: (context, error) {

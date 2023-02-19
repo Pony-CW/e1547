@@ -10,11 +10,11 @@ import 'package:flutter/services.dart';
 class CommentTile extends StatelessWidget {
   const CommentTile({
     required this.comment,
-    this.hasActions = true,
+    this.withActions = true,
   });
 
   final Comment comment;
-  final bool hasActions;
+  final bool withActions;
 
   @override
   Widget build(BuildContext context) {
@@ -67,66 +67,26 @@ class CommentTile extends StatelessWidget {
       );
     }
 
-    Widget actions() {
-      return Padding(
+    Widget? voteActions;
+
+    Comment commentWithVotes = comment;
+    if (commentWithVotes is CommentWithVotes) {
+      voteActions = DimSubtree(
+        child: CommentVoteDisplay(
+          comment: commentWithVotes,
+        ),
+      );
+    }
+
+    Widget? actions;
+
+    if (withActions) {
+      actions = Padding(
         padding: const EdgeInsets.only(left: 24),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            DimSubtree(
-              child: VoteDisplay(
-                padding: EdgeInsets.zero,
-                score: comment.score,
-                status: comment.voteStatus,
-                onUpvote: context.read<Client>().hasLogin
-                    ? (isLiked) async {
-                        CommentsController controller =
-                            context.read<CommentsController>();
-                        ScaffoldMessengerState messenger =
-                            ScaffoldMessenger.of(context);
-                        controller
-                            .vote(
-                                comment: comment,
-                                upvote: true,
-                                replace: !isLiked)
-                            .then((value) {
-                          if (!value) {
-                            messenger.showSnackBar(SnackBar(
-                              duration: const Duration(seconds: 1),
-                              content: Text(
-                                  'Failed to upvote comment #${comment.id}'),
-                            ));
-                          }
-                        });
-                        return !isLiked;
-                      }
-                    : null,
-                onDownvote: context.read<Client>().hasLogin
-                    ? (isLiked) async {
-                        CommentsController controller =
-                            context.read<CommentsController>();
-                        ScaffoldMessengerState messenger =
-                            ScaffoldMessenger.of(context);
-                        controller
-                            .vote(
-                                comment: comment,
-                                upvote: false,
-                                replace: !isLiked)
-                            .then((value) {
-                          if (!value) {
-                            messenger.showSnackBar(SnackBar(
-                              duration: const Duration(seconds: 1),
-                              content: Text(
-                                  'Failed to downvote comment #${comment.id}'),
-                            ));
-                          }
-                        });
-                        return !isLiked;
-                      }
-                    : null,
-              ),
-            ),
-            const Spacer(),
+            if (voteActions != null) voteActions,
             PopupMenuButton<VoidCallback>(
               icon: const DimSubtree(child: Icon(Icons.more_vert)),
               onSelected: (value) => value(),
@@ -208,6 +168,14 @@ class CommentTile extends StatelessWidget {
       );
     }
 
+    Widget? warning;
+
+    Comment commentWithWarning = comment;
+    if (commentWithWarning is CommentWithWarning &&
+        commentWithWarning.warningType != null) {
+      warning = CommentWarningDisplay(comment: commentWithWarning);
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(
@@ -230,29 +198,8 @@ class CommentTile extends StatelessWidget {
               ),
             ),
           ),
-          if (hasActions) actions(),
-          if (comment.warningType != null)
-            Padding(
-              padding: const EdgeInsets.only(left: 24),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Icon(
-                      Icons.warning_amber,
-                      size: smallIconSize(context),
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                  ),
-                  Text(
-                    comment.warningType!.message,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                  ),
-                ],
-              ),
-            ),
+          if (actions != null) actions,
+          if (warning != null) warning,
           const Divider(),
         ],
       ),

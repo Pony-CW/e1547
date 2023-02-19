@@ -45,6 +45,7 @@ final List<RouterDrawerDestination> rootDestintations = [
     builder: (context) => const FavPage(),
     unique: true,
     group: _drawerFollowsGroup,
+    visible: (context) => context.watch<Client>() is PostFavoriteClient,
   ),
   NamedRouterDrawerDestination(
     path: '/timeline',
@@ -53,6 +54,7 @@ final List<RouterDrawerDestination> rootDestintations = [
     builder: (context) => const FollowsTimelinePage(),
     unique: true,
     group: _drawerFollowsGroup,
+    visible: (context) => context.watch<Client>() is FollowClient,
   ),
   NamedRouterDrawerDestination(
     path: '/subscriptions',
@@ -61,6 +63,7 @@ final List<RouterDrawerDestination> rootDestintations = [
     builder: (context) => const FollowsSubscriptionsPage(),
     unique: true,
     group: _drawerFollowsGroup,
+    visible: (context) => context.watch<Client>() is FollowClient,
   ),
   NamedRouterDrawerDestination(
     path: '/bookmarks',
@@ -69,6 +72,7 @@ final List<RouterDrawerDestination> rootDestintations = [
     builder: (context) => const FollowsBookmarkPage(),
     unique: true,
     group: _drawerFollowsGroup,
+    visible: (context) => context.watch<Client>() is FollowClient,
   ),
   NamedRouterDrawerDestination(
     path: '/pools',
@@ -77,13 +81,16 @@ final List<RouterDrawerDestination> rootDestintations = [
     builder: (context) => const PoolsPage(),
     unique: true,
     group: _drawerCollectionsGroup,
+    visible: (context) => context.watch<Client>() is PoolClient,
   ),
   NamedRouterDrawerDestination(
     path: '/forum',
     name: 'Forum',
     icon: const Icon(Icons.forum),
     builder: (context) => const TopicsPage(),
-    visible: (context) => context.watch<Settings>().showBeta.value,
+    visible: (context) =>
+        context.watch<Settings>().showBeta.value &&
+        context.watch<Client>() is TopicClient,
     unique: true,
     group: _drawerCollectionsGroup,
   ),

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'credentials.freezed.dart';
-
 part 'credentials.g.dart';
 
 @freezed

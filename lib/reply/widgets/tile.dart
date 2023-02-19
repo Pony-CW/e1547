@@ -60,6 +60,30 @@ class ReplyTile extends StatelessWidget {
       );
     }
 
+    Widget? warning;
+    Reply replyWithWarning = reply;
+    if (replyWithWarning is ReplyWithWarning &&
+        replyWithWarning.warningType != null) {
+      warning = Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Icon(
+              Icons.warning_amber,
+              size: smallIconSize(context),
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ),
+          Text(
+            replyWithWarning.warningType!.message,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+          ),
+        ],
+      );
+    }
+
     Widget body() {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,25 +108,7 @@ class ReplyTile extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (reply.warningType != null)
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Icon(
-                          Icons.warning_amber,
-                          size: smallIconSize(context),
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                      ),
-                      Text(
-                        reply.warningType!.message,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Theme.of(context).colorScheme.error,
-                            ),
-                      ),
-                    ],
-                  ),
+                if (warning != null) warning,
               ],
             ),
           ),

@@ -12,25 +12,27 @@ class PoolsController extends PageClientDataController<Pool>
     required this.denylist,
     String? search,
   })  : search = ValueNotifier<String>(search ?? ''),
-        thumbnails = ThumbnailController(
-          client: client,
-          denylist: denylist,
-        );
+        thumbnails = client is PostIdsClient
+            ? ThumbnailController(
+                client: assertType<PostIdsClient>(client),
+                denylist: denylist,
+              )
+            : null;
 
   @override
-  final Client client;
+  final PoolClient client;
   final DenylistService denylist;
 
   @override
   late ValueNotifier<String> search;
 
-  final ThumbnailController thumbnails;
+  final ThumbnailController? thumbnails;
 
   @override
   @protected
   void reset({bool hasLoaded = false}) {
     if (!hasLoaded) {
-      thumbnails.reset();
+      thumbnails?.reset();
     }
     super.reset(hasLoaded: hasLoaded);
   }
@@ -54,7 +56,7 @@ class PoolsController extends PageClientDataController<Pool>
         .where((e) => e != null)
         .toList()
         .cast<int>();
-    await thumbnails.loadIds(ids, force: force);
+    await thumbnails?.loadIds(ids, force: force);
     return pools;
   }
 }
@@ -64,7 +66,7 @@ class PoolsProvider extends SubChangeNotifierProvider2<Client, DenylistService,
   PoolsProvider({String? search, super.child, super.builder})
       : super(
           create: (context, client, denylist) => PoolsController(
-            client: client,
+            client: assertType<PoolClient>(client),
             denylist: denylist,
             search: search,
           ),
@@ -74,7 +76,7 @@ class PoolsProvider extends SubChangeNotifierProvider2<Client, DenylistService,
 
 class ThumbnailController extends PostsController {
   ThumbnailController({
-    required super.client,
+    required PostIdsClient super.client,
     required super.denylist,
   });
 
@@ -99,7 +101,7 @@ class ThumbnailController extends PostsController {
     if (ids == null) return [];
     List<int> available = itemList?.map((e) => e.id).toList() ?? [];
     ids.removeWhere(available.contains);
-    return client.postsByIds(
+    return assertType<PostIdsClient>(client).postsByIds(
       ids,
       force: force,
       cancelToken: cancelToken,

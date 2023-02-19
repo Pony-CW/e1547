@@ -1,36 +1,55 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+abstract class User {
+  int get id;
 
-part 'user.freezed.dart';
-part 'user.g.dart';
+  String get name;
 
-@freezed
-class User with _$User {
-  const factory User({
-    required int wikiPageVersionCount,
-    required int artistVersionCount,
-    required int poolVersionCount,
-    required int forumPostCount,
-    required int commentCount,
-    required int flagCount,
-    required int favoriteCount,
-    required int positiveFeedbackCount,
-    required int neutralFeedbackCount,
-    required int negativeFeedbackCount,
-    required int uploadLimit,
-    required int id,
-    required DateTime createdAt,
-    required String name,
-    required int level,
-    required int baseUploadLimit,
-    required int postUploadCount,
-    required int postUpdateCount,
-    required int noteUpdateCount,
-    required bool isBanned,
-    required bool canApprovePosts,
-    required bool canUploadFree,
-    required String levelString,
-    required int? avatarId,
-  }) = _User;
+  User copyWith({
+    int? id,
+    String? name,
+  });
+}
 
-  factory User.fromJson(dynamic json) => _$UserFromJson(json);
+abstract class UserWithAvatar implements User {
+  int? get avatarId;
+
+  @override
+  User copyWith({
+    int? id,
+    String? name,
+    int? avatarId,
+  });
+}
+
+abstract class UserWithStats implements User {
+  String get levelString;
+  int get favoriteCount;
+  int get postUpdateCount;
+  int get postUploadCount;
+  int get forumPostCount;
+  int get commentCount;
+
+  @override
+  User copyWith({
+    int? id,
+    String? name,
+    String? levelString,
+    int? favoriteCount,
+    int? postUpdateCount,
+    int? postUploadCount,
+    int? forumPostCount,
+    int? commentCount,
+  });
+}
+
+abstract class CurrentUser implements User {}
+
+abstract class CurrentUserWithBlacklist implements CurrentUser {
+  String get blacklistedTags;
+
+  @override
+  User copyWith({
+    int? id,
+    String? name,
+    String? blacklistedTags,
+  });
 }

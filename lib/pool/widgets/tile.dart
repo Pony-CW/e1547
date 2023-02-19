@@ -47,16 +47,16 @@ class PoolTile extends StatelessWidget {
 
     if (pool.postIds.isNotEmpty && controller != null) {
       int thumbnail = pool.postIds.first;
-      Post? post = controller.thumbnails.itemList
+      Post? post = controller.thumbnails?.itemList
           ?.firstWhereOrNull((e) => e.id == thumbnail);
       if (post != null) {
         image = ChangeNotifierProvider<PostsController>.value(
-          value: controller.thumbnails,
+          value: controller.thumbnails!,
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 400),
               child: AspectRatio(
-                aspectRatio: max(post.file.width / post.file.height, 0.9),
+                aspectRatio: max(post.width / post.height, 0.9),
                 child: PostImageTile(post: post),
               ),
             ),

@@ -105,7 +105,9 @@ class DenylistProvider
           create: (context, settings, client) => DenylistService(
             items: settings.denylist.value,
             pull: () async {
-              CurrentUser? user = await client.currentUser(force: true);
+              if (client is! UserBlacklistClient) return null;
+              CurrentUserWithBlacklist? user =
+                  await client.currentUser(force: true);
               if (user == null) return null;
               return user.blacklistedTags.split('\n');
             },
@@ -113,6 +115,7 @@ class DenylistProvider
               settings.denylist.value = value;
               if (!client.hasLogin) return;
               try {
+                if (client is! UserBlacklistClient) return;
                 await client.updateBlacklist(value);
               } on ClientException catch (e) {
                 if (!CancelToken.isCancel(e)) {

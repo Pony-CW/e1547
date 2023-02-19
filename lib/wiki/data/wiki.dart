@@ -1,24 +1,16 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+abstract class Wiki {
+  int get id;
+  DateTime get createdAt;
+  DateTime? get updatedAt;
+  String get title;
+  String get body;
+  int get category;
 
-part 'wiki.freezed.dart';
-part 'wiki.g.dart';
-
-@freezed
-class Wiki with _$Wiki {
-  const factory Wiki({
-    required int id,
-    required DateTime createdAt,
-    required DateTime? updatedAt,
-    required String title,
-    required String body,
-    required int creatorId,
-    required bool isLocked,
-    required int? updaterId,
-    required bool isDeleted,
-    required List<String> otherNames,
-    required String creatorName,
-    required int categoryId,
-  }) = _Wiki;
-
-  factory Wiki.fromJson(dynamic json) => _$WikiFromJson(json);
+  Wiki copyWith({
+    int? id,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? title,
+    String? body,
+  });
 }

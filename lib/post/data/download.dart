@@ -20,7 +20,7 @@ extension PostDownloading on Post {
     required AppInfo appInfo,
   }) async {
     try {
-      File download = await DefaultCacheManager().getSingleFile(file.url!);
+      File download = await DefaultCacheManager().getSingleFile(file!);
       if (Platform.isAndroid) {
         Uint8List downloadBytes = await download.readAsBytes();
         String downloadMime = await _throwOnNull(lookupMimeType(download.path),
@@ -97,7 +97,7 @@ extension PostDownloading on Post {
     if (artists.isNotEmpty) {
       filename = '${artists.join(', ')} - ';
     }
-    return filename += '$id.${file.ext}';
+    return filename += '$id.$ext';
   }
 
   Future<T> _throwOnNull<T>(FutureOr<T?> future, String message) async {

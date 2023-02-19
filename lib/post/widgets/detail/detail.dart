@@ -33,7 +33,7 @@ class _PostDetailState extends State<PostDetail> {
         padding: const EdgeInsets.only(bottom: 10),
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            minHeight: (constraints.maxHeight / 2),
+            minHeight: max(300, (constraints.maxHeight / 2)),
             maxHeight: constraints.maxWidth > constraints.maxHeight
                 ? max(400, constraints.maxHeight * 0.8)
                 : double.infinity,

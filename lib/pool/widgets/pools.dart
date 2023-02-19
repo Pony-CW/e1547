@@ -44,9 +44,11 @@ class _PoolsPageState extends State<PoolsPage> with RouterDrawerEntryWidget {
             }
           },
           builder: (context) => RefreshableControllerPage.builder(
-            appBar: const DefaultAppBar(
-              title: Text('Pools'),
-              actions: [ContextDrawerButton()],
+            appBar: DefaultAppBar(
+              title: const Text('Pools'),
+              actions: controller.thumbnails != null
+                  ? [const ContextDrawerButton()]
+                  : null,
             ),
             floatingActionButton: SheetFloatingActionButton(
               actionIcon: Icons.search,
@@ -56,22 +58,22 @@ class _PoolsPageState extends State<PoolsPage> with RouterDrawerEntryWidget {
               ),
             ),
             drawer: const RouterDrawer(),
-            endDrawer: ContextDrawer(
-              title: const Text('Pools'),
-              children: [
-                DrawerDenySwitch(controller: controller.thumbnails),
-                DrawerTagCounter(controller: controller.thumbnails),
-              ],
-            ),
+            endDrawer: controller.thumbnails != null
+                ? ContextDrawer(
+                    title: const Text('Pools'),
+                    children: [
+                      DrawerDenySwitch(controller: controller.thumbnails!),
+                      DrawerTagCounter(controller: controller.thumbnails!),
+                    ],
+                  )
+                : null,
             controller: controller,
             builder: (context, child) => AnimatedBuilder(
               animation: context.watch<Settings>().tileSize,
-              builder: (context, child) {
-                return TileLayout(
-                  tileSize: context.watch<Settings>().tileSize.value,
-                  child: child!,
-                );
-              },
+              builder: (context, child) => TileLayout(
+                tileSize: context.watch<Settings>().tileSize.value,
+                child: child!,
+              ),
               child: child,
             ),
             child: (context) => PagedMasonryGridView<int, Pool>.count(

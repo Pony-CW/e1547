@@ -15,3 +15,8 @@ targets:
       drift_dev:
         options:
           use_data_class_name_for_companions: true
+      mek_data_class_generator:data_class:
+        options:
+          comparable: true
+          copyable: true
+          changeable: true

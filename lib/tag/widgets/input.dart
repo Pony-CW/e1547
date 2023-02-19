@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/interface/interface.dart';
 import 'package:e1547/post/post.dart';
@@ -67,6 +66,7 @@ class _TagInputState extends State<TagInput> {
 
   @override
   Widget build(BuildContext context) {
+    TagClient client = context.readAs<Client, TagClient>();
     return SearchInput<TagSuggestion>(
       labelText: widget.labelText,
       controller: widget.controller,
@@ -97,9 +97,7 @@ class _TagInputState extends State<TagInput> {
       itemBuilder: (context, itemData) => Row(
         children: [
           Container(
-            color: TagCategory.values
-                .firstWhereOrNull((e) => e.id == itemData.category)
-                ?.color,
+            color: client.tagCategoryColorById(itemData.category),
             height: 54,
             width: 5,
           ),
@@ -133,8 +131,7 @@ class _TagInputState extends State<TagInput> {
         }
         if (tagToRaw(tags[selection].trim()).isNotEmpty &&
             !tags[selection].contains(':')) {
-          return context
-              .read<Client>()
+          return assertType<TagClient>(context.read<Client>())
               .autocomplete(tagToRaw(tags[selection]),
                   category: widget.category)
               .then((value) => value.take(3));

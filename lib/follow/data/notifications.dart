@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:e1547/app/app.dart';
-import 'package:e1547/client/client.dart';
 import 'package:e1547/denylist/denylist.dart';
 import 'package:e1547/follow/follow.dart';
 import 'package:e1547/logs/logs.dart';
@@ -13,7 +12,7 @@ const String followsBackgroundTaskKey = 'net.clynamic.e1547.follows';
 
 Future<bool> backgroundUpdateFollows({
   required FollowsService service,
-  required Client client,
+  required FollowClient client,
   required DenylistService denylist,
   required FlutterLocalNotificationsPlugin notifications,
 }) async {

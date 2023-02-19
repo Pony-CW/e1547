@@ -1,26 +1,39 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+abstract class Pool {
+  int get id;
 
-part 'pool.freezed.dart';
-part 'pool.g.dart';
+  String get name;
 
-@freezed
-class Pool with _$Pool {
-  const factory Pool({
-    required int id,
-    required String name,
-    required DateTime createdAt,
-    required DateTime updatedAt,
-    required int creatorId,
-    required String description,
-    required bool isActive,
-    required Category category,
-    required List<int> postIds,
-    required String creatorName,
-    required int postCount,
-  }) = _Pool;
+  DateTime get createdAt;
 
-  factory Pool.fromJson(dynamic json) => _$PoolFromJson(json);
+  DateTime get updatedAt;
+
+  String get description;
+
+  List<int> get postIds;
+
+  int get postCount;
+
+  Pool copyWith({
+    int? id,
+    String? name,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? description,
+    List<int>? postIds,
+  });
 }
 
-@JsonEnum()
-enum Category { series, collection }
+abstract class PoolWithActivity implements Pool {
+  bool get isActive;
+
+  @override
+  Pool copyWith({
+    int? id,
+    String? name,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? description,
+    List<int>? postIds,
+    bool? isActive,
+  });
+}

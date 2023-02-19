@@ -105,7 +105,7 @@ class UserPage extends StatelessWidget {
                                 height: 100,
                                 width: 100,
                                 child: UserAvatar(
-                                  id: user.avatarId,
+                                  id: user.avatarIdOrNull,
                                   controller: controllers.profilePost,
                                 ),
                               ),
@@ -249,7 +249,7 @@ class UserSliverAppBar extends StatelessWidget {
                   height: 100,
                   width: 100,
                   child: UserAvatar(
-                    id: user.avatarId,
+                    id: user.avatarIdOrNull,
                     controller: avatar,
                   ),
                 ),
@@ -361,22 +361,22 @@ class _UserPageProvider
       : super(
           create: (context, client, denylist) => _UserPageControllers(
             favoritePosts: PostsController(
-              client: client,
+              client: assertType<PostClient>(client),
               denylist: denylist,
               search: 'fav:${user.name}',
               canSearch: false,
             ),
             uploadedPosts: PostsController(
-              client: client,
+              client: assertType<PostClient>(client),
               denylist: denylist,
               search: 'user:${user.name}',
               canSearch: false,
             ),
-            profilePost: user.avatarId != null
+            profilePost: user.avatarIdOrNull != null
                 ? PostsController.single(
-                    client: client,
+                    client: assertType<PostClient>(client),
                     denylist: denylist,
-                    id: user.avatarId!,
+                    id: user.avatarIdOrNull!,
                   )
                 : null,
           ),
@@ -407,6 +407,20 @@ class UserInfo extends StatelessWidget {
       );
     }
 
+    List<Widget> stats = [];
+    User userWithStats = user;
+    if (userWithStats is UserWithStats) {
+      stats = [
+        info(Icons.shield, 'rank', userWithStats.levelString.toLowerCase()),
+        info(Icons.upload, 'posts', userWithStats.postUploadCount.toString()),
+        info(Icons.edit, 'edits', userWithStats.postUpdateCount.toString()),
+        info(Icons.favorite, 'favorites',
+            userWithStats.favoriteCount.toString()),
+        info(Icons.comment, 'comments', userWithStats.commentCount.toString()),
+        info(Icons.forum, 'forum', userWithStats.forumPostCount.toString()),
+      ];
+    }
+
     return Column(
       children: [
         info(
@@ -421,12 +435,7 @@ class UserInfo extends StatelessWidget {
             ));
           },
         ),
-        info(Icons.shield, 'rank', user.levelString.toLowerCase()),
-        info(Icons.upload, 'posts', user.postUploadCount.toString()),
-        info(Icons.edit, 'edits', user.postUpdateCount.toString()),
-        info(Icons.favorite, 'favorites', user.favoriteCount.toString()),
-        info(Icons.comment, 'comments', user.commentCount.toString()),
-        info(Icons.forum, 'forum', user.forumPostCount.toString()),
+        ...stats,
       ],
     );
   }

@@ -66,6 +66,7 @@ class _PostsSearchPageState extends State<PostsSearchPage> {
 
           Future<void> updatePool() async {
             if (!mounted) return;
+            if (client is! PoolClient) return;
             setState(() {
               loadingInfo = true;
             });

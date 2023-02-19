@@ -82,7 +82,10 @@ class TagDisplay extends StatelessWidget {
 
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: TagCategory.names
+      children: <String>{
+        ...context.watchAs<Client, TagClient>().tagCategories(),
+        ...post.tags.keys,
+      }
           .where((category) =>
               tags[category]!.isNotEmpty || (editing && category != 'invalid'))
           .map((category) => categoryTile(category))
@@ -107,7 +110,7 @@ bool onPostTagsEdit(
   tags[category] = tags[category]!.toSet().toList();
   tags[category]!.sort();
   controller.value = controller.value!.copyWith(tags: tags);
-  final client = context.read<Client>();
+  final client = context.readAs<Client, TagClient>();
   Future<void>(() async {
     for (String tag in edited) {
       List<Tag> tags = await rateLimit(
@@ -118,8 +121,8 @@ bool onPostTagsEdit(
       if (tags.isEmpty) {
         target = 'general';
       } else if (tags.first.name == tag &&
-          tags.first.category != TagCategory.byName(category).id) {
-        target = TagCategory.byId(tags.first.category).name;
+          tags.first.category != client.tagCategoryId(category)) {
+        target = client.tagCategoryName(tags.first.category);
       }
       if (target != null) {
         Map<String, List<String>> tags = Map.from(controller.value!.tags);

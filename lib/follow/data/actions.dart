@@ -27,7 +27,10 @@ extension Updating on Follow {
   Follow withPool(Pool pool) {
     Follow updated = this;
     updated = updated.withTitle(tagToName(pool.name));
-    if (!pool.isActive && type != FollowType.bookmark) {
+    Pool poolWithActive = pool;
+    if (poolWithActive is PoolWithActivity &&
+        !poolWithActive.isActive &&
+        type != FollowType.bookmark) {
       updated = updated.copyWith(type: FollowType.bookmark);
     }
     return updated;
@@ -60,12 +63,12 @@ extension Updating on Follow {
       if (updated.latest == null || updated.latest! < post.id) {
         updated = updated.copyWith(
           latest: post.id,
-          thumbnail: post.sample.url,
+          thumbnail: post.sample,
         );
       } else {
-        if (updated.thumbnail != post.sample.url) {
+        if (updated.thumbnail != post.sample) {
           updated = updated.copyWith(
-            thumbnail: post.sample.url,
+            thumbnail: post.sample,
           );
         }
       }

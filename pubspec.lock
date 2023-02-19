@@ -185,6 +185,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  class_to_string:
+    dependency: transitive
+    description:
+      name: class_to_string
+      sha256: "9a8ebd0c829cc696e3d8c8762b6cd3b86aedadb0b57135deab943178eb9fc556"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   cli_util:
     dependency: transitive
     description:
@@ -817,6 +825,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
+  mek_data_class:
+    dependency: "direct main"
+    description:
+      name: mek_data_class
+      sha256: "55f88a57da3dd99dd981f3c56b4a45989676553e3383b5bcd422288c7e1cb223"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
+  mek_data_class_generator:
+    dependency: "direct dev"
+    description:
+      name: mek_data_class_generator
+      sha256: "4572fded7d2766a3cc14fdddd0ee766c0154b48b1f4862dcbfc0c34678c895e5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   meta:
     dependency: transitive
     description:

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:e1547/client/client.dart';
 import 'package:e1547/interface/interface.dart';
 import 'package:e1547/tag/tag.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class TagEditor extends StatefulWidget {
 }
 
 class _TagEditorState extends State<TagEditor> {
-  TextEditingController controller = TextEditingController();
+  final TextEditingController controller = TextEditingController();
 
   @override
   void initState() {
@@ -41,7 +42,9 @@ class _TagEditorState extends State<TagEditor> {
       textInputAction: TextInputAction.done,
       submit: (_) => widget.controller.action!(),
       controller: controller,
-      category: TagCategory.byName(widget.category!).id,
+      category: context.readAs<Client, TagClient>().tagCategoryId(
+            widget.category!,
+          ),
     );
   }
 }

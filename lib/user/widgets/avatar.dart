@@ -4,6 +4,7 @@ import 'package:e1547/denylist/denylist.dart';
 import 'package:e1547/interface/interface.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/settings/settings.dart';
+import 'package:e1547/user/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sub/flutter_sub.dart';
 
@@ -11,12 +12,12 @@ Future<void> initializeCurrentUserAvatar(BuildContext context) async {
   PostsController? controller =
       await context.read<CurrentUserAvatarValue>().controller;
   Post? avatar = controller?.itemList?.first;
-  if (avatar?.sample.url != null) {
+  if (avatar?.sample != null) {
     // The buildcontext used here comes from MaterialApp,
     // therefore if it goes invalid, the app is already closed.
     // ignore: use_build_context_synchronously
     await precacheImage(
-      CachedNetworkImageProvider(avatar!.sample.url!),
+      CachedNetworkImageProvider(avatar!.sample!),
       context,
     );
   }
@@ -55,7 +56,7 @@ class CurrentUserAvatarValue {
     required this.denylist,
   });
 
-  final Client client;
+  final UserClient client;
   final DenylistService denylist;
   late final Future<PostsController?> _controller = _createController();
 
@@ -63,10 +64,11 @@ class CurrentUserAvatarValue {
 
   Future<PostsController?> _createController() async {
     try {
-      int? id = (await client.currentUser())?.avatarId;
+      if (client is! PostClient) return null;
+      int? id = (await client.currentUser())?.avatarIdOrNull;
       if (id != null) {
         PostsController controller = PostsController.single(
-          client: client,
+          client: assertType<PostClient>(client),
           denylist: denylist,
           id: id,
           filterMode: PostFilterMode.unavailable,
@@ -86,7 +88,7 @@ class CurrentUserAvatarProvider
   CurrentUserAvatarProvider({super.child, super.builder})
       : super(
           create: (context, client, denylist) => CurrentUserAvatarValue(
-            client: client,
+            client: assertType<UserClient>(client),
             denylist: denylist,
           ),
           dispose: (context, value) => value.controller
@@ -96,10 +98,14 @@ class CurrentUserAvatarProvider
 }
 
 class UserAvatar extends StatelessWidget {
-  const UserAvatar({super.key, required this.controller, required this.id});
+  const UserAvatar({
+    super.key,
+    required this.id,
+    required this.controller,
+  });
 
-  final PostsController? controller;
   final int? id;
+  final PostsController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -119,20 +125,18 @@ class UserAvatar extends StatelessWidget {
         controller: controller,
         builder: (context, post) => Avatar(
           post,
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => PostsControllerConnector(
-                  id: id,
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PostsControllerConnector(
+                id: id,
+                controller: controller,
+                builder: (context, post) => PostsRouteConnector(
                   controller: controller,
-                  builder: (context, post) => PostsRouteConnector(
-                    controller: controller,
-                    child: PostDetail(post: post!),
-                  ),
+                  child: PostDetail(post: post!),
                 ),
               ),
-            );
-          },
+            ),
+          ),
         ),
       ),
     );
@@ -168,7 +172,7 @@ class Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (post?.sample.url != null) {
+    if (post?.sample != null) {
       return GestureDetector(
         onTap: onTap,
         child: PostTileOverlay(
@@ -176,7 +180,7 @@ class Avatar extends StatelessWidget {
           child: Hero(
             tag: post!.link,
             child: CircleAvatar(
-              foregroundImage: CachedNetworkImageProvider(post!.sample.url!),
+              foregroundImage: CachedNetworkImageProvider(post!.sample!),
             ),
           ),
         ),

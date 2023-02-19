@@ -52,10 +52,11 @@ class PoolInfo extends StatelessWidget {
               ),
             ],
           ),
-          textInfoRow(
-            'status',
-            pool.isActive ? 'active' : 'inactive',
-          ),
+          if (pool is PoolWithActivity)
+            textInfoRow(
+              'status',
+              (pool as PoolWithActivity).isActive ? 'active' : 'inactive',
+            ),
           textInfoRow(
             'created',
             formatDateTime(pool.createdAt.toLocal()),

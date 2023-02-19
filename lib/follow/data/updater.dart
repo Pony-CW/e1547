@@ -53,7 +53,7 @@ class FollowsUpdater extends ValueNotifier<FollowUpdate?> {
   }
 
   void update({
-    required Client client,
+    required FollowClient client,
     required List<String> denylist,
     bool? force,
   }) =>
@@ -88,7 +88,7 @@ class FollowUpdate with ObjectLoggy {
   final Duration refreshRate;
 
   final FollowsService service;
-  final Client client;
+  final FollowClient client;
   final List<String> denylist;
   final bool? force;
 

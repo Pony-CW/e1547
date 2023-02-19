@@ -16,13 +16,13 @@ Future<void> preloadPostImage({
   String? url;
   switch (size) {
     case PostImageSize.preview:
-      url = post.preview.url;
+      url = post.preview;
       break;
     case PostImageSize.sample:
-      url = post.sample.url;
+      url = post.sample;
       break;
     case PostImageSize.file:
-      url = post.file.url;
+      url = post.file;
       break;
   }
   if (post.type != PostType.image) return;
@@ -45,7 +45,7 @@ Future<void> preloadPostImages({
     int target = index + 1 + i;
     if (0 < target && target < posts.length) {
       Post post = posts[target];
-      if (post.type == PostType.image && post.file.url != null) {
+      if (post.type == PostType.image && post.file != null) {
         if (!context.mounted) return;
         await preloadPostImage(context: context, post: post, size: size);
       }

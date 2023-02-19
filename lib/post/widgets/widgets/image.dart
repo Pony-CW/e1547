@@ -46,7 +46,7 @@ class PostImageWidget extends StatelessWidget {
     return RepaintBoundary(
       child: Builder(
         builder: (context) {
-          double aspectRatio = post.file.width / post.file.height;
+          double aspectRatio = post.width / post.height;
 
           switch (size) {
             case PostImageSize.preview:
@@ -151,26 +151,19 @@ class RawPostImageWidget extends StatelessWidget {
     }
 
     String url;
-    Size dimensions;
     switch (size) {
       case PostImageSize.preview:
-        url = post.preview.url!;
-        dimensions =
-            Size(post.preview.width.toDouble(), post.preview.height.toDouble());
+        url = post.preview!;
         break;
       case PostImageSize.sample:
-        url = post.sample.url!;
-        dimensions =
-            Size(post.sample.width.toDouble(), post.sample.height.toDouble());
+        url = post.sample!;
         break;
       case PostImageSize.file:
-        url = post.file.url!;
-        dimensions =
-            Size(post.file.width.toDouble(), post.file.height.toDouble());
+        url = post.file!;
         break;
     }
 
-    double aspectRatio = dimensions.width / dimensions.height;
+    double aspectRatio = post.width / post.height;
 
     int? memCacheWidth;
     int? memCacheHeight;

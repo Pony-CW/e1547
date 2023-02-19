@@ -28,7 +28,7 @@ class PostsController extends PageClientDataController<Post>
 
   factory PostsController.single({
     required int id,
-    required Client client,
+    required PostClient client,
     required DenylistService denylist,
     PostFilterMode filterMode = PostFilterMode.plain,
   }) {
@@ -46,7 +46,7 @@ class PostsController extends PageClientDataController<Post>
   }
 
   @override
-  final Client client;
+  final PostClient client;
   final PostFetchCallback? _fetch;
 
   @override
@@ -103,7 +103,7 @@ class PostsProvider extends SubChangeNotifierProvider2<Client, DenylistService,
           create: (context, client, denylist) {
             late PostsController controller;
             return controller = PostsController(
-              client: client,
+              client: assertType<PostClient>(client),
               denylist: denylist,
               fetch: fetch != null
                   ? (search, page, force) =>
@@ -125,7 +125,7 @@ class PostsProvider extends SubChangeNotifierProvider2<Client, DenylistService,
   }) : super(
           create: (context, client, denylist) => PostsController.single(
             id: id,
-            client: client,
+            client: assertType<PostClient>(client),
             denylist: denylist,
             filterMode: filterMode,
           ),

@@ -14,7 +14,7 @@ class UserReportScreen extends StatelessWidget {
     return ReasonReportScreen(
       title: Text('User #${user.id}'),
       onReport: (reason) => validateCall(
-        () => context.read<Client>().reportUser(
+        () => context.readAs<Client, UserReportClient>().reportUser(
               user.id,
               reason,
             ),
@@ -31,7 +31,7 @@ class UserReportScreen extends StatelessWidget {
                 SizedBox(
                   height: 100,
                   width: 100,
-                  child: PostAvatar(id: user.avatarId),
+                  child: PostAvatar(id: user.avatarIdOrNull),
                 ),
                 Positioned.fill(
                   child: CrossFade(

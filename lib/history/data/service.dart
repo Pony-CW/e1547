@@ -92,7 +92,7 @@ class HistoriesService extends HistoriesDatabase with ChangeNotifier {
   List<String> _getThumbnails(List<Post>? posts, {List<String>? denylist}) =>
       posts
           ?.where((e) => denylist == null || !e.isDeniedBy(denylist))
-          .map((e) => e.sample.url)
+          .map((e) => e.sample)
           .where((e) => e != null)
           .cast<String>()
           .take(4)
@@ -115,7 +115,9 @@ class HistoriesService extends HistoriesDatabase with ChangeNotifier {
           visitedAt: DateTime.now(),
           link: post.link,
           thumbnails: _getThumbnails([post], denylist: denylist),
-          subtitle: post.description.nullWhenEmpty,
+          subtitle: post is PostWithDescription
+              ? post.description.nullWhenEmpty
+              : null,
         ),
       );
 
@@ -213,7 +215,7 @@ class HistoriesService extends HistoriesDatabase with ChangeNotifier {
         HistoryRequest(
           visitedAt: DateTime.now(),
           link: '/users/${user.name}',
-          thumbnails: [if (avatar?.sample.url != null) avatar!.sample.url!],
+          thumbnails: [if (avatar?.sample != null) avatar!.sample!],
         ),
       );
 

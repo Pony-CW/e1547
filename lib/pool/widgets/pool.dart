@@ -24,7 +24,8 @@ class _PoolPageState extends State<PoolPage> {
   @override
   Widget build(BuildContext context) {
     return PostsProvider(
-      fetch: (controller, tags, page, force) => controller.client.poolPosts(
+      fetch: (controller, tags, page, force) =>
+          assertType<PoolClient>(controller.client).poolPosts(
         widget.pool.id,
         page,
         orderByOldest: orderByOldest,

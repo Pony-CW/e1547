@@ -11,8 +11,12 @@ class CommentDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int? commentCount;
+    if (post is PostWithComments) {
+      commentCount = (post as PostWithComments).commentCount;
+    }
     return CrossFade(
-      showChild: post.commentCount > 0,
+      showChild: commentCount == null || commentCount > 0,
       child: Column(
         children: [
           Row(
@@ -30,7 +34,8 @@ class CommentDisplay extends StatelessWidget {
                     overlayColor: MaterialStateProperty.all(
                         Theme.of(context).splashColor),
                   ),
-                  child: Text('COMMENTS (${post.commentCount})'),
+                  child: Text(
+                      'COMMENTS${commentCount != null ? ' ($commentCount)' : ''}'),
                 ),
               )
             ],
@@ -115,10 +120,13 @@ class PostDetailCommentsWrapper extends StatelessWidget {
                                         context.read<PostsController>();
                                     bool success = await writeComment(
                                         context: context, postId: post.id);
-                                    if (success) {
+                                    Post postWithComments = post;
+                                    if (success &&
+                                        postWithComments is PostWithComments) {
                                       postsController.replacePost(
-                                        post.copyWith(
-                                          commentCount: post.commentCount + 1,
+                                        postWithComments.copyWith(
+                                          commentCount:
+                                              postWithComments.commentCount + 1,
                                         ),
                                       );
                                       controller.refresh();
