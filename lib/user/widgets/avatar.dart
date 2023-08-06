@@ -37,17 +37,24 @@ class CurrentUserAvatarController extends PostsController {
   }) : super(filterMode: PostFilterMode.unavailable);
 
   @override
-  Future<List<Post>> fetch(int page, bool force) async {
-    if (page != firstPageKey) return [];
-    int? id = (await client.currentUser())?.avatarId;
-    if (id == null) return [];
-    return [
-      await client.post(
-        id,
-        force: force,
-        cancelToken: cancelToken,
-      ),
-    ];
+  StreamFuture<List<Post>> stream(int page, bool force) {
+    if (page != firstPageKey) return StreamFuture.value(<Post>[]);
+
+    return client.currentUser().stream.asyncExpand((e) {
+      int? id = e?.avatarId;
+      if (id == null) {
+        return Stream.value(<Post>[]);
+      } else {
+        return client
+            .post(
+              id,
+              force: force,
+              cancelToken: cancelToken,
+            )
+            .stream
+            .map((e) => [e]);
+      }
+    }).future;
   }
 }
 

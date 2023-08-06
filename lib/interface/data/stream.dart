@@ -30,6 +30,9 @@ class StreamFuture<T> extends DelegatingFuture<T> {
   final Stream<T> _stream;
 
   Stream<T> get stream => _stream;
+
+  StreamFuture<T2> map<T2>(T2 Function(T value) mapper) =>
+      StreamFuture(stream.map(mapper));
 }
 
 /// An extension on [Stream] to easily create a [StreamFuture].

@@ -3,9 +3,9 @@ import 'package:e1547/client/client.dart';
 import 'package:e1547/comment/comment.dart';
 import 'package:e1547/denylist/denylist.dart';
 import 'package:e1547/interface/interface.dart';
-import 'package:flutter/material.dart';
 
-class CommentsController extends PageClientDataController<Comment> {
+class CommentsController extends PageClientDataController<Comment>
+    with StreamableClientDataController {
   CommentsController({
     required this.client,
     required this.postId,
@@ -29,18 +29,15 @@ class CommentsController extends PageClientDataController<Comment> {
   }
 
   @override
-  @protected
-  Future<List<Comment>> fetch(
-    int page,
-    bool force,
-  ) =>
-      client.commentsByPost(
-        id: postId,
-        page: page,
-        force: force,
-        cancelToken: cancelToken,
-        ascending: orderByOldest,
-      );
+  StreamFuture<List<Comment>> stream(int page, bool force) {
+    return client.commentsByPost(
+      id: postId,
+      page: page,
+      force: force,
+      cancelToken: cancelToken,
+      ascending: orderByOldest,
+    );
+  }
 
   @override
   List<Comment>? filter(List<Comment>? items) => super.filter(

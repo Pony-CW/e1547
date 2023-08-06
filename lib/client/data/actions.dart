@@ -32,3 +32,8 @@ class NoUserLoginException implements Exception {
   @override
   String toString() => 'NoUserLoginException';
 }
+
+extension IsForceRefresh on RequestOptions {
+  bool get isForceRefresh =>
+      ClientCacheConfig.fromExtra(this)?.policy == CachePolicy.refresh;
+}

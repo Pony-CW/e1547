@@ -15,6 +15,7 @@ import 'package:e1547/ticket/ticket.dart';
 import 'package:e1547/topic/topic.dart';
 import 'package:e1547/user/user.dart';
 import 'package:e1547/wiki/wiki.dart';
+import 'package:rxdart/rxdart.dart';
 
 export 'package:dio/dio.dart' show CancelToken;
 
@@ -87,6 +88,7 @@ class Client {
 
   void close({bool force = false}) {
     _dio.close(force: force);
+    _postCache.dispose();
   }
 
   bool get hasLogin => credentials != null;
@@ -114,7 +116,16 @@ class Client {
 
   Future<void> availability() async => _dio.get('');
 
-  Future<List<Post>> posts({
+  late final DioPagedValueCache<int, Post> _postCache =
+      DioPagedValueCache<int, Post>(
+    dio: _dio,
+    toId: (e) => e.id,
+    size: 0,
+    maxAge: const Duration(minutes: 5),
+    pageQueryKey: 'page',
+  );
+
+  StreamFuture<List<Post>> posts({
     int? page,
     int? limit,
     QueryMap? query,
@@ -123,11 +134,12 @@ class Client {
     bool? orderFavoritesByAdded,
     bool? force,
     CancelToken? cancelToken,
-  }) async {
+  }) {
     ordered ??= true;
     String? tags = query?['tags'];
     if (ordered && tags != null) {
-      Map<RegExp, Future<List<Post>> Function(RegExpMatch match)> redirects = {
+      Map<RegExp, StreamFuture<List<Post>> Function(RegExpMatch match)>
+          redirects = {
         poolRegex(): (match) => postsByPool(
               id: int.parse(match.namedGroup('id')!),
               page: page,
@@ -148,35 +160,35 @@ class Client {
       }
     }
 
-    Map<String, dynamic> body = await _dio
-        .get(
-          'posts.json',
-          queryParameters: {
-            'page': page,
-            'limit': limit,
-            ...?query,
-          },
-          options: forceOptions(force),
-          cancelToken: cancelToken,
-        )
-        .then((response) => response.data);
+    return _postCache.requestPage(
+      'posts.json',
+      queryParameters: {
+        'page': page,
+        'limit': limit,
+        ...?query,
+      },
+      options: forceOptions(force),
+      cancelToken: cancelToken,
+      parse: (response) {
+        List<Post> result =
+            List<Post>.from(response.data['posts'].map(Post.fromJson));
 
-    List<Post> posts =
-        List<Post>.from(body['posts'].map((e) => Post.fromJson(e)));
+        result.removeWhere(
+          (e) =>
+              (e.file.url == null && !e.flags.deleted) || e.file.ext == 'swf',
+        );
 
-    posts.removeWhere(
-      (e) => (e.file.url == null && !e.flags.deleted) || e.file.ext == 'swf',
+        return result;
+      },
     );
-
-    return posts;
   }
 
-  Future<List<Post>> postsByIds({
+  StreamFuture<List<Post>> postsByIds({
     required List<int> ids,
     int? limit,
     bool? force,
     CancelToken? cancelToken,
-  }) async {
+  }) {
     limit = max(0, min(limit ?? 75, 100));
 
     List<List<int>> chunks = [];
@@ -184,35 +196,40 @@ class Client {
       chunks.add(ids.sublist(i, min(i + limit, ids.length)));
     }
 
-    List<Post> result = [];
-    for (final chunk in chunks) {
-      if (chunk.isEmpty) continue;
-      String filter = 'id:${chunk.join(',')}';
-      List<Post> part = await posts(
-        query: QueryMap({'tags': filter}),
-        limit: limit,
-        ordered: false,
-        force: force,
-        cancelToken: cancelToken,
-      );
-      Map<int, Post> table = {for (Post e in part) e.id: e};
-      part = (chunk.map((e) => table[e]).toList()
-            ..removeWhere((e) => e == null))
-          .cast<Post>();
-      result.addAll(part);
-    }
-    return result;
+    BehaviorSubject<List<Post>> subject = BehaviorSubject<List<Post>>();
+
+    Stream<List<Post>> source = CombineLatestStream.list([
+      for (final chunk in chunks)
+        posts(
+          query: QueryMap({'tags': 'id:${chunk.join(',')}'}),
+          limit: limit,
+          ordered: false,
+          force: force,
+          cancelToken: cancelToken,
+        ),
+    ].map((e) => e.stream)).expand((e) => e).map((e) {
+      Map<int, Post> table = {for (Post e in e) e.id: e};
+      return ids.map((e) => table[e]).whereType<Post>().toList();
+    });
+
+    source.listen(
+      subject.add,
+      onError: subject.addError,
+      onDone: subject.close,
+    );
+
+    return subject.stream.future;
   }
 
-  Future<List<Post>> postsByTags(
+  StreamFuture<List<Post>> postsByTags(
     List<String> tags,
     int page, {
     int? limit,
     bool? force,
     CancelToken? cancelToken,
-  }) async {
+  }) {
     tags.removeWhere((e) => e.contains(' ') || e.contains(':'));
-    if (tags.isEmpty) return [];
+    if (tags.isEmpty) return StreamFuture.value(<Post>[]);
     int max = 40;
     int pages = (tags.length / max).ceil();
     int chunkSize = (tags.length / pages).ceil();
@@ -233,13 +250,13 @@ class Client {
     );
   }
 
-  Future<List<Post>> postsByFavoriter({
+  StreamFuture<List<Post>> postsByFavoriter({
     required String username,
     int? page,
     int? limit,
     bool? force,
     CancelToken? cancelToken,
-  }) async {
+  }) {
     return posts(
       page: page,
       query: QueryMap()..['tags'] = 'fav:$username',
@@ -250,13 +267,13 @@ class Client {
     );
   }
 
-  Future<List<Post>> postsByUploader({
+  StreamFuture<List<Post>> postsByUploader({
     required String username,
     int? page,
     int? limit,
     bool? force,
     CancelToken? cancelToken,
-  }) async {
+  }) {
     return posts(
       page: page,
       query: QueryMap()..['tags'] = 'user:$username',
@@ -267,31 +284,33 @@ class Client {
     );
   }
 
-  Future<Post> post(int postId, {bool? force, CancelToken? cancelToken}) async {
-    Map<String, dynamic> body = await _dio
-        .get(
-          'posts/$postId.json',
-          options: forceOptions(force),
-          cancelToken: cancelToken,
-        )
-        .then((response) => response.data);
-
-    return Post.fromJson(body['post']);
+  StreamFuture<Post> post(int postId, {bool? force, CancelToken? cancelToken}) {
+    return _postCache.request(
+      'posts/$postId.json',
+      key: postId,
+      options: forceOptions(force),
+      parse: (response) => Post.fromJson(response.data['post']),
+    );
   }
 
   Future<void> updatePost(int postId, Map<String, String?> body) async {
-    await cache?.deleteFromPath(
-      RegExp(RegExp.escape('posts/$postId.json')),
-    );
-
-    await _dio.put('posts/$postId.json', data: FormData.fromMap(body));
+    // TODO: update cache with post update
+    await _postCache.items.optimistic(postId, (post) => post, () async {
+      await cache?.deleteFromPath(
+        RegExp(RegExp.escape('posts/$postId.json')),
+      );
+      await _dio.put('posts/$postId.json', data: FormData.fromMap(body));
+    });
   }
 
   Future<void> votePost(int postId, bool upvote, bool replace) async {
-    await cache?.deleteFromPath(RegExp(RegExp.escape('posts/$postId.json')));
-    await _dio.post('posts/$postId/votes.json', queryParameters: {
-      'score': upvote ? 1 : -1,
-      'no_unvote': replace,
+    await _postCache.items.optimistic(postId, (post) => post.withVote(upvote),
+        () async {
+      await cache?.deleteFromPath(RegExp(RegExp.escape('posts/$postId.json')));
+      await _dio.post('posts/$postId/votes.json', queryParameters: {
+        'score': upvote ? 1 : -1,
+        'no_unvote': replace,
+      });
     });
   }
 
@@ -322,36 +341,33 @@ class Client {
     );
   }
 
-  Future<List<Post>> favorites({
+  StreamFuture<List<Post>> favorites({
     int? page,
     int? limit,
     QueryMap? query,
     bool? orderByAdded,
     bool? force,
     CancelToken? cancelToken,
-  }) async {
+  }) {
     if (credentials?.username == null) {
       throw NoUserLoginException();
     }
     orderByAdded ??= true;
     String tags = query?['tags'] ?? '';
     if (tags.isEmpty && orderByAdded) {
-      Map<String, dynamic> body = await _dio
-          .get(
-            'favorites.json',
-            queryParameters: {
-              'page': page,
-              'limit': limit,
-              ...?query,
-            },
-            options: forceOptions(force),
-            cancelToken: cancelToken,
-          )
-          .then((response) => response.data);
-
-      List<Post> result = List.from(body['posts'].map(Post.fromJson));
-      result.removeWhere((e) => e.flags.deleted || e.file.url == null);
-      return result;
+      return _postCache.requestPage('favorites.json',
+          queryParameters: {
+            'page': page,
+            'limit': limit,
+            ...?query,
+          },
+          options: forceOptions(force),
+          cancelToken: cancelToken, parse: (response) {
+        List<Post> result =
+            List.from(response.data['posts'].map(Post.fromJson));
+        result.removeWhere((e) => e.flags.deleted || e.file.url == null);
+        return result;
+      });
     } else {
       query = QueryMap({
         ...?query,
@@ -368,13 +384,19 @@ class Client {
   }
 
   Future<void> addFavorite(int postId) async {
-    await cache?.deleteFromPath(RegExp(RegExp.escape('posts/$postId.json')));
-    await _dio.post('favorites.json', queryParameters: {'post_id': postId});
+    await _postCache.items.optimistic(postId, (post) => post.withFav(),
+        () async {
+      await cache?.deleteFromPath(RegExp(RegExp.escape('posts/$postId.json')));
+      await _dio.post('favorites.json', queryParameters: {'post_id': postId});
+    });
   }
 
   Future<void> removeFavorite(int postId) async {
-    await cache?.deleteFromPath(RegExp(RegExp.escape('posts/$postId.json')));
-    await _dio.delete('favorites/$postId.json');
+    await _postCache.items.optimistic(postId, (post) => post.withUnfav(),
+        () async {
+      await cache?.deleteFromPath(RegExp(RegExp.escape('posts/$postId.json')));
+      await _dio.delete('favorites/$postId.json');
+    });
   }
 
   Future<List<PostFlag>> flags({
@@ -400,74 +422,80 @@ class Client {
     return body.map((e) => PostFlag.fromJson(e)).toList();
   }
 
-  Future<List<Pool>> pools({
+  late final DioPagedValueCache<int, Pool> _poolCache =
+      DioPagedValueCache<int, Pool>(
+    dio: _dio,
+    toId: (e) => e.id,
+    size: 0,
+    maxAge: const Duration(minutes: 5),
+    pageQueryKey: 'page',
+  );
+
+  StreamFuture<List<Pool>> pools({
     int? page,
     int? limit,
     QueryMap? query,
     bool? force,
     CancelToken? cancelToken,
-  }) async {
-    List<dynamic> body = await _dio
-        .get(
-          'pools.json',
-          queryParameters: {
-            'page': page,
-            'limit': limit,
-            ...?query,
-          },
-          options: forceOptions(force),
-          cancelToken: cancelToken,
-        )
-        .then((response) => response.data);
-
-    List<Pool> pools = [];
-    for (Map<String, dynamic> raw in body) {
-      Pool pool = Pool.fromJson(raw);
-      pools.add(pool);
-    }
-
-    return pools;
+  }) {
+    return _poolCache.requestPage(
+      'pools.json',
+      queryParameters: {
+        'page': page,
+        'limit': limit,
+        ...?query,
+      },
+      options: forceOptions(force),
+      cancelToken: cancelToken,
+      parse: (response) {
+        List<Pool> result = List<Pool>.from(response.data.map(Pool.fromJson));
+        return result;
+      },
+    );
   }
 
-  Future<Pool> pool({
+  StreamFuture<Pool> pool({
     required int id,
     bool? force,
     CancelToken? cancelToken,
-  }) async {
-    Map<String, dynamic> body = await _dio
-        .get(
-          'pools/$id.json',
-          options: forceOptions(force),
-          cancelToken: cancelToken,
-        )
-        .then((response) => response.data);
-
-    return Pool.fromJson(body);
+  }) {
+    return _poolCache.request(
+      key: id,
+      'pools/$id.json',
+      options: forceOptions(force),
+      cancelToken: cancelToken,
+      parse: (response) => Pool.fromJson(response.data),
+    );
   }
 
-  Future<List<Post>> postsByPool({
+  StreamFuture<List<Post>> postsByPool({
     required int id,
     int? page,
     int? limit,
     bool orderByOldest = true,
     bool? force,
     CancelToken? cancelToken,
-  }) async {
+  }) {
     page ??= 1;
-    CurrentUser? user = await currentUser(cancelToken: cancelToken);
-    int limit = user?.perPage ?? 75;
-    Pool pool = await this.pool(id: id, force: force, cancelToken: cancelToken);
-    List<int> ids = pool.postIds;
-    if (!orderByOldest) ids = ids.reversed.toList();
-    int lower = (page - 1) * limit;
-    if (lower > ids.length) return [];
-    ids = ids.sublist(lower).take(limit).toList();
-    return postsByIds(
-      ids: ids,
-      limit: limit,
-      force: force,
-      cancelToken: cancelToken,
-    );
+    // TODO: include this in the stream
+    // CurrentUser? user = await currentUser(cancelToken: cancelToken);
+    int limit = 75; // user?.perPage ?? 75;
+
+    return pool(id: id, force: force, cancelToken: cancelToken)
+        .stream
+        .asyncExpand((e) {
+      List<int> ids = e.postIds;
+      if (!orderByOldest) ids = ids.reversed.toList();
+      int lower = (page! - 1) * limit;
+      if (lower > ids.length) return Stream.value(<Post>[]);
+      ids = ids.sublist(lower).take(limit).toList();
+      return postsByIds(
+        ids: ids,
+        limit: limit,
+        force: force,
+        cancelToken: cancelToken,
+      ).stream;
+    }).future;
   }
 
   Future<List<Wiki>> wikis({
@@ -539,25 +567,28 @@ class Client {
     );
   }
 
-  Future<CurrentUser?> currentUser({
+  late final DioPagedValueCache<String, CurrentUser> _currentUserCache =
+      DioPagedValueCache<String, CurrentUser>(
+    dio: _dio,
+    toId: (e) => e.name,
+    size: 1,
+  );
+
+  StreamFuture<CurrentUser?> currentUser({
     bool? force,
     CancelToken? cancelToken,
-  }) async {
-    if (!hasLogin) return null;
+  }) {
+    if (!hasLogin) return StreamFuture.value(null);
 
-    Map<String, dynamic> body = await _dio
-        .get(
-          'users/${credentials!.username}.json',
-          options: ClientCacheConfig(
-            store: memoryCache,
-            policy:
-                (force ?? false) ? CachePolicy.refresh : CachePolicy.request,
-          ).toOptions(),
-          cancelToken: cancelToken,
-        )
-        .then((response) => response.data);
-
-    return CurrentUser.fromJson(body);
+    return _currentUserCache.request(
+      key: credentials!.username,
+      'users/${credentials!.username}.json',
+      options: ClientCacheConfig(
+        policy: (force ?? false) ? CachePolicy.refresh : CachePolicy.request,
+      ).toOptions(),
+      cancelToken: cancelToken,
+      parse: (response) => CurrentUser.fromJson(response.data),
+    );
   }
 
   Future<void> updateBlacklist(List<String> denylist) async {
@@ -565,8 +596,14 @@ class Client {
       'user[blacklisted_tags]': denylist.join('\n'),
     };
 
-    await _dio.put('users/${credentials!.username}.json',
-        data: FormData.fromMap(body));
+    await _currentUserCache.items.optimistic(
+      credentials!.username,
+      (user) => user.copyWith(blacklistedTags: denylist.join('\n')),
+      () async {
+        await _dio.put('users/${credentials!.username}.json',
+            data: FormData.fromMap(body));
+      },
+    );
   }
 
   Future<List<Tag>> tags({
@@ -678,44 +715,49 @@ class Client {
     return null;
   }
 
-  Future<List<Comment>> comments({
+  late final DioPagedValueCache<int, Comment> _commentCache =
+      DioPagedValueCache<int, Comment>(
+    dio: _dio,
+    toId: (e) => e.id,
+    size: 0,
+    maxAge: const Duration(minutes: 5),
+    pageQueryKey: 'page',
+  );
+
+  StreamFuture<List<Comment>> comments({
     int? page,
     int? limit,
     QueryMap? query,
     bool? force,
     CancelToken? cancelToken,
-  }) async {
-    Object body = await _dio
-        .get(
-          'comments.json',
-          queryParameters: {
-            'page': page,
-            'limit': limit,
-            ...?query,
-          },
-          options: forceOptions(force),
-          cancelToken: cancelToken,
-        )
-        .then((response) => response.data);
-
-    List<Comment> comments = [];
-    if (body is List<dynamic>) {
-      for (Map<String, dynamic> rawComment in body) {
-        comments.add(Comment.fromJson(rawComment));
+  }) {
+    return _commentCache.requestPage('comments.json',
+        queryParameters: {
+          'page': page,
+          'limit': limit,
+          ...?query,
+        },
+        options: forceOptions(force),
+        cancelToken: cancelToken, parse: (response) {
+      List<Comment> comments = [];
+      if (response.data is List<dynamic>) {
+        for (Map<String, dynamic> rawComment in response.data) {
+          comments.add(Comment.fromJson(rawComment));
+        }
       }
-    }
 
-    return comments;
+      return comments;
+    });
   }
 
-  Future<List<Comment>> commentsByPost({
+  StreamFuture<List<Comment>> commentsByPost({
     required int id,
     int? page,
     int? limit,
     bool? ascending,
     bool? force,
     CancelToken? cancelToken,
-  }) async {
+  }) {
     return comments(
       page: page,
       limit: limit,
@@ -729,20 +771,18 @@ class Client {
     );
   }
 
-  Future<Comment> comment({
+  StreamFuture<Comment> comment({
     required int id,
     bool? force,
     CancelToken? cancelToken,
-  }) async {
-    Map<String, dynamic> body = await _dio
-        .get(
-          'comments.json/$id.json',
-          options: forceOptions(force),
-          cancelToken: cancelToken,
-        )
-        .then((response) => response.data);
-
-    return Comment.fromJson(body);
+  }) {
+    return _commentCache.request(
+      'comments.json/$id.json',
+      key: id,
+      options: forceOptions(force),
+      cancelToken: cancelToken,
+      parse: (response) => Comment.fromJson(response.data),
+    );
   }
 
   Future<void> postComment({

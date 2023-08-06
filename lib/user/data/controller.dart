@@ -1,3 +1,4 @@
+import 'package:e1547/interface/interface.dart';
 import 'package:e1547/post/post.dart';
 
 class UserFavoritesController extends PostsController {
@@ -10,7 +11,7 @@ class UserFavoritesController extends PostsController {
   final String user;
 
   @override
-  Future<List<Post>> fetch(int page, bool force) {
+  StreamFuture<List<Post>> stream(int page, bool force) {
     return client.postsByFavoriter(
       username: user,
       page: page,
@@ -30,7 +31,7 @@ class UserUploadsController extends PostsController {
   final String user;
 
   @override
-  Future<List<Post>> fetch(int page, bool force) {
+  StreamFuture<List<Post>> stream(int page, bool force) {
     return client.postsByUploader(
       username: user,
       page: page,
