@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:e1547/app/app.dart';
-import 'package:e1547/client/client.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
@@ -38,7 +35,7 @@ extension PostTagging on Post {
         case 'score':
           NumberRange? range = NumberRange.tryParse(value);
           if (range == null) return false;
-          return range.has(score);
+          return range.has(vote.score);
         case 'favcount':
           NumberRange? range = NumberRange.tryParse(value);
           if (range == null) return false;
@@ -202,89 +199,4 @@ extension PostLinking on Post {
   static String getPostLink(int id) => '/posts/$id';
 
   String get link => getPostLink(id);
-}
-
-extension PostVoting on Post {
-  Post withVote({required bool upvote, required bool replace}) {
-    final result = applyVote(
-      score: score,
-      vote: vote,
-      upvote: upvote,
-      replace: replace,
-    );
-    return copyWith(score: result.score, vote: result.vote);
-  }
-}
-
-mixin PostActionController<KeyType> on ClientDataController<KeyType, Post> {
-  Post? postById(int id) {
-    int index = rawItems?.indexWhere((e) => e.id == id) ?? -1;
-    if (index == -1) {
-      return null;
-    }
-    return rawItems![index];
-  }
-
-  void replacePost(Post post) =>
-      updateItem(rawItems?.indexWhere((e) => e.id == post.id) ?? -1, post);
-
-  Future<bool> fav(Post post) async {
-    assertOwnsItem(post);
-    replacePost(post.copyWith(isFavorited: true, favCount: post.favCount + 1));
-    try {
-      await client.posts.addFavorite(post.id);
-      evictCache();
-      return true;
-    } on ClientException {
-      replacePost(
-        post.copyWith(isFavorited: false, favCount: post.favCount - 1),
-      );
-      return false;
-    }
-  }
-
-  Future<bool> unfav(Post post) async {
-    assertOwnsItem(post);
-    replacePost(post.copyWith(isFavorited: false, favCount: post.favCount - 1));
-    try {
-      await client.posts.removeFavorite(post.id);
-      evictCache();
-      return true;
-    } on ClientException {
-      replacePost(
-        post.copyWith(isFavorited: true, favCount: post.favCount + 1),
-      );
-      return false;
-    }
-  }
-
-  Future<bool> vote({
-    required Post post,
-    required bool upvote,
-    required bool replace,
-  }) async {
-    assertOwnsItem(post);
-    post = post.withVote(upvote: upvote, replace: replace);
-    replacePost(post);
-    try {
-      await client.posts.vote(post.id, upvote, replace);
-      evictCache();
-      return true;
-    } on ClientException {
-      return false;
-    }
-  }
-
-  Future<void> resetPost(Post post) async {
-    assertOwnsItem(post);
-    replacePost(await client.posts.get(id: post.id, force: true));
-    evictCache();
-  }
-
-  // TODO: create a PostUpdate Object instead of a Map
-  Future<void> updatePost(Post post, Map<String, String?> body) async {
-    assertOwnsItem(post);
-    await client.posts.update(post.id, body);
-    await resetPost(post);
-  }
 }
