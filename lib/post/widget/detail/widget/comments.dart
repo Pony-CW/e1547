@@ -57,11 +57,14 @@ class SliverPostCommentSection extends StatelessWidget {
     return FilterControllerProvider(
       create: (_) => CommentFilter(client),
       keys: (_) => [client],
-      child: ListenableProvider(
-        create: (_) => CommentParams()
-          ..postId = postId
-          ..groupBy = CommentGroupBy.comment
-          ..order = CommentOrder.oldest,
+      child: ChangeNotifierProvider(
+        create: (_) => CommentParamsController(
+          CommentParams(
+            postId: postId,
+            groupBy: CommentGroupBy.comment,
+            order: CommentOrder.oldest,
+          ),
+        ),
         builder: (context, _) => SliverMainAxisGroup(
           slivers: [
             const SliverToBoxAdapter(

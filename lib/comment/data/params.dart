@@ -1,5 +1,8 @@
-import 'package:e1547/query/query.dart';
-import 'package:e1547/tag/tag.dart';
+import 'package:e1547/shared/shared.dart';
+import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'params.freezed.dart';
 
 enum CommentGroupBy { post, comment }
 
@@ -12,67 +15,34 @@ enum CommentOrder {
   final String value;
 }
 
-class CommentParams extends ParamsController {
-  CommentParams([super.value]);
+@freezed
+abstract class CommentParams with _$CommentParams {
+  const CommentParams._();
 
-  static final groupByFilter = EnumFilterTag<CommentGroupBy>(
-    tag: 'group_by',
-    name: 'Group by',
-    values: CommentGroupBy.values,
-    nameMapper: (value) => switch (value) {
-      CommentGroupBy.post => 'Post',
-      CommentGroupBy.comment => 'Comment',
-    },
-  );
+  const factory CommentParams({
+    @Default(CommentGroupBy.post) CommentGroupBy groupBy,
+    int? postId,
+    String? body,
+    String? creator,
+    List<String>? postTags,
+    @Default(CommentOrder.newest) CommentOrder order,
+  }) = _CommentParams;
 
-  static const postIdFilter = NumberFilterTag(
-    tag: 'search[post_id]',
-    name: 'Post ID',
-  );
+  QueryMap toQuery() => {
+    if (groupBy != CommentGroupBy.post) 'group_by': groupBy.name,
+    if (postId != null) 'search[post_id]': postId!.toString(),
+    if (body != null && body!.isNotEmpty) 'search[body_matches]': body!,
+    if (creator != null && creator!.isNotEmpty) 'search[creator_name]': creator!,
+    if (postTags != null && postTags!.isNotEmpty)
+      'search[post_tags_match]': postTags!.join(' '),
+    if (order != CommentOrder.newest) 'search[order]': order.value,
+  };
+}
 
-  static const bodyFilter = TextFilterTag(
-    tag: 'search[body_matches]',
-    name: 'Body contains',
-  );
+class CommentParamsController extends ValueNotifier<CommentParams> {
+  CommentParamsController([CommentParams? initial])
+    : super(initial ?? const CommentParams());
 
-  static const creatorFilter = TextFilterTag(
-    tag: 'search[creator_name]',
-    name: 'Creator',
-  );
-
-  static const postTagsFilter = TextFilterTag(
-    tag: 'search[post_tags_match]',
-    name: 'Post tags',
-  );
-
-  static final orderFilter = EnumFilterTag<CommentOrder>(
-    tag: 'search[order]',
-    name: 'Sort by',
-    values: CommentOrder.values,
-    valueMapper: (value) => value.value,
-    nameMapper: (value) => switch (value) {
-      CommentOrder.newest => 'Newest first',
-      CommentOrder.oldest => 'Oldest first',
-    },
-  );
-
-  CommentGroupBy get groupBy =>
-      getFilterEnum(groupByFilter) ?? CommentGroupBy.post;
-  set groupBy(CommentGroupBy value) => setFilterEnum(groupByFilter, value);
-
-  int? get postId => getFilter(postIdFilter);
-  set postId(int? value) => setFilter(postIdFilter, value);
-
-  String? get body => getFilter(bodyFilter);
-  set body(String? value) => setFilter(bodyFilter, value);
-
-  String? get creator => getFilter(creatorFilter);
-  set creator(String? value) => setFilter(creatorFilter, value);
-
-  List<String>? get postTags => TagMap(getFilter<String>(postTagsFilter)).tags;
-  set postTags(List<String>? value) =>
-      setFilter(postTagsFilter, value?.join(' '));
-
-  CommentOrder get order => getFilterEnum(orderFilter) ?? CommentOrder.newest;
-  set order(CommentOrder value) => setFilterEnum(orderFilter, value);
+  void update(CommentParams Function(CommentParams) updater) =>
+      value = updater(value);
 }

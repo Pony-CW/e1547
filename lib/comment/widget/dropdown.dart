@@ -9,9 +9,9 @@ class CommentListDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final client = context.watch<Client>();
-    final controller = context.watch<CommentParams>();
-    final query = client.comments.usePage(query: controller.request);
-    final postId = controller.postId;
+    final controller = context.watch<CommentParamsController>();
+    final query = client.comments.usePage(query: controller.value.toQuery());
+    final postId = controller.value.postId;
 
     return PopupMenuButton<VoidCallback>(
       icon: const Icon(Icons.more_vert),
@@ -24,13 +24,16 @@ class CommentListDropdown extends StatelessWidget {
         ),
         PopupMenuTile(
           icon: Icons.sort,
-          title: controller.order == CommentOrder.oldest
+          title: controller.value.order == CommentOrder.oldest
               ? 'Newest first'
               : 'Oldest first',
-          value: () =>
-              controller.order = controller.order == CommentOrder.oldest
-              ? CommentOrder.newest
-              : CommentOrder.oldest,
+          value: () => controller.update(
+            (p) => p.copyWith(
+              order: p.order == CommentOrder.oldest
+                  ? CommentOrder.newest
+                  : CommentOrder.oldest,
+            ),
+          ),
         ),
         if (postId != null)
           PopupMenuTile(

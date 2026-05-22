@@ -12,8 +12,8 @@ class CommentPageQueryBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final client = context.watch<Client>();
-    final controller = context.watch<CommentParams>();
-    final query = client.comments.usePage(query: controller.request);
+    final controller = context.watch<CommentParamsController>();
+    final query = client.comments.usePage(query: controller.value.toQuery());
 
     return PagedQueryBuilder(
       query: query,
