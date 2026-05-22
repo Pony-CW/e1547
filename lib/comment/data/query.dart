@@ -50,8 +50,7 @@ extension CommentQuerying on CommentClient {
       final (:upvote, :replace) = params;
       return commentCache.optimistic(
         id,
-        (comment) =>
-            comment.copyWith(vote: comment.vote?.withVote(upvote, replace)),
+        (comment) => comment.withVote(upvote: upvote, replace: replace),
         () => vote(id: id, upvote: upvote, replace: replace),
       );
     },
