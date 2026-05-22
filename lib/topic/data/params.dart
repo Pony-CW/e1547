@@ -1,5 +1,10 @@
-import 'package:e1547/query/query.dart';
+import 'package:collection/collection.dart';
+import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
+import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'params.freezed.dart';
 
 enum TopicOrder {
   sticky('sticky'),
@@ -25,17 +30,24 @@ enum TopicCategory {
   final int id;
 }
 
-class TopicParams extends ParamsController {
-  TopicParams({ProtoMap? value}) : super(value?.toQuery()) {
-    order ??= TopicOrder.sticky;
-  }
+@freezed
+abstract class TopicParams with _$TopicParams {
+  const factory TopicParams({
+    String? title,
+    TopicCategory? category,
+    @Default(TopicOrder.sticky) TopicOrder order,
+    bool? sticky,
+    bool? locked,
+  }) = _TopicParams;
+
+  const TopicParams._();
 
   static const titleFilter = TextFilterTag(
     tag: 'search[title_matches]',
     name: 'Title contains',
   );
 
-  static final categoryIdFilter = EnumFilterTag<TopicCategory>(
+  static final categoryFilter = EnumFilterTag<TopicCategory>(
     tag: 'search[category_id]',
     name: 'Category',
     values: TopicCategory.values,
@@ -81,19 +93,42 @@ class TopicParams extends ParamsController {
     tristate: true,
   );
 
-  String? get title => getFilter(titleFilter);
-  set title(String? value) => setFilter(titleFilter, value);
+  factory TopicParams.fromQuery(QueryMap? query) {
+    if (query == null) return const TopicParams();
+    return TopicParams(
+      title: query['search[title_matches]'],
+      category: TopicCategory.values.firstWhereOrNull(
+        (c) => c.id.toString() == query['search[category_id]'],
+      ),
+      order:
+          TopicOrder.values.firstWhereOrNull(
+            (o) => o.value == query['search[order]'],
+          ) ??
+          TopicOrder.sticky,
+      sticky: _parseBool(query['search[is_sticky]']),
+      locked: _parseBool(query['search[is_locked]']),
+    );
+  }
 
-  TopicCategory? get categoryId => getFilterEnum(categoryIdFilter);
-  set categoryId(TopicCategory? value) =>
-      setFilterEnum(categoryIdFilter, value);
+  QueryMap toQuery() => <String, Object?>{
+    'search[title_matches]': title,
+    'search[category_id]': category?.id,
+    if (order != TopicOrder.sticky) 'search[order]': order.value,
+    'search[is_sticky]': sticky,
+    'search[is_locked]': locked,
+  }.toQuery();
+}
 
-  TopicOrder? get order => getFilterEnum(orderFilter);
-  set order(TopicOrder? value) => setFilterEnum(orderFilter, value);
+bool? _parseBool(String? value) => switch (value) {
+  'true' => true,
+  'false' => false,
+  _ => null,
+};
 
-  bool? get sticky => getFilterBool(stickyFilter);
-  set sticky(bool? value) => setFilterBool(stickyFilter, value);
+class TopicParamsController extends ValueNotifier<TopicParams> {
+  TopicParamsController([TopicParams? initial])
+    : super(initial ?? const TopicParams());
 
-  bool? get locked => getFilterBool(lockedFilter);
-  set locked(bool? value) => setFilterBool(lockedFilter, value);
+  void update(TopicParams Function(TopicParams) updater) =>
+      value = updater(value);
 }

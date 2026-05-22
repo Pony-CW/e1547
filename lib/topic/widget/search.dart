@@ -12,8 +12,8 @@ class TopicsPage extends StatelessWidget {
   Widget build(BuildContext context) => RouterDrawerEntry<TopicsPage>(
     child: FilterControllerProvider(
       create: (_) => TopicFilter(),
-      child: ListenableProvider(
-        create: (_) => TopicParams(value: query),
+      child: ChangeNotifierProvider(
+        create: (_) => TopicParamsController(TopicParams.fromQuery(query)),
         child: const AdaptiveScaffold(
           appBar: DefaultAppBar(
             title: Text('Topics'),

@@ -12,8 +12,8 @@ class TopicPageQueryBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final client = context.watch<Client>();
-    final controller = context.watch<TopicParams>();
-    final query = client.topics.usePage(query: controller.request);
+    final controller = context.watch<TopicParamsController>();
+    final query = client.topics.usePage(query: controller.value.toQuery());
 
     return PagedQueryBuilder(
       query: query,
