@@ -1,45 +1,33 @@
 import 'package:e1547/follow/follow.dart';
-import 'package:e1547/query/query.dart';
+import 'package:e1547/shared/shared.dart';
+import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class FollowParams extends ParamsController {
-  FollowParams([super.value]);
+part 'params.freezed.dart';
 
-  static const tagsFilter = TextFilterTag(
-    tag: 'search[tags]',
-    name: 'Tags contains',
-  );
+@freezed
+abstract class FollowParams with _$FollowParams {
+  const factory FollowParams({
+    String? tags,
+    String? title,
+    List<FollowType>? types,
+    bool? hasUnseen,
+  }) = _FollowParams;
 
-  static const titleFilter = TextFilterTag(
-    tag: 'search[title]',
-    name: 'Title contains',
-  );
+  const FollowParams._();
 
-  static final typeFilter = MultiEnumFilterTag<FollowType>(
-    tag: 'search[type]',
-    name: 'Type',
-    values: FollowType.values,
-    valueMapper: (value) => value.name,
-    nameMapper: (value) => switch (value) {
-      FollowType.notify => 'Notify',
-      FollowType.update => 'Update',
-      FollowType.bookmark => 'Bookmark',
-    },
-  );
+  QueryMap toQuery() => <String, Object?>{
+    'search[tags]': tags,
+    'search[title]': title,
+    'search[type]': types?.map((e) => e.name).toList(),
+    'search[has_unseen]': hasUnseen,
+  }.toQuery();
+}
 
-  static const hasUnseenFilter = BooleanFilterTag(
-    tag: 'search[has_unseen]',
-    name: 'Has unseen',
-  );
+class FollowParamsController extends ValueNotifier<FollowParams> {
+  FollowParamsController([FollowParams? initial])
+    : super(initial ?? const FollowParams());
 
-  String? get tags => getFilter(tagsFilter);
-  set tags(String? value) => setFilter(tagsFilter, value);
-
-  String? get title => getFilter(titleFilter);
-  set title(String? value) => setFilter(titleFilter, value);
-
-  Set<FollowType>? get types => getFilterEnumSet(typeFilter);
-  set types(Set<FollowType>? value) => setFilterEnumSet(typeFilter, value);
-
-  bool? get hasUnseen => getFilterBool(hasUnseenFilter);
-  set hasUnseen(bool? value) => setFilterBool(hasUnseenFilter, value);
+  void update(FollowParams Function(FollowParams) updater) =>
+      value = updater(value);
 }

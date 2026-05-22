@@ -28,6 +28,12 @@ extension FollowQuerying on FollowClient {
         ).then(followCache.savePage),
       );
 
+  Query<List<Follow>> useAll({QueryMap? query}) => Query(
+    cache: queryCache,
+    key: [queryKey, 'all', query],
+    queryFn: () => all(query: query, force: true),
+  );
+
   Query<Map<FollowType, List<String>>> useTimelineTags() => Query(
     cache: queryCache,
     key: [queryKey, 'timeline_tags'],
