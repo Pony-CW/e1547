@@ -17,8 +17,6 @@ enum CommentOrder {
 
 @freezed
 abstract class CommentParams with _$CommentParams {
-  const CommentParams._();
-
   const factory CommentParams({
     @Default(CommentGroupBy.post) CommentGroupBy groupBy,
     int? postId,
@@ -28,15 +26,16 @@ abstract class CommentParams with _$CommentParams {
     @Default(CommentOrder.newest) CommentOrder order,
   }) = _CommentParams;
 
-  QueryMap toQuery() => {
-    if (groupBy != CommentGroupBy.post) 'group_by': groupBy.name,
-    if (postId != null) 'search[post_id]': postId!.toString(),
-    if (body != null && body!.isNotEmpty) 'search[body_matches]': body!,
-    if (creator != null && creator!.isNotEmpty) 'search[creator_name]': creator!,
-    if (postTags != null && postTags!.isNotEmpty)
-      'search[post_tags_match]': postTags!.join(' '),
+  const CommentParams._();
+
+  QueryMap toQuery() => <String, Object?>{
+    if (groupBy != CommentGroupBy.post) 'group_by': groupBy,
+    'search[post_id]': postId,
+    'search[body_matches]': body,
+    'search[creator_name]': creator,
+    'search[post_tags_match]': postTags?.join(' '),
     if (order != CommentOrder.newest) 'search[order]': order.value,
-  };
+  }.toQuery();
 }
 
 class CommentParamsController extends ValueNotifier<CommentParams> {
