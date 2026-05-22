@@ -9,8 +9,8 @@ class HistoriesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => RouterDrawerEntry<HistoriesPage>(
-    child: ListenableProvider(
-      create: (_) => HistoryParams(query),
+    child: ChangeNotifierProvider(
+      create: (_) => HistoryParamsController(HistoryParams.fromQuery(query)),
       child: const AdaptiveScaffold(
         appBar: HistoryAppBar(),
         floatingActionButton: HistorySearchFab(),

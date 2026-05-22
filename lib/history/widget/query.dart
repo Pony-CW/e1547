@@ -12,8 +12,8 @@ class HistoryPageQueryBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final client = context.watch<Client>();
-    final controller = context.watch<HistoryParams>();
-    final query = client.histories.usePage(query: controller.request);
+    final controller = context.watch<HistoryParamsController>();
+    final query = client.histories.usePage(query: controller.value.toQuery());
 
     return PagedQueryBuilder(
       query: query,

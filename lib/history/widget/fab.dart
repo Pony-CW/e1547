@@ -10,7 +10,7 @@ class HistorySearchFab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final client = context.watch<Client>();
-    final params = context.watch<HistoryParams>();
+    final controller = context.watch<HistoryParamsController>();
 
     return QueryBuilder(
       query: client.histories.useDays(),
@@ -27,9 +27,10 @@ class HistorySearchFab extends StatelessWidget {
 
                 if (!context.mounted) return;
 
+                final currentDate = controller.value.date;
                 DateTime? result = await showDatePicker(
                   context: context,
-                  initialDate: params.date ?? DateTime.now(),
+                  initialDate: currentDate ?? DateTime.now(),
                   firstDate: availableDays.first,
                   lastDate: availableDays.last,
                   locale: locale,
@@ -43,7 +44,7 @@ class HistorySearchFab extends StatelessWidget {
                   context,
                 );
 
-                if (result != params.date) {
+                if (result != currentDate) {
                   if (scrollController.hasClients) {
                     scrollController.animateTo(
                       0,
@@ -52,7 +53,7 @@ class HistorySearchFab extends StatelessWidget {
                     );
                   }
 
-                  params.date = result;
+                  controller.update((p) => p.copyWith(date: result));
                 }
               },
         child: const Icon(Icons.search),

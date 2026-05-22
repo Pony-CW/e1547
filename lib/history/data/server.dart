@@ -36,7 +36,7 @@ class HistoryServer with Disposable {
     bool? force,
     CancelToken? cancelToken,
   }) {
-    final search = HistoryParams(query);
+    final search = HistoryParams.fromQuery(query);
     return repository.page(
       identity: identity.id,
       page: page,

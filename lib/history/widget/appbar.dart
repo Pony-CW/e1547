@@ -8,7 +8,8 @@ class HistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final params = context.watch<HistoryParams>();
+    final controller = context.watch<HistoryParamsController>();
+    final date = controller.value.date;
 
     return HistorySelectionAppBar(
       child: DefaultAppBar(
@@ -17,9 +18,9 @@ class HistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             const Text('History'),
             CrossFade.builder(
-              showChild: params.date != null,
+              showChild: date != null,
               builder: (context) => Text(
-                DateFormatting.named(params.date!),
+                DateFormatting.named(date!),
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                   color: Theme.of(context).textTheme.bodySmall!.color,
                 ),

@@ -133,8 +133,8 @@ class HistoryCategoryFilterTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<HistoryParams>(
-      builder: (context, params, _) => Column(
+    return Consumer<HistoryParamsController>(
+      builder: (context, controller, _) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           const Padding(
@@ -142,29 +142,27 @@ class HistoryCategoryFilterTile extends StatelessWidget {
             child: ListTileHeader(title: 'Entries'),
           ),
           for (final filter in HistoryCategory.values)
-            AnimatedBuilder(
-              animation: params,
-              builder: (context, child) {
-                return Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: CheckboxListTile(
-                    secondary: filter.icon,
-                    title: Text(filter.title),
-                    value: params.categories?.contains(filter) ?? true,
-                    onChanged: (value) {
-                      if (value == null) return;
-                      Set<HistoryCategory> filters =
-                          params.categories ?? HistoryCategory.values.toSet();
-                      if (value) {
-                        filters.add(filter);
-                      } else {
-                        filters.remove(filter);
-                      }
-                      params.categories = filters;
-                    },
-                  ),
-                );
-              },
+            Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: CheckboxListTile(
+                secondary: filter.icon,
+                title: Text(filter.title),
+                value: controller.value.categories?.contains(filter) ?? true,
+                onChanged: (value) {
+                  if (value == null) return;
+                  controller.update((p) {
+                    final filters =
+                        p.categories?.toSet() ??
+                        HistoryCategory.values.toSet();
+                    if (value) {
+                      filters.add(filter);
+                    } else {
+                      filters.remove(filter);
+                    }
+                    return p.copyWith(categories: filters);
+                  });
+                },
+              ),
             ),
         ],
       ),
@@ -177,8 +175,8 @@ class HistoryTypeFilterTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<HistoryParams>(
-      builder: (context, params, _) => Column(
+    return Consumer<HistoryParamsController>(
+      builder: (context, controller, _) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           const Padding(
@@ -186,29 +184,26 @@ class HistoryTypeFilterTile extends StatelessWidget {
             child: ListTileHeader(title: 'Type'),
           ),
           for (final filter in HistoryType.values)
-            AnimatedBuilder(
-              animation: params,
-              builder: (context, child) {
-                return Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: CheckboxListTile(
-                    secondary: filter.icon,
-                    title: Text(filter.title),
-                    value: params.types?.contains(filter) ?? true,
-                    onChanged: (value) {
-                      if (value == null) return;
-                      Set<HistoryType> filters =
-                          params.types ?? HistoryType.values.toSet();
-                      if (value) {
-                        filters.add(filter);
-                      } else {
-                        filters.remove(filter);
-                      }
-                      params.types = filters;
-                    },
-                  ),
-                );
-              },
+            Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: CheckboxListTile(
+                secondary: filter.icon,
+                title: Text(filter.title),
+                value: controller.value.types?.contains(filter) ?? true,
+                onChanged: (value) {
+                  if (value == null) return;
+                  controller.update((p) {
+                    final filters =
+                        p.types?.toSet() ?? HistoryType.values.toSet();
+                    if (value) {
+                      filters.add(filter);
+                    } else {
+                      filters.remove(filter);
+                    }
+                    return p.copyWith(types: filters);
+                  });
+                },
+              ),
             ),
         ],
       ),

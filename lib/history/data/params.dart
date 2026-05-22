@@ -1,81 +1,73 @@
 import 'package:e1547/history/history.dart';
-import 'package:e1547/query/query.dart';
-import 'package:e1547/tag/tag.dart';
+import 'package:e1547/shared/shared.dart';
+import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:intl/intl.dart';
 
-class HistoryParams extends ParamsController {
-  HistoryParams([super.value]);
+part 'params.freezed.dart';
 
-  static const dateFilter = TextFilterTag(tag: 'search[date]', name: 'Date');
+@freezed
+abstract class HistoryParams with _$HistoryParams {
+  const factory HistoryParams({
+    DateTime? date,
+    String? link,
+    String? title,
+    String? subtitle,
+    Set<HistoryCategory>? categories,
+    Set<HistoryType>? types,
+  }) = _HistoryParams;
 
-  static const linkFilter = TextFilterTag(
-    tag: 'search[link]',
-    name: 'Link contains',
-  );
+  const HistoryParams._();
 
-  static const titleFilter = TextFilterTag(
-    tag: 'search[title]',
-    name: 'Title contains',
-  );
+  static final DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
 
-  static const subtitleFilter = TextFilterTag(
-    tag: 'search[subtitle]',
-    name: 'Subtitle contains',
-  );
-
-  static final categoryFilter = MultiEnumFilterTag<HistoryCategory>(
-    tag: 'search[category]',
-    name: 'Category',
-    values: HistoryCategory.values,
-    valueMapper: (value) => value.name,
-    nameMapper: (value) => switch (value) {
-      HistoryCategory.items => 'Items',
-      HistoryCategory.searches => 'Searches',
-    },
-  );
-
-  static final typeFilter = MultiEnumFilterTag<HistoryType>(
-    tag: 'search[type]',
-    name: 'Type',
-    values: HistoryType.values,
-    valueMapper: (value) => value.name,
-    nameMapper: (value) => switch (value) {
-      HistoryType.posts => 'Posts',
-      HistoryType.pools => 'Pools',
-      HistoryType.topics => 'Topics',
-      HistoryType.users => 'Users',
-      HistoryType.wikis => 'Wikis',
-    },
-  );
-
-  static DateFormat get _dateFormat => DateFormat('yyyy-MM-dd');
-
-  DateTime? get date {
-    final dateStr = getFilter<String>(dateFilter);
-    if (dateStr == null) return null;
-    try {
-      return _dateFormat.parse(dateStr);
-    } on FormatException {
-      return null;
+  factory HistoryParams.fromQuery(QueryMap? query) {
+    if (query == null) return const HistoryParams();
+    DateTime? date;
+    final dateStr = query['search[date]'];
+    if (dateStr != null) {
+      try {
+        date = _dateFormat.parse(dateStr);
+      } on FormatException {
+        date = null;
+      }
     }
+    return HistoryParams(
+      date: date,
+      link: query['search[link]'],
+      title: query['search[title]'],
+      subtitle: query['search[subtitle]'],
+      categories: _parseEnumSet(
+        query['search[category]'],
+        HistoryCategory.values,
+      ),
+      types: _parseEnumSet(query['search[type]'], HistoryType.values),
+    );
   }
 
-  set date(DateTime? value) =>
-      setFilter(dateFilter, value != null ? _dateFormat.format(value) : null);
+  QueryMap toQuery() => <String, Object?>{
+    'search[date]': date != null ? _dateFormat.format(date!) : null,
+    'search[link]': link,
+    'search[title]': title,
+    'search[subtitle]': subtitle,
+    'search[category]': categories?.map((e) => e.name).toList(),
+    'search[type]': types?.map((e) => e.name).toList(),
+  }.toQuery();
+}
 
-  String? get link => getFilter(linkFilter);
-  set link(String? value) => setFilter(linkFilter, value);
+Set<E>? _parseEnumSet<E extends Enum>(String? value, List<E> values) {
+  if (value == null || value.isEmpty) return null;
+  final byName = values.asNameMap();
+  final result = <E>{
+    for (final v in value.split(',')) ?byName[v.trim()],
+  };
+  return result.isEmpty ? null : result;
+}
 
-  String? get title => getFilter(titleFilter);
-  set title(String? value) => setFilter(titleFilter, value);
+class HistoryParamsController extends ValueNotifier<HistoryParams> {
+  HistoryParamsController([HistoryParams? initial])
+    : super(initial ?? const HistoryParams());
 
-  String? get subtitle => getFilter(subtitleFilter);
-  set subtitle(String? value) => setFilter(subtitleFilter, value);
-
-  Set<HistoryCategory>? get categories => getFilterEnumSet(categoryFilter);
-  set categories(Set<HistoryCategory>? value) =>
-      setFilterEnumSet(categoryFilter, value);
-
-  Set<HistoryType>? get types => getFilterEnumSet(typeFilter);
-  set types(Set<HistoryType>? value) => setFilterEnumSet(typeFilter, value);
+  void update(HistoryParams Function(HistoryParams) updater) =>
+      value = updater(value);
 }

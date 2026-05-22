@@ -133,14 +133,11 @@ class PoolNameFilter extends StatelessWidget {
               final client = context.read<Client>();
               return (await client.histories.page(
                     page: 1,
-                    query:
-                        (HistoryParams()
-                              ..date = DateTime.now()
-                              ..link = r'/pools/.*'
-                              ..title = RegExp.escape(
-                                value.replaceAll(' ', '_'),
-                              ))
-                            .request,
+                    query: HistoryParams(
+                      date: DateTime.now(),
+                      link: r'/pools/.*',
+                      title: RegExp.escape(value.replaceAll(' ', '_')),
+                    ).toQuery(),
                     limit: 4,
                   ))
                   .where((e) => e.title != null)
