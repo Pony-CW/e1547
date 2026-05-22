@@ -68,22 +68,25 @@ class FollowsSubscriptionsPage extends StatelessWidget {
                     },
                   ),
                   body: TileLayout(
-                    child: PullToRefresh(
-                      onRefresh: query.invalidate,
-                      child: PagedAlignedGridView<int, Follow>.count(
-                        primary: true,
-                        padding: defaultActionListPadding,
-                        state: state.paging,
-                        fetchNextPage: query.getNextPage,
-                        addAutomaticKeepAlives: false,
-                        builderDelegate: defaultPagedChildBuilderDelegate(
-                          onRetry: query.getNextPage,
-                          itemBuilder: (context, item, index) =>
-                              FollowTile(follow: item),
-                          onEmpty: const Text('No subscriptions'),
-                          onError: const Text('Failed to load subscriptions'),
+                    child: Builder(
+                      builder: (context) => PullToRefresh(
+                        onRefresh: query.invalidate,
+                        child: PagedAlignedGridView<int, Follow>.count(
+                          primary: true,
+                          padding: defaultActionListPadding,
+                          state: state.paging,
+                          fetchNextPage: query.getNextPage,
+                          addAutomaticKeepAlives: false,
+                          builderDelegate: defaultPagedChildBuilderDelegate(
+                            onRetry: query.getNextPage,
+                            itemBuilder: (context, item, index) =>
+                                FollowTile(follow: item),
+                            onEmpty: const Text('No subscriptions'),
+                            onError: const Text('Failed to load subscriptions'),
+                          ),
+                          crossAxisCount:
+                              TileLayout.of(context).crossAxisCount,
                         ),
-                        crossAxisCount: TileLayout.of(context).crossAxisCount,
                       ),
                     ),
                   ),

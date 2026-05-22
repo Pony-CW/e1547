@@ -44,22 +44,25 @@ class FollowsBookmarkPage extends StatelessWidget {
                     },
                   ),
                   body: TileLayout(
-                    child: PullToRefresh(
-                      onRefresh: query.invalidate,
-                      child: PagedAlignedGridView<int, Follow>.count(
-                        primary: true,
-                        padding: defaultActionListPadding,
-                        addAutomaticKeepAlives: false,
-                        state: state.paging,
-                        fetchNextPage: query.getNextPage,
-                        builderDelegate: defaultPagedChildBuilderDelegate(
-                          onRetry: query.getNextPage,
-                          itemBuilder: (context, item, index) =>
-                              FollowTile(follow: item),
-                          onEmpty: const Text('No bookmarks'),
-                          onError: const Text('Failed to load bookmarks'),
+                    child: Builder(
+                      builder: (context) => PullToRefresh(
+                        onRefresh: query.invalidate,
+                        child: PagedAlignedGridView<int, Follow>.count(
+                          primary: true,
+                          padding: defaultActionListPadding,
+                          addAutomaticKeepAlives: false,
+                          state: state.paging,
+                          fetchNextPage: query.getNextPage,
+                          builderDelegate: defaultPagedChildBuilderDelegate(
+                            onRetry: query.getNextPage,
+                            itemBuilder: (context, item, index) =>
+                                FollowTile(follow: item),
+                            onEmpty: const Text('No bookmarks'),
+                            onError: const Text('Failed to load bookmarks'),
+                          ),
+                          crossAxisCount:
+                              TileLayout.of(context).crossAxisCount,
                         ),
-                        crossAxisCount: TileLayout.of(context).crossAxisCount,
                       ),
                     ),
                   ),
