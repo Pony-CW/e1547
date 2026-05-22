@@ -17,6 +17,20 @@ class QueryBridge<T, K> {
 
   Query<T>? _getQuery(K id) => cache.getQuery<Query<T>>([baseKey, id]);
 
+  Query<T> _ensureQuery(K id) {
+    final existing = _getQuery(id);
+    if (existing != null) return existing;
+    return Query<T>(
+      cache: cache,
+      key: [baseKey, id],
+      queryFn: () => throw StateError(
+        'QueryBridge cache entry $baseKey/$id has no fetch function; '
+        'fetch it through the owning domain query instead.',
+      ),
+      config: getConfig(vendored: true),
+    );
+  }
+
   static ShouldFetch<T> vendorFetch<T>(bool? vendored) =>
       (key, data, createdAt) => !(vendored ?? false);
 
@@ -45,7 +59,7 @@ class QueryBridge<T, K> {
 
   List<K> savePage(List<T> items) {
     for (final item in items) {
-      cache.setQueryData(key: [baseKey, getId(item)], data: item);
+      _ensureQuery(getId(item)).setData(item);
     }
     return items.map(getId).toList();
   }

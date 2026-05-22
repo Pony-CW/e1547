@@ -1,6 +1,9 @@
 import 'package:e1547/follow/follow.dart';
 import 'package:e1547/query/query.dart';
 import 'package:e1547/shared/shared.dart';
+import 'package:logging/logging.dart';
+
+final Logger _logger = Logger('FollowQuery');
 
 extension FollowQuerying on FollowClient {
   static const queryKey = 'follows';
@@ -21,11 +24,19 @@ extension FollowQuerying on FollowClient {
         cache: queryCache,
         key: [queryKey, 'page', query],
         getNextArg: (state) => state.nextPage,
-        queryFn: (pageKey) => page(
-          page: pageKey,
-          query: query,
-          force: true,
-        ).then(followCache.savePage),
+        queryFn: (pageKey) async {
+          try {
+            final result = await page(
+              page: pageKey,
+              query: query,
+              force: true,
+            );
+            return followCache.savePage(result);
+          } catch (e, st) {
+            _logger.severe('usePage failed (page=$pageKey, query=$query)', e, st);
+            rethrow;
+          }
+        },
       );
 
   Query<List<Follow>> useAll({QueryMap? query}) => Query(
