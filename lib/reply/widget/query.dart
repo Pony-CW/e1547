@@ -12,8 +12,8 @@ class ReplyPageQueryBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final client = context.watch<Client>();
-    final controller = context.watch<ReplyParams>();
-    final query = client.replies.usePage(query: controller.request);
+    final controller = context.watch<ReplyParamsController>();
+    final query = client.replies.usePage(query: controller.value.toQuery());
 
     return PagedQueryBuilder(
       query: query,

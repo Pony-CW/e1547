@@ -1,5 +1,8 @@
-import 'package:e1547/query/query.dart';
-import 'package:e1547/tag/tag.dart';
+import 'package:e1547/shared/shared.dart';
+import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'params.freezed.dart';
 
 enum ReplyOrder {
   newest('id_desc'),
@@ -10,44 +13,29 @@ enum ReplyOrder {
   final String value;
 }
 
-class ReplyParams extends ParamsController {
-  ReplyParams({ProtoMap? value}) : super(value?.toQuery());
+@freezed
+abstract class ReplyParams with _$ReplyParams {
+  const factory ReplyParams({
+    int? topicId,
+    String? body,
+    String? creator,
+    @Default(ReplyOrder.oldest) ReplyOrder order,
+  }) = _ReplyParams;
 
-  static const topicIdFilter = NumberFilterTag(
-    tag: 'search[topic_id]',
-    name: 'Topic ID',
-  );
+  const ReplyParams._();
 
-  static const bodyFilter = TextFilterTag(
-    tag: 'search[body_matches]',
-    name: 'Body contains',
-  );
+  QueryMap toQuery() => <String, Object?>{
+    'search[topic_id]': topicId,
+    'search[body_matches]': body,
+    'search[creator_name]': creator,
+    if (order != ReplyOrder.oldest) 'search[order]': order.value,
+  }.toQuery();
+}
 
-  static const creatorFilter = TextFilterTag(
-    tag: 'search[creator_name]',
-    name: 'Creator',
-  );
+class ReplyParamsController extends ValueNotifier<ReplyParams> {
+  ReplyParamsController([ReplyParams? initial])
+    : super(initial ?? const ReplyParams());
 
-  static final orderFilter = EnumFilterTag<ReplyOrder>(
-    tag: 'search[order]',
-    name: 'Sort by',
-    values: ReplyOrder.values,
-    valueMapper: (value) => value.value,
-    nameMapper: (value) => switch (value) {
-      ReplyOrder.newest => 'Newest first',
-      ReplyOrder.oldest => 'Oldest first',
-    },
-  );
-
-  int? get topicId => getFilter(topicIdFilter);
-  set topicId(int? value) => setFilter(topicIdFilter, value);
-
-  String? get body => getFilter(bodyFilter);
-  set body(String? value) => setFilter(bodyFilter, value);
-
-  String? get creator => getFilter(creatorFilter);
-  set creator(String? value) => setFilter(creatorFilter, value);
-
-  ReplyOrder get order => getFilterEnum(orderFilter) ?? ReplyOrder.oldest;
-  set order(ReplyOrder value) => setFilterEnum(orderFilter, value);
+  void update(ReplyParams Function(ReplyParams) updater) =>
+      value = updater(value);
 }

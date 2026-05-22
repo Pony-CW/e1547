@@ -7,20 +7,24 @@ class ReplyListDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.watch<ReplyParams>();
+    final controller = context.watch<ReplyParamsController>();
     return ContextDrawer(
       title: const Text('Replies'),
       children: [
         SwitchListTile(
           secondary: const Icon(Icons.sort),
           title: const Text('Reply order'),
-          subtitle: Text(switch (controller.order) {
+          subtitle: Text(switch (controller.value.order) {
             ReplyOrder.oldest => 'oldest first',
             ReplyOrder.newest => 'newest first',
           }),
-          value: controller.order == ReplyOrder.oldest,
+          value: controller.value.order == ReplyOrder.oldest,
           onChanged: (value) {
-            controller.order = value ? ReplyOrder.oldest : ReplyOrder.newest;
+            controller.update(
+              (p) => p.copyWith(
+                order: value ? ReplyOrder.oldest : ReplyOrder.newest,
+              ),
+            );
             Scaffold.of(context).closeEndDrawer();
           },
         ),

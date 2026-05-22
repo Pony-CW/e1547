@@ -17,12 +17,15 @@ class TopicRepliesPage extends StatelessWidget {
     return FilterControllerProvider(
       create: (_) => ReplyFilter(client),
       keys: (_) => [client],
-      child: ListenableProvider(
-        create: (_) => ReplyParams()
-          ..topicId = topic.id
-          ..order = (orderByOldest ?? true)
-              ? ReplyOrder.oldest
-              : ReplyOrder.newest,
+      child: ChangeNotifierProvider(
+        create: (_) => ReplyParamsController(
+          ReplyParams(
+            topicId: topic.id,
+            order: (orderByOldest ?? true)
+                ? ReplyOrder.oldest
+                : ReplyOrder.newest,
+          ),
+        ),
         builder: (context, _) => AdaptiveScaffold(
           appBar: DefaultAppBar(
             title: Text(topic.title),
