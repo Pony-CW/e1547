@@ -1,8 +1,11 @@
-import 'package:e1547/history/history.dart';
+import 'package:e1547/client/client.dart';
 import 'package:e1547/pool/pool.dart';
 import 'package:e1547/post/post.dart';
+import 'package:e1547/query/query.dart';
+import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
+import 'package:e1547/traits/traits.dart';
 import 'package:flutter/material.dart';
 
 class PoolPage extends StatefulWidget {
@@ -17,56 +20,54 @@ class PoolPage extends StatefulWidget {
 
 class _PoolPageState extends State<PoolPage> {
   bool readerMode = true;
+  late bool orderByOldest = widget.orderByOldest ?? true;
 
   @override
   Widget build(BuildContext context) {
-    return PostProvider.builder(
-      create: (context, client) => PoolPostController(
-        client: client,
-        id: widget.pool.id,
-        orderByOldest: widget.orderByOldest ?? true,
-      ),
-      child: Consumer<PostController>(
-        builder: (context, controller, child) => ControllerHistoryConnector(
-          controller: controller,
-          getEntry: (context, data) =>
-              PoolHistoryRequest.item(pool: widget.pool, posts: data.items),
-          child: PostsPage(
-            controller: controller,
-            displayType: readerMode ? PostDisplayType.comic : null,
-            appBar: DefaultAppBar(
-              title: Text(tagToName(widget.pool.name)),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.info_outline),
-                  tooltip: 'Info',
-                  onPressed: () =>
-                      showPoolPrompt(context: context, pool: widget.pool),
-                ),
-                const ContextDrawerButton(),
-              ],
-            ),
-            drawerActions: [
-              Builder(
-                builder: (context) => PoolReaderSwitch(
-                  readerMode: readerMode,
-                  onChange: (value) {
-                    setState(() => readerMode = value);
-                    Scaffold.of(context).closeEndDrawer();
-                  },
-                ),
+    final client = context.watch<Client>();
+    return FilterControllerProvider(
+      create: (_) => PostFilter(client),
+      keys: (_) => [client],
+      child: ChangeNotifierProvider(
+        create: (_) => PostParamsController(
+          PostParams(tags: 'pool:${widget.pool.id} order:pool'),
+        ),
+        child: AdaptiveScaffold(
+          appBar: DefaultAppBar(
+            title: Text(tagToName(widget.pool.name)),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.info_outline),
+                tooltip: 'Info',
+                onPressed: () =>
+                    showPoolPrompt(context: context, pool: widget.pool),
               ),
-              AnimatedBuilder(
-                animation: controller,
-                builder: (context, child) => PoolOrderSwitch(
-                  oldestFirst: controller.orderPools,
-                  onChange: (value) {
-                    controller.orderPools = value;
-                    Scaffold.of(context).closeEndDrawer();
-                  },
-                ),
-              ),
+              const ContextDrawerButton(),
             ],
+          ),
+          endDrawer: ContextDrawer(
+            title: const Text('Pool'),
+            children: [
+              PoolReaderSwitch(
+                readerMode: readerMode,
+                onChange: (value) {
+                  setState(() => readerMode = value);
+                  Scaffold.of(context).closeEndDrawer();
+                },
+              ),
+              const DrawerDenySwitch(),
+            ],
+          ),
+          body: ListenableBuilder(
+            listenable: context.watch<Settings>().tileSize,
+            builder: (context, child) => TileLayout(
+              tileSize: context.watch<Settings>().tileSize.value,
+              child: PostList(
+                displayType: readerMode
+                    ? PostDisplayType.comic
+                    : PostDisplayType.grid,
+              ),
+            ),
           ),
         ),
       ),

@@ -7,9 +7,9 @@ import 'package:e1547/traits/traits.dart';
 import 'package:flutter/material.dart';
 
 class PostsPage extends StatelessWidget {
-  const PostsPage({super.key, this.query});
+  const PostsPage({super.key, this.params});
 
-  final QueryMap? query;
+  final PostParams? params;
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +18,8 @@ class PostsPage extends StatelessWidget {
       child: FilterControllerProvider(
         create: (_) => PostFilter(client),
         keys: (_) => [client],
-        child: ListenableProvider(
-          create: (_) => PostParams(value: query),
+        child: ChangeNotifierProvider(
+          create: (_) => PostParamsController(params),
           child: AdaptiveScaffold(
             appBar: const PostSelectionAppBar(child: PostPageAppBar()),
             floatingActionButton: const PostsPageFab(),

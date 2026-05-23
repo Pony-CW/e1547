@@ -1,10 +1,9 @@
 import 'package:e1547/app/app.dart';
 import 'package:e1547/client/client.dart';
-import 'package:e1547/history/history.dart';
 import 'package:e1547/markup/markup.dart';
 import 'package:e1547/post/post.dart';
+import 'package:e1547/query/query.dart';
 import 'package:e1547/shared/shared.dart';
-import 'package:e1547/tag/tag.dart';
 import 'package:e1547/ticket/ticket.dart';
 import 'package:e1547/traits/traits.dart';
 import 'package:e1547/user/user.dart';
@@ -25,196 +24,202 @@ class UserPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _UserPageProvider(
-      user: user,
-      child: Consumer<_UserPageControllers>(
-        builder: (context, controllers, child) => LayoutBuilder(
-          builder: (context, constraints) {
-            Widget body;
-            PreferredSizeWidget? appbar;
-            Map<Widget, WidgetBuilder> tabs = {
-              const Tab(text: 'Favorites'): (context) =>
-                  ChangeNotifierProvider<PostController>.value(
-                    value: controllers.favoritePosts,
-                    builder: (context, child) => PostSliverDisplay(
-                      controller: controllers.favoritePosts,
-                    ),
-                  ),
-              const Tab(text: 'Uploads'): (context) =>
-                  ChangeNotifierProvider<PostController>.value(
-                    value: controllers.uploadedPosts,
-                    builder: (context, child) => PostSliverDisplay(
-                      controller: controllers.uploadedPosts,
-                    ),
-                  ),
-            };
+    final client = context.watch<Client>();
+    return FilterControllerProvider(
+      create: (_) => PostFilter(client),
+      keys: (_) => [client],
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          Widget body;
+          PreferredSizeWidget? appbar;
+          final tabs = <Widget, WidgetBuilder>{
+            const Tab(text: 'Favorites'): (context) => _UserPostsTab(
+              params: PostParams(tags: 'fav:${user.name}'),
+            ),
+            const Tab(text: 'Uploads'): (context) => _UserPostsTab(
+              params: PostParams(tags: 'user:${user.name}'),
+            ),
+          };
 
-            if (constraints.maxWidth < 1100) {
-              body = NestedScrollView(
-                controller: PrimaryScrollController.of(context),
-                headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                  SliverOverlapAbsorber(
-                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                      context,
-                    ),
-                    sliver: UserSliverAppBar(
-                      user: user,
-                      avatar: controllers.profilePost,
-                      tabs: tabs.keys.toList(),
+          if (constraints.maxWidth < 1100) {
+            body = NestedScrollView(
+              controller: PrimaryScrollController.of(context),
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                SliverOverlapAbsorber(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                    context,
+                  ),
+                  sliver: UserSliverAppBar(
+                    user: user,
+                    tabs: tabs.keys.toList(),
+                  ),
+                ),
+              ],
+              body: LimitedWidthLayout(
+                child: TileLayout(
+                  child: Builder(
+                    builder: (context) => TabBarView(
+                      children: tabs.values
+                          .map(
+                            (e) => CustomScrollView(
+                              slivers: [
+                                SliverOverlapInjector(
+                                  handle:
+                                      NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                        context,
+                                      ),
+                                ),
+                                e(context),
+                              ],
+                            ),
+                          )
+                          .toList(),
                     ),
                   ),
-                ],
-                body: LimitedWidthLayout(
-                  child: TileLayout(
-                    child: Builder(
-                      builder: (context) => TabBarView(
-                        children: tabs.values
-                            .map(
-                              (e) => CustomScrollView(
-                                slivers: [
-                                  SliverOverlapInjector(
-                                    handle:
-                                        NestedScrollView.sliverOverlapAbsorberHandleFor(
-                                          context,
-                                        ),
-                                  ),
-                                  e(context),
-                                ],
+                ),
+              ),
+            );
+            tabs[const Tab(text: 'About')] = (context) => SliverPadding(
+              padding: defaultListPadding.add(
+                LimitedWidthLayout.of(context).padding,
+              ),
+              sliver: SliverToBoxAdapter(
+                child: UserInfo(
+                  user: user,
+                  compact: constraints.maxWidth < 600,
+                ),
+              ),
+            );
+          } else {
+            body = Row(
+              children: [
+                SizedBox(
+                  width: 360,
+                  child: ListView(
+                    primary: false,
+                    padding: defaultListPadding,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 100,
+                              width: 100,
+                              child: UserAvatar(
+                                id: user.avatarId,
+                                userId: user.id,
+                                hasCroppedAvatar: user.hasCroppedAvatar,
                               ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: 16,
+                                bottom: 32,
+                              ),
+                              child: Text(
+                                user.name,
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      UserInfo(user: user, compact: false),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: LimitedWidthLayout(
+                    child: TileLayout(
+                      child: TabBarView(
+                        children: tabs.values
+                            .toList()
+                            .sublist(0, tabs.length)
+                            .map(
+                              (e) => CustomScrollView(slivers: [e(context)]),
                             )
                             .toList(),
                       ),
                     ),
                   ),
                 ),
-              );
-              tabs[const Tab(text: 'About')] = (context) => SliverPadding(
-                padding: defaultListPadding.add(
-                  LimitedWidthLayout.of(context).padding,
-                ),
-                sliver: SliverToBoxAdapter(
-                  child: UserInfo(
-                    user: user,
-                    compact: constraints.maxWidth < 600,
-                  ),
-                ),
-              );
-            } else {
-              body = Row(
-                children: [
-                  SizedBox(
-                    width: 360,
-                    child: ListView(
-                      primary: false,
-                      padding: defaultListPadding,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                height: 100,
-                                width: 100,
-                                child: UserAvatar(
-                                  id: user.avatarId,
-                                  controller: controllers.profilePost,
-                                  userId: user.id,
-                                  hasCroppedAvatar: user.hasCroppedAvatar,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 16,
-                                  bottom: 32,
-                                ),
-                                child: Text(
-                                  user.name,
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        UserInfo(user: user, compact: false),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: LimitedWidthLayout(
-                      child: TileLayout(
-                        child: TabBarView(
-                          children: tabs.values
-                              .toList()
-                              .sublist(0, tabs.length)
-                              .map(
-                                (e) => CustomScrollView(slivers: [e(context)]),
-                              )
-                              .toList(),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-              appbar = DefaultAppBar(
-                ignoreTitlePointer: false,
-                title: TabBar(
-                  isScrollable: true,
-                  labelColor: Theme.of(context).iconTheme.color,
-                  indicatorColor: Theme.of(context).iconTheme.color,
-                  tabs: tabs.keys.toList().sublist(0, tabs.length).toList(),
-                ),
-                actions: [
-                  _UserProfileActions(user: user),
-                  const ContextDrawerButton(),
-                ],
-                elevation: 0,
-              );
-            }
-
-            return ControllerHistoryConnector<PostController?>(
-              controller: controllers.profilePost,
-              getEntry: (context, controller) => UserHistoryRequest.item(
-                user: user,
-                avatar: controller?.items?.first,
-              ),
-              child: DefaultTabController(
-                length: tabs.length,
-                initialIndex: initialPage.index,
-                child: Scaffold(
-                  appBar: appbar,
-                  drawer: const RouterDrawer(),
-                  endDrawer: ContextDrawer(
-                    title: const Text('Posts'),
-                    children: [
-                      DrawerMultiDenySwitch(controllers: controllers.all),
-                      DrawerMultiTagCounter(controllers: controllers.all),
-                    ],
-                  ),
-                  body: body,
-                ),
-              ),
+              ],
             );
-          },
-        ),
+            appbar = DefaultAppBar(
+              ignoreTitlePointer: false,
+              title: TabBar(
+                isScrollable: true,
+                labelColor: Theme.of(context).iconTheme.color,
+                indicatorColor: Theme.of(context).iconTheme.color,
+                tabs: tabs.keys.toList().sublist(0, tabs.length).toList(),
+              ),
+              actions: [
+                _UserProfileActions(user: user),
+                const ContextDrawerButton(),
+              ],
+              elevation: 0,
+            );
+          }
+
+          return DefaultTabController(
+            length: tabs.length,
+            initialIndex: initialPage.index,
+            child: Scaffold(
+              appBar: appbar,
+              drawer: const RouterDrawer(),
+              endDrawer: const ContextDrawer(
+                title: Text('Posts'),
+                children: [DrawerDenySwitch()],
+              ),
+              body: body,
+            ),
+          );
+        },
       ),
     );
   }
 }
 
+class _UserPostsTab extends StatelessWidget {
+  const _UserPostsTab({required this.params});
+
+  final PostParams params;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverMainAxisGroup(
+      slivers: [
+        SliverPadding(
+          padding: defaultActionListPadding,
+          sliver: _UserPostsSliver(params: params),
+        ),
+      ],
+    );
+  }
+}
+
+class _UserPostsSliver extends StatelessWidget {
+  const _UserPostsSliver({required this.params});
+
+  final PostParams params;
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => PostParamsController(params),
+      child: const SliverPostList(),
+    );
+  }
+}
+
 class UserSliverAppBar extends StatelessWidget {
-  const UserSliverAppBar({
-    super.key,
-    required this.user,
-    this.tabs,
-    this.avatar,
-  });
+  const UserSliverAppBar({super.key, required this.user, this.tabs});
 
   final User user;
   final List<Widget>? tabs;
-  final PostController? avatar;
 
   @override
   Widget build(BuildContext context) {
@@ -248,7 +253,6 @@ class UserSliverAppBar extends StatelessWidget {
                   width: 100,
                   child: UserAvatar(
                     id: user.avatarId,
-                    controller: avatar,
                     userId: user.id,
                     hasCroppedAvatar: user.hasCroppedAvatar,
                   ),
@@ -329,44 +333,6 @@ class _UserProfileActions extends StatelessWidget {
       ],
     );
   }
-}
-
-class _UserPageControllers {
-  _UserPageControllers({
-    required this.favoritePosts,
-    required this.uploadedPosts,
-    this.profilePost,
-  });
-
-  List<PostController> get all => [
-    favoritePosts,
-    uploadedPosts,
-    if (profilePost != null) profilePost!,
-  ];
-
-  final PostController favoritePosts;
-  final PostController uploadedPosts;
-  final PostController? profilePost;
-
-  void dispose() => all.forEach((e) => e.dispose());
-}
-
-class _UserPageProvider extends SubProvider<Client, _UserPageControllers> {
-  // ignore: unused_element, unused_element_parameter
-  _UserPageProvider({required User user, super.child, super.builder})
-    : super(
-        create: (context, client) => _UserPageControllers(
-          favoritePosts: UserFavoritesController(
-            client: client,
-            user: user.name,
-          ),
-          uploadedPosts: UserUploadsController(client: client, user: user.name),
-          profilePost: user.avatarId != null
-              ? SinglePostController(client: client, id: user.avatarId!)
-              : null,
-        ),
-        dispose: (context, value) => value.dispose(),
-      );
 }
 
 class UserInfo extends StatelessWidget {

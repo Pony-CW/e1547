@@ -3,6 +3,7 @@ export 'blacklist.dart';
 export 'comments.dart';
 export 'deletion.dart';
 export 'description.dart';
+export 'editor.dart';
 export 'fab.dart';
 export 'file.dart';
 export 'likes.dart';

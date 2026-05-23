@@ -6,7 +6,7 @@ class HotPage extends StatelessWidget {
   const HotPage({super.key});
 
   @override
-  Widget build(BuildContext context) => RouterDrawerEntry<HotPage>(
-    child: PostsPage(query: (PostParams()..addTag('order:rank')).value),
+  Widget build(BuildContext context) => const RouterDrawerEntry<HotPage>(
+    child: PostsPage(params: PostParams(tags: 'order:rank')),
   );
 }

@@ -35,7 +35,7 @@ extension PostTagging on Post {
         case 'score':
           NumberRange? range = NumberRange.tryParse(value);
           if (range == null) return false;
-          return range.has(vote.score);
+          return range.has(score);
         case 'favcount':
           NumberRange? range = NumberRange.tryParse(value);
           if (range == null) return false;
@@ -199,4 +199,16 @@ extension PostLinking on Post {
   static String getPostLink(int id) => '/posts/$id';
 
   String get link => getPostLink(id);
+}
+
+extension PostVoting on Post {
+  Post withVote({required bool upvote, required bool replace}) {
+    final result = applyVote(
+      score: score,
+      vote: vote,
+      upvote: upvote,
+      replace: replace,
+    );
+    return copyWith(score: result.score, vote: result.vote);
+  }
 }

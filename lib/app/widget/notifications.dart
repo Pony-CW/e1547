@@ -7,7 +7,6 @@ import 'package:e1547/follow/follow.dart';
 import 'package:e1547/logs/logs.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
-import 'package:e1547/tag/tag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sub/flutter_sub.dart';
 
@@ -109,12 +108,8 @@ class _NotificationHandlerState extends State<NotificationHandler> {
         if (notification.query != null) {
           widget.navigatorKey.currentState!.push(
             MaterialPageRoute(
-              builder: (context) => PostsSearchPage(
-                query: notification!.query!,
-                orderPoolsByOldest: false,
-                readerMode: poolRegex().hasMatch(
-                  notification.query!['tags'] ?? '',
-                ),
+              builder: (context) => PostsPage(
+                params: PostParams(tags: notification!.query!['tags']),
               ),
             ),
           );

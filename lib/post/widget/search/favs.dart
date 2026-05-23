@@ -1,4 +1,4 @@
-import 'package:e1547/domain/domain.dart';
+import 'package:e1547/client/client.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +8,9 @@ class FavPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final domain = context.watch<Domain>();
+    final client = context.watch<Client>();
     return RouterDrawerEntry<FavPage>(
-      child: domain.identity.username == null
+      child: client.identity.username == null
           ? const AdaptiveScaffold(
               appBar: DefaultAppBar(title: Text('Favorites')),
               body: Center(
@@ -18,8 +18,7 @@ class FavPage extends StatelessWidget {
               ),
             )
           : PostsPage(
-              query: (PostParams()..addTag('fav:${domain.identity.username}'))
-                  .value,
+              params: PostParams(tags: 'fav:${client.identity.username}'),
             ),
     );
   }

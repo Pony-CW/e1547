@@ -1,8 +1,11 @@
 import 'package:e1547/post/post.dart';
-import 'package:e1547/query/query.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'params.freezed.dart';
 
 enum PostOrder {
   newest('new'),
@@ -16,8 +19,13 @@ enum PostOrder {
   final String value;
 }
 
-class PostParams extends ParamsController {
-  PostParams({ProtoMap? value}) : super(value?.toQuery());
+@freezed
+abstract class PostParams with _$PostParams {
+  const factory PostParams({String? tags}) = _PostParams;
+
+  const PostParams._();
+
+  QueryMap toQuery() => <String, Object?>{'tags': tags}.toQuery();
 
   static final tagsFilter = NestedFilterTag(
     tag: 'tags',
@@ -97,7 +105,6 @@ class PostParams extends ParamsController {
       const ChoiceFilterTag(
         tag: 'date',
         name: 'Upload date',
-
         options: [
           ChoiceFilterTagValue(value: null, name: 'All'),
           ChoiceFilterTagValue(value: 'day', name: 'Last day'),
@@ -122,85 +129,23 @@ class PostParams extends ParamsController {
       ),
     ],
   );
+}
 
-  String? get tags => get<String>('tags');
-  set tags(String? value) => set('tags', value);
+class PostParamsController extends ValueNotifier<PostParams> {
+  PostParamsController([PostParams? initial])
+    : super(initial ?? const PostParams());
 
-  TagMap get _tagMap => TagMap(tags);
+  void update(PostParams Function(PostParams) updater) =>
+      value = updater(value);
 
-  String? _getNestedTag(String key) => _tagMap[key];
+  TagMap get _tagMap => TagMap(value.tags);
 
-  void _setNestedTag(String key, String? value) {
-    final tagMap = _tagMap;
-    if (value == null) {
-      tagMap.remove(key);
-    } else {
-      tagMap[key] = value;
-    }
-    tags = tagMap.toString();
-  }
+  void _writeTags(TagMap map) =>
+      update((p) => p.copyWith(tags: map.toString()));
 
-  NumberRange? get score => NumberRange.tryParse(_getNestedTag('score') ?? '');
-  set score(NumberRange? value) => _setNestedTag('score', value?.toString());
+  void addTag(String tag) => _writeTags(_tagMap..add(tag));
 
-  NumberRange? get favcount =>
-      NumberRange.tryParse(_getNestedTag('favcount') ?? '');
-  set favcount(NumberRange? value) =>
-      _setNestedTag('favcount', value?.toString());
-
-  PostOrder? get order {
-    final value = _getNestedTag('order');
-    if (value == null) return null;
-    return PostOrder.values.where((e) => e.value == value).firstOrNull;
-  }
-
-  set order(PostOrder? value) => _setNestedTag('order', value?.value);
-
-  String? get rating => _getNestedTag('rating');
-  set rating(String? value) => _setNestedTag('rating', value);
-
-  bool? get inpool {
-    final value = _getNestedTag('inpool');
-    if (value == null) return null;
-    return value == 'true';
-  }
-
-  set inpool(bool? value) => _setNestedTag(
-    'inpool',
-    value == null ? null : (value ? 'true' : 'false'),
-  );
-
-  bool? get ischild {
-    final value = _getNestedTag('ischild');
-    if (value == null) return null;
-    return value == 'true';
-  }
-
-  set ischild(bool? value) => _setNestedTag(
-    'ischild',
-    value == null ? null : (value ? 'true' : 'false'),
-  );
-
-  bool? get isparent {
-    final value = _getNestedTag('isparent');
-    if (value == null) return null;
-    return value == 'true';
-  }
-
-  set isparent(bool? value) => _setNestedTag(
-    'isparent',
-    value == null ? null : (value ? 'true' : 'false'),
-  );
-
-  String? get date => _getNestedTag('date');
-  set date(String? value) => _setNestedTag('date', value);
-
-  String? get status => _getNestedTag('status');
-  set status(String? value) => _setNestedTag('status', value);
-
-  void addTag(String tag) => tags = (_tagMap..add(tag)).toString();
-
-  void removeTag(String tag) => tags = (_tagMap..remove(tag)).toString();
+  void removeTag(String tag) => _writeTags(_tagMap..remove(tag));
 
   void subtractTag(String tag) => addTag('-$tag');
 

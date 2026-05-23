@@ -16,7 +16,7 @@ class PostFullscreenGallery extends StatelessWidget {
          'Cannot pass both initialPage and pageController',
        );
 
-  final QueryMap? params;
+  final PostParams? params;
   final int? initialPage;
   final PageController? pageController;
   final ValueChanged<int>? onPageChanged;
@@ -25,8 +25,8 @@ class PostFullscreenGallery extends StatelessWidget {
   Widget build(BuildContext context) => SubDefault<PageController>(
     value: pageController,
     create: () => PageController(initialPage: initialPage ?? 0),
-    builder: (context, pageController) => ListenableProvider(
-      create: (_) => PostParams(value: params),
+    builder: (context, pageController) => ChangeNotifierProvider(
+      create: (_) => PostParamsController(params),
       child: PostPageQueryBuilder(
         builder: (context, state, query) => ScaffoldFrame(
           child: GalleryButtons(

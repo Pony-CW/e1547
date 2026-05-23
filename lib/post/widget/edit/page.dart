@@ -1,3 +1,4 @@
+import 'package:e1547/client/client.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,9 @@ class _PostEditPageState extends State<PostEditPage> {
     _editData = PostEdit.fromPost(widget.post);
 
     _descriptionController = TextEditingController(text: _editData.description);
-    _tagsController = TextEditingController(text: _editData.tags.join(' '));
+    _tagsController = TextEditingController(
+      text: _editData.tags.values.expand((c) => c).join(' '),
+    );
     _sourcesController = TextEditingController(
       text: _editData.sources.join('\n'),
     );
@@ -62,12 +65,26 @@ class _PostEditPageState extends State<PostEditPage> {
     final messenger = ScaffoldMessenger.of(context);
 
     try {
+      final editedTags = _tagsController.text
+          .split(' ')
+          .where((s) => s.trim().isNotEmpty)
+          .toList();
+      final existingCategories = widget.post.tags.keys.toList();
+      final originalCategoryOf = <String, String>{
+        for (final entry in widget.post.tags.entries)
+          for (final tag in entry.value) tag: entry.key,
+      };
+      final regroupedTags = <String, List<String>>{
+        for (final category in existingCategories) category: <String>[],
+      };
+      for (final tag in editedTags) {
+        final category = originalCategoryOf[tag] ?? 'general';
+        regroupedTags.putIfAbsent(category, () => <String>[]).add(tag);
+      }
+
       final editData = _editData.copyWith(
         description: _descriptionController.text,
-        tags: _tagsController.text
-            .split(' ')
-            .where((s) => s.trim().isNotEmpty)
-            .toList(),
+        tags: regroupedTags,
         sources: _sourcesController.text
             .split('\n')
             .where((s) => s.trim().isNotEmpty)
@@ -82,7 +99,7 @@ class _PostEditPageState extends State<PostEditPage> {
 
       final body = editData.toForm();
       if (body != null) {
-        await context.read<PostController>().updatePost(widget.post, body);
+        await context.read<Client>().posts.update(id: widget.post.id, data: body);
 
         if (mounted) {
           messenger.showSnackBar(

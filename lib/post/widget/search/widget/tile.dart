@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:e1547/app/app.dart';
-import 'package:e1547/comment/comment.dart';
 import 'package:e1547/client/client.dart';
+import 'package:e1547/comment/comment.dart';
 import 'package:e1547/markup/markup.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/query/query.dart';
@@ -141,18 +141,18 @@ class PostInfoBar extends StatelessWidget {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(post.vote.score.toString()),
+                        Text(post.score.toString()),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
                           child: Icon(
-                            post.vote.score >= 0
+                            post.score >= 0
                                 ? Icons.arrow_upward
                                 : Icons.arrow_downward,
-                            color: {
-                              VoteStatus.upvoted: Colors.deepOrange,
-                              VoteStatus.downvoted: Colors.blue,
-                              VoteStatus.unknown: null,
-                            }[post.vote.status],
+                            color: switch (post.vote) {
+                              1 => Colors.deepOrange,
+                              -1 => Colors.blue,
+                              _ => null,
+                            },
                           ),
                         ),
                       ],
@@ -291,13 +291,13 @@ class PostFeedTile extends StatelessWidget {
                 final enabled = client.hasLogin && !state.isLoading;
 
                 return VoteDisplay(
-                  status: post.vote.status,
-                  score: post.vote.score,
+                  vote: post.vote,
+                  score: post.score,
                   onUpvote: enabled
                       ? (isLiked) async {
-                          try {
-                            await mutate((upvote: true, replace: !isLiked));
-                          } on Exception {
+                          mutate((upvote: true, replace: !isLiked)).catchError((
+                            error,
+                          ) {
                             messenger.showSnackBar(
                               SnackBar(
                                 duration: const Duration(seconds: 1),
@@ -306,14 +306,16 @@ class PostFeedTile extends StatelessWidget {
                                 ),
                               ),
                             );
-                          }
+                            return error;
+                          });
+                          return !isLiked;
                         }
                       : null,
                   onDownvote: enabled
                       ? (isLiked) async {
-                          try {
-                            await mutate((upvote: false, replace: !isLiked));
-                          } on Exception {
+                          mutate((upvote: false, replace: !isLiked)).catchError((
+                            error,
+                          ) {
                             messenger.showSnackBar(
                               SnackBar(
                                 duration: const Duration(seconds: 1),
@@ -322,7 +324,9 @@ class PostFeedTile extends StatelessWidget {
                                 ),
                               ),
                             );
-                          }
+                            return error;
+                          });
+                          return !isLiked;
                         }
                       : null,
                 );

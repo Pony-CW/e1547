@@ -8,10 +8,12 @@ class PostsPageFab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.watch<PostParams>();
+    final controller = context.watch<PostParamsController>();
     return SearchPromptFloatingActionButton(
-      tags: controller.query,
-      onSubmit: (value) => controller.query = value,
+      tags: controller.value.toQuery(),
+      onSubmit: (value) => controller.update(
+        (p) => p.copyWith(tags: value['tags']),
+      ),
       filters: [
         PrimaryFilterConfig(
           filter: TagSearchFilterTag(tag: 'tags', name: 'Tags'),

@@ -3,8 +3,6 @@ import 'package:e1547/pool/pool.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
-import 'package:e1547/tag/tag.dart';
-import 'package:e1547/traits/traits.dart';
 import 'package:flutter/material.dart';
 
 class PoolsPage extends StatefulWidget {
@@ -27,7 +25,7 @@ class _PoolsPageState extends State<PoolsPage> with RouterDrawerEntryWidget {
           getEntry: (context, controller) => PoolHistoryRequest.search(
             query: controller.query,
             pools: controller.items,
-            posts: controller.thumbnails.items,
+            posts: const [],
           ),
           child: AdaptiveScaffold(
             appBar: const DefaultAppBar(
@@ -38,11 +36,11 @@ class _PoolsPageState extends State<PoolsPage> with RouterDrawerEntryWidget {
               controller: controller,
             ),
             drawer: const RouterDrawer(),
-            endDrawer: ContextDrawer(
-              title: const Text('Pools'),
+            endDrawer: const ContextDrawer(
+              title: Text('Pools'),
               children: [
-                DrawerDenySwitch(controller: controller.thumbnails),
-                DrawerTagCounter(controller: controller.thumbnails),
+                // DrawerDenySwitch(),
+                // DrawerTagCounter(),
               ],
             ),
             body: ValueListenableBuilder<int>(

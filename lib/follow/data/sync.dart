@@ -233,7 +233,6 @@ class FollowSync {
       postsClient.page(
         query: {'tags': follow.tags},
         limit: refreshAmount,
-        ordered: false,
         force: force,
       ),
     );

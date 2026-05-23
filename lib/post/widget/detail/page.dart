@@ -73,7 +73,6 @@ class PostDetail extends StatelessWidget {
         PostEditorChild(shown: false, child: DenylistTagDisplay(post: post)),
         TagDisplay(post: post),
         PostEditorChild(shown: false, child: FileDisplay(post: post)),
-        PostEditorChild(shown: true, child: RatingDisplay(post: post)),
         SourceDisplay(post: post),
       ],
     ),

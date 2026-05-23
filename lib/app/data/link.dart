@@ -190,7 +190,9 @@ extension LinkOnTapExtension on LinkParser {
         if (id != null) {
           return navWrapper((context) => PostLoadingPage(id));
         }
-        return navWrapper((context) => PostsSearchPage(query: result.query));
+        return navWrapper(
+          (context) => PostsPage(params: PostParams(tags: result.query?['tags'])),
+        );
       case LinkType.pool:
         int? id = result.id as int?;
         if (id != null) {

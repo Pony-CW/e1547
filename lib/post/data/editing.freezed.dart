@@ -12,9 +12,9 @@ part of 'editing.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$PostEdit {
+mixin _$PostEdit implements DiagnosticableTreeMixin {
 
- Post get post; String? get editReason; Rating get rating; String get description; int? get parentId; List<String> get sources; List<String> get tags;
+ Post get post; String? get editReason; Rating get rating; String get description; int? get parentId; List<String> get sources; Map<String, List<String>> get tags;
 /// Create a copy of PostEdit
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -22,6 +22,12 @@ mixin _$PostEdit {
 $PostEditCopyWith<PostEdit> get copyWith => _$PostEditCopyWithImpl<PostEdit>(this as PostEdit, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'PostEdit'))
+    ..add(DiagnosticsProperty('post', post))..add(DiagnosticsProperty('editReason', editReason))..add(DiagnosticsProperty('rating', rating))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('parentId', parentId))..add(DiagnosticsProperty('sources', sources))..add(DiagnosticsProperty('tags', tags));
+}
 
 @override
 bool operator ==(Object other) {
@@ -33,7 +39,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,post,editReason,rating,description,parentId,const DeepCollectionEquality().hash(sources),const DeepCollectionEquality().hash(tags));
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'PostEdit(post: $post, editReason: $editReason, rating: $rating, description: $description, parentId: $parentId, sources: $sources, tags: $tags)';
 }
 
@@ -45,7 +51,7 @@ abstract mixin class $PostEditCopyWith<$Res>  {
   factory $PostEditCopyWith(PostEdit value, $Res Function(PostEdit) _then) = _$PostEditCopyWithImpl;
 @useResult
 $Res call({
- Post post, String? editReason, Rating rating, String description, int? parentId, List<String> sources, List<String> tags
+ Post post, String? editReason, Rating rating, String description, int? parentId, List<String> sources, Map<String, List<String>> tags
 });
 
 
@@ -71,7 +77,7 @@ as Rating,description: null == description ? _self.description : description // 
 as String,parentId: freezed == parentId ? _self.parentId : parentId // ignore: cast_nullable_to_non_nullable
 as int?,sources: null == sources ? _self.sources : sources // ignore: cast_nullable_to_non_nullable
 as List<String>,tags: null == tags ? _self.tags : tags // ignore: cast_nullable_to_non_nullable
-as List<String>,
+as Map<String, List<String>>,
   ));
 }
 /// Create a copy of PostEdit
@@ -91,8 +97,8 @@ $PostCopyWith<$Res> get post {
 /// @nodoc
 
 
-class _PostEdit extends PostEdit {
-  const _PostEdit({required this.post, this.editReason, required this.rating, required this.description, this.parentId, required final  List<String> sources, required final  List<String> tags}): _sources = sources,_tags = tags,super._();
+class _PostEdit extends PostEdit with DiagnosticableTreeMixin {
+  const _PostEdit({required this.post, this.editReason, required this.rating, required this.description, this.parentId, required final  List<String> sources, required final  Map<String, List<String>> tags}): _sources = sources,_tags = tags,super._();
   
 
 @override final  Post post;
@@ -107,11 +113,11 @@ class _PostEdit extends PostEdit {
   return EqualUnmodifiableListView(_sources);
 }
 
- final  List<String> _tags;
-@override List<String> get tags {
-  if (_tags is EqualUnmodifiableListView) return _tags;
+ final  Map<String, List<String>> _tags;
+@override Map<String, List<String>> get tags {
+  if (_tags is EqualUnmodifiableMapView) return _tags;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_tags);
+  return EqualUnmodifiableMapView(_tags);
 }
 
 
@@ -122,6 +128,12 @@ class _PostEdit extends PostEdit {
 _$PostEditCopyWith<_PostEdit> get copyWith => __$PostEditCopyWithImpl<_PostEdit>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'PostEdit'))
+    ..add(DiagnosticsProperty('post', post))..add(DiagnosticsProperty('editReason', editReason))..add(DiagnosticsProperty('rating', rating))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('parentId', parentId))..add(DiagnosticsProperty('sources', sources))..add(DiagnosticsProperty('tags', tags));
+}
 
 @override
 bool operator ==(Object other) {
@@ -133,7 +145,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,post,editReason,rating,description,parentId,const DeepCollectionEquality().hash(_sources),const DeepCollectionEquality().hash(_tags));
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'PostEdit(post: $post, editReason: $editReason, rating: $rating, description: $description, parentId: $parentId, sources: $sources, tags: $tags)';
 }
 
@@ -145,7 +157,7 @@ abstract mixin class _$PostEditCopyWith<$Res> implements $PostEditCopyWith<$Res>
   factory _$PostEditCopyWith(_PostEdit value, $Res Function(_PostEdit) _then) = __$PostEditCopyWithImpl;
 @override @useResult
 $Res call({
- Post post, String? editReason, Rating rating, String description, int? parentId, List<String> sources, List<String> tags
+ Post post, String? editReason, Rating rating, String description, int? parentId, List<String> sources, Map<String, List<String>> tags
 });
 
 
@@ -171,7 +183,7 @@ as Rating,description: null == description ? _self.description : description // 
 as String,parentId: freezed == parentId ? _self.parentId : parentId // ignore: cast_nullable_to_non_nullable
 as int?,sources: null == sources ? _self._sources : sources // ignore: cast_nullable_to_non_nullable
 as List<String>,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
-as List<String>,
+as Map<String, List<String>>,
   ));
 }
 

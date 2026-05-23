@@ -25,13 +25,13 @@ class LikeDisplay extends StatelessWidget {
               builder: (context, state, mutate) {
                 final bool enabled = client.hasLogin && !state.isLoading;
                 return VoteDisplay(
-                  status: post.vote.status,
-                  score: post.vote.score,
+                  vote: post.vote,
+                  score: post.score,
                   onUpvote: enabled
                       ? (isLiked) async {
-                          try {
-                            await mutate((upvote: true, replace: !isLiked));
-                          } on Exception {
+                          mutate((upvote: true, replace: !isLiked)).catchError((
+                            error,
+                          ) {
                             messenger.showSnackBar(
                               SnackBar(
                                 duration: const Duration(seconds: 1),
@@ -40,14 +40,16 @@ class LikeDisplay extends StatelessWidget {
                                 ),
                               ),
                             );
-                          }
+                            return error;
+                          });
+                          return !isLiked;
                         }
                       : null,
                   onDownvote: enabled
                       ? (isLiked) async {
-                          try {
-                            await mutate((upvote: false, replace: !isLiked));
-                          } on Exception {
+                          mutate((upvote: false, replace: !isLiked)).catchError((
+                            error,
+                          ) {
                             messenger.showSnackBar(
                               SnackBar(
                                 duration: const Duration(seconds: 1),
@@ -56,7 +58,9 @@ class LikeDisplay extends StatelessWidget {
                                 ),
                               ),
                             );
-                          }
+                            return error;
+                          });
+                          return !isLiked;
                         }
                       : null,
                 );
@@ -94,8 +98,10 @@ class FavoriteButton extends StatelessWidget {
     final client = context.watch<Client>();
     final messenger = ScaffoldMessenger.of(context);
 
+    final addMutation = client.posts.useAddFavorite();
+    final removeMutation = client.posts.useRemoveFavorite();
     return MutationBuilder(
-      mutation: client.posts.useSetFavorite(id: post.id),
+      mutation: post.isFavorited ? removeMutation : addMutation,
       builder: (context, state, mutate) {
         return InkResponse(
           onTap: state.isLoading ? null : () {},
@@ -111,23 +117,21 @@ class FavoriteButton extends StatelessWidget {
               color: isLiked ? Colors.pinkAccent : IconTheme.of(context).color,
             ),
             onTap: (isLiked) async {
-              (() async {
-                try {
-                  await mutate(!isLiked);
-                } on Exception {
-                  messenger.showSnackBar(
-                    SnackBar(
-                      duration: const Duration(seconds: 1),
-                      content: Text(
-                        isLiked
-                            ? 'Failed to remove Post #${post.id} from favorites'
-                            : 'Failed to add Post #${post.id} to favorites',
-                      ),
+              try {
+                await mutate(post.id);
+              } on Exception {
+                messenger.showSnackBar(
+                  SnackBar(
+                    duration: const Duration(seconds: 1),
+                    content: Text(
+                      isLiked
+                          ? 'Failed to remove Post #${post.id} from favorites'
+                          : 'Failed to add Post #${post.id} to favorites',
                     ),
-                  );
-                }
-              })();
-              return null;
+                  ),
+                );
+              }
+              return !isLiked;
             },
           ),
         );

@@ -1,5 +1,4 @@
-import 'package:e1547/domain/domain.dart';
-import 'package:e1547/pool/pool.dart';
+import 'package:e1547/client/client.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
@@ -12,40 +11,12 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final params = context.watch<PostParams>();
-    final tags = params.tags ?? '';
-
-    final poolMatch = poolRegex().firstMatch(tags);
-    final poolId = poolMatch?.namedGroup('id');
-
-    if (poolId != null) {
-      return PoolAppBar(id: int.parse(poolId), actions: actions);
-    } else {
-      return _TagBasedAppBar(tags: tags, actions: actions);
-    }
-  }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-}
-
-class _TagBasedAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const _TagBasedAppBar({required this.tags, this.actions});
-
-  final String tags;
-  final List<Widget>? actions;
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-
-  @override
-  Widget build(BuildContext context) {
-    final domain = context.watch<Domain>();
+    final client = context.watch<Client>();
+    final controller = context.watch<PostParamsController>();
+    final tags = controller.value.tags ?? '';
 
     String title;
     bool showInfo = false;
-
-    // TODO: if Follow matches, replace title
 
     final map = TagMap(tags);
     if (map.isEmpty) {
@@ -54,10 +25,10 @@ class _TagBasedAppBar extends StatelessWidget implements PreferredSizeWidget {
       title = 'Hot';
     } else if (map['fav'] != null) {
       final username = map['fav']!;
-      if (username == domain.persona.identity.username) {
+      if (username == client.identity.username) {
         title = 'Favorites';
       } else {
-        title = '${nameToPretty(username)}\'s Favorites';
+        title = "$username's Favorites";
       }
     } else {
       title = tagToName(map.toString());
@@ -77,4 +48,7 @@ class _TagBasedAppBar extends StatelessWidget implements PreferredSizeWidget {
       ],
     );
   }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

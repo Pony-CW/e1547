@@ -1,4 +1,5 @@
 import 'package:e1547/post/post.dart';
+import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'editing.freezed.dart';
@@ -12,7 +13,7 @@ abstract class PostEdit with _$PostEdit {
     required String description,
     int? parentId,
     required List<String> sources,
-    required List<String> tags,
+    required Map<String, List<String>> tags,
   }) = _PostEdit;
 
   const PostEdit._();
@@ -23,7 +24,10 @@ abstract class PostEdit with _$PostEdit {
     description: post.description,
     parentId: post.relationships.parentId,
     sources: post.sources,
-    tags: post.tags.values.expand((tagList) => tagList).toList(),
+    tags: {
+      for (final entry in post.tags.entries)
+        entry.key: List<String>.from(entry.value),
+    },
   );
 
   Map<String, String?>? toForm() {
@@ -32,56 +36,79 @@ abstract class PostEdit with _$PostEdit {
     List<String> oldTags = post.tags.values
         .expand((category) => category)
         .toList();
-    List<String> newTags = tags;
+    List<String> newTags = tags.values
+        .expand((category) => category)
+        .toList();
     List<String> removedTags = oldTags
         .where((element) => !newTags.contains(element))
+        .map((t) => '-$t')
         .toList();
-    removedTags = removedTags.map((t) => '-$t').toList();
     List<String> addedTags = newTags
         .where((element) => !oldTags.contains(element))
         .toList();
-    List<String> tagDiff = [];
-    tagDiff.addAll(removedTags);
-    tagDiff.addAll(addedTags);
+    List<String> tagDiff = [...removedTags, ...addedTags];
 
     if (tagDiff.isNotEmpty) {
-      body.addEntries([MapEntry('post[tag_string_diff]', tagDiff.join(' '))]);
+      body['post[tag_string_diff]'] = tagDiff.join(' ');
     }
 
     List<String> removedSource = post.sources
         .where((element) => !sources.contains(element))
+        .map((s) => '-$s')
         .toList();
-    removedSource = removedSource.map((s) => '-$s').toList();
     List<String> addedSource = sources
         .where((element) => !post.sources.contains(element))
         .toList();
-    List<String> sourceDiff = [];
-    sourceDiff.addAll(removedSource);
-    sourceDiff.addAll(addedSource);
+    List<String> sourceDiff = [...removedSource, ...addedSource];
 
     if (sourceDiff.isNotEmpty) {
-      body.addEntries([MapEntry('post[source_diff]', sourceDiff.join('\n'))]);
+      body['post[source_diff]'] = sourceDiff.join('\n');
     }
 
     if (post.relationships.parentId != parentId) {
-      body.addEntries([MapEntry('post[parent_id]', parentId?.toString())]);
+      body['post[parent_id]'] = parentId?.toString();
     }
 
     if (post.description != description) {
-      body.addEntries([MapEntry('post[description]', description)]);
+      body['post[description]'] = description;
     }
 
     if (post.rating != rating) {
-      body.addEntries([MapEntry('post[rating]', rating.name)]);
+      body['post[rating]'] = rating.name;
     }
 
     if (body.isNotEmpty) {
       if (editReason?.trim().isNotEmpty ?? false) {
-        body.addEntries([MapEntry('post[edit_reason]', editReason!.trim())]);
+        body['post[edit_reason]'] = editReason!.trim();
       }
       return body;
     } else {
       return null;
     }
+  }
+}
+
+class PostEditingController extends ValueNotifier<PostEdit?> {
+  PostEditingController({required this.canEdit, PostEdit? initial})
+    : super(initial);
+
+  final bool canEdit;
+
+  bool _editing = false;
+  bool get editing => _editing;
+  set editing(bool value) {
+    if (_editing == value) return;
+    _editing = value;
+    notifyListeners();
+  }
+
+  void start(Post post) {
+    value = PostEdit.fromPost(post);
+    editing = true;
+  }
+
+  void cancel() {
+    value = null;
+    editing = false;
   }
 }

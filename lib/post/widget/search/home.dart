@@ -17,12 +17,15 @@ class HomePage extends StatelessWidget {
       child: FilterControllerProvider(
         create: (_) => PostFilter(client),
         keys: (_) => [client],
-        child: ListenableProvider(
-          create: (_) => PostParams()..tags = client.traits.value.homeTags,
+        child: ChangeNotifierProvider(
+          create: (_) => PostParamsController(
+            PostParams(tags: client.traits.value.homeTags),
+          ),
           builder: (context, _) => SubValueListener(
-            listenable: context.watch<PostParams>(),
-            listener: (value) => client.traits.value = client.traits.value
-                .copyWith(homeTags: value['tags'] ?? ''),
+            listenable: context.watch<PostParamsController>(),
+            listener: (PostParams value) => client.traits.value = client.traits
+                .value
+                .copyWith(homeTags: value.tags ?? ''),
             builder: (context, _) => AdaptiveScaffold(
               appBar: const DefaultAppBar(
                 title: Center(child: AppIcon()),

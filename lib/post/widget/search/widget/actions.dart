@@ -18,148 +18,147 @@ class TagListActions extends StatelessWidget {
       return const SizedBox.shrink();
     }
     return Consumer<Client>(
-      builder: (context, client, child) => QueryBuilder(
-        query: client.follows.useGetByTags(tags: tag),
-        builder: (context, followState) => ValueListenableBuilder(
-          valueListenable: client.traits,
-          builder: (context, traits, child) {
-            Follow? follow = followState.data;
-            bool hasFollow = follow != null;
+      builder: (context, client, child) {
+        final query = client.follows.useAll(
+          query: FollowsQuery(tags: tag).toQuery(),
+        );
+        return QueryBuilder(
+          query: query,
+          builder: (context, followState) => ValueListenableBuilder(
+            valueListenable: client.traits,
+            builder: (context, traits, child) {
+              final Follow? follow = followState.data?.firstWhereOrNull(
+                (f) => f.tags == tag,
+              );
+              final bool hasFollow = follow != null;
 
-            bool following = [
-              FollowType.update,
-              FollowType.notify,
-            ].contains(follow.type);
+              final bool following =
+                  hasFollow &&
+                  const [FollowType.update, FollowType.notify].contains(
+                    follow.type,
+                  );
 
-            bool notifying = follow.type == FollowType.notify;
-            bool bookmarked = follow.type == FollowType.bookmark;
-            bool denied = traits.denylist.contains(tag);
+              final bool notifying =
+                  hasFollow && follow.type == FollowType.notify;
+              final bool bookmarked =
+                  hasFollow && follow.type == FollowType.bookmark;
+              final bool denied = traits.denylist.contains(tag);
 
-            VoidCallback followBookmarkToggle(FollowType type) {
-              return () {
+              Future<void> applyFollowMutation(FollowType type) async {
                 if (hasFollow) {
                   if (follow.type == type) {
-                    client.follows.useDelete().mutate(follow.id);
-                  }
-                  if (follow.type == FollowType.notify &&
+                    await client.follows.delete(follow.id);
+                  } else if (follow.type == FollowType.notify &&
                       type == FollowType.update) {
-                    client.follows.useDelete().mutate(follow.id);
+                    await client.follows.delete(follow.id);
                   } else {
-                    client.follows.useUpdate().mutate(
-                      FollowUpdate(id: follow.id, type: type),
-                    );
+                    await client.follows.update(id: follow.id, type: type);
                   }
                 } else {
-                  client.follows.useCreate().mutate(
-                    FollowRequest(tags: tag, type: type),
-                  );
+                  await client.follows.create(tags: tag, type: type);
                   if (denied) {
                     client.traits.value = traits.copyWith(
                       denylist: traits.denylist..remove(tag),
                     );
                   }
                 }
-              };
-            }
+                query.invalidate();
+              }
 
-            return AnimatedSwitcher(
-              duration: defaultAnimationDuration,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CrossFade(
-                    showChild: !denied,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ActionButton(
-                          icon: following
-                              ? const Icon(Icons.person_remove_alt_1)
-                              : const Icon(Icons.person_add_alt_1),
-                          label: following
-                              ? const Text('Unfollow')
-                              : const Text('Follow'),
-                          onTap: followBookmarkToggle(FollowType.update),
-                        ),
-                        CrossFade(
-                          showChild: following,
-                          child: ActionButton(
-                            icon: notifying
-                                ? const Icon(Icons.notifications_active)
-                                : const Icon(Icons.notifications_none),
-                            label: notifying
-                                ? const Text('Mute')
-                                : const Text('Notify'),
-                            onTap: () {
-                              if (notifying) {
-                                client.follows.useUpdate().mutate(
-                                  FollowUpdate(
-                                    id: follow.id,
-                                    type: FollowType.update,
-                                  ),
-                                );
-                              } else {
-                                client.follows.useUpdate().mutate(
-                                  FollowUpdate(
-                                    id: follow.id,
-                                    type: FollowType.notify,
-                                  ),
-                                );
-                              }
-                            },
+              return AnimatedSwitcher(
+                duration: defaultAnimationDuration,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CrossFade(
+                      showChild: !denied,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ActionButton(
+                            icon: following
+                                ? const Icon(Icons.person_remove_alt_1)
+                                : const Icon(Icons.person_add_alt_1),
+                            label: following
+                                ? const Text('Unfollow')
+                                : const Text('Follow'),
+                            onTap: () => applyFollowMutation(FollowType.update),
                           ),
-                        ),
-                        ActionButton(
-                          icon: bookmarked
-                              ? const Icon(Icons.turned_in)
-                              : const Icon(Icons.turned_in_not),
-                          label: bookmarked
-                              ? const Text('Unbookmark')
-                              : const Text('Bookmark'),
-                          onTap: followBookmarkToggle(FollowType.bookmark),
-                        ),
-                      ],
-                    ),
-                  ),
-                  CrossFade(
-                    showChild: !hasFollow,
-                    child: ActionButton(
-                      icon: CrossFade(
-                        showChild: denied,
-                        secondChild: const Icon(Icons.block),
-                        child: const Icon(Icons.check),
+                          CrossFade(
+                            showChild: following,
+                            child: ActionButton(
+                              icon: notifying
+                                  ? const Icon(Icons.notifications_active)
+                                  : const Icon(Icons.notifications_none),
+                              label: notifying
+                                  ? const Text('Mute')
+                                  : const Text('Notify'),
+                              onTap: () async {
+                                if (!hasFollow) return;
+                                await client.follows.update(
+                                  id: follow.id,
+                                  type: notifying
+                                      ? FollowType.update
+                                      : FollowType.notify,
+                                );
+                                query.invalidate();
+                              },
+                            ),
+                          ),
+                          ActionButton(
+                            icon: bookmarked
+                                ? const Icon(Icons.turned_in)
+                                : const Icon(Icons.turned_in_not),
+                            label: bookmarked
+                                ? const Text('Unbookmark')
+                                : const Text('Bookmark'),
+                            onTap: () =>
+                                applyFollowMutation(FollowType.bookmark),
+                          ),
+                        ],
                       ),
-                      label: denied
-                          ? const Text('Unblock')
-                          : const Text('Block'),
-                      onTap: () {
-                        if (denied) {
-                          client.accounts.push(
-                            traits: traits.copyWith(
-                              denylist: traits.denylist
-                                  .whereNot((element) => element == tag)
-                                  .toList(),
-                            ),
-                          );
-                        } else {
-                          if (hasFollow) {
-                            client.follows.useDelete().mutate(follow.id);
-                          }
-                          client.accounts.push(
-                            traits: traits.copyWith(
-                              denylist: [...traits.denylist, tag],
-                            ),
-                          );
-                        }
-                      },
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-      ),
+                    CrossFade(
+                      showChild: !hasFollow,
+                      child: ActionButton(
+                        icon: CrossFade(
+                          showChild: denied,
+                          secondChild: const Icon(Icons.block),
+                          child: const Icon(Icons.check),
+                        ),
+                        label: denied
+                            ? const Text('Unblock')
+                            : const Text('Block'),
+                        onTap: () async {
+                          if (denied) {
+                            await client.accounts.push(
+                              traits: traits.copyWith(
+                                denylist: traits.denylist
+                                    .whereNot((element) => element == tag)
+                                    .toList(),
+                              ),
+                            );
+                          } else {
+                            if (hasFollow) {
+                              await client.follows.delete(follow.id);
+                              query.invalidate();
+                            }
+                            await client.accounts.push(
+                              traits: traits.copyWith(
+                                denylist: [...traits.denylist, tag],
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
@@ -171,7 +170,7 @@ class RemoveTagAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.watch<PostParams>();
+    final controller = context.watch<PostParamsController>();
 
     return ActionButton(
       icon: const Icon(Icons.search_off),
@@ -191,7 +190,7 @@ class AddTagAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.watch<PostParams>();
+    final controller = context.watch<PostParamsController>();
 
     return ActionButton(
       icon: const Icon(Icons.zoom_in),
@@ -211,7 +210,7 @@ class SubtractTagAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.watch<PostParams>();
+    final controller = context.watch<PostParamsController>();
 
     return ActionButton(
       icon: const Icon(Icons.zoom_out),
@@ -231,7 +230,7 @@ class TagSearchActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.watch<PostParams>();
+    final controller = context.watch<PostParamsController>();
 
     if (tag.contains(' ')) {
       return const SizedBox.shrink();
