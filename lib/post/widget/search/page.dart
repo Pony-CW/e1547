@@ -7,9 +7,10 @@ import 'package:e1547/traits/traits.dart';
 import 'package:flutter/material.dart';
 
 class PostsPage extends StatelessWidget {
-  const PostsPage({super.key, this.params});
+  const PostsPage({super.key, this.params, this.drawerActions = const []});
 
   final PostParams? params;
+  final List<Widget> drawerActions;
 
   @override
   Widget build(BuildContext context) {
@@ -24,18 +25,21 @@ class PostsPage extends StatelessWidget {
             appBar: const PostSelectionAppBar(child: PostPageAppBar()),
             floatingActionButton: const PostsPageFab(),
             drawer: const RouterDrawer(),
-            endDrawer: const ContextDrawer(
-              title: Text('Posts'),
+            endDrawer: ContextDrawer(
+              title: const Text('Posts'),
               children: [
-                DrawerDenySwitch(),
-                // DrawerTagCounter(),
+                ...drawerActions,
+                if (drawerActions.isNotEmpty) const Divider(),
+                const DrawerDenySwitch(),
               ],
             ),
-            body: ListenableBuilder(
-              listenable: context.watch<Settings>().tileSize,
-              builder: (context, child) => TileLayout(
-                tileSize: context.watch<Settings>().tileSize.value,
-                child: const PostList(),
+            body: LimitedWidthLayout(
+              child: ListenableBuilder(
+                listenable: context.watch<Settings>().tileSize,
+                builder: (context, child) => TileLayout(
+                  tileSize: context.watch<Settings>().tileSize.value,
+                  child: const PostList(),
+                ),
               ),
             ),
           ),

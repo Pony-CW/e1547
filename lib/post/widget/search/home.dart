@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final client = context.watch<Client>();
-    return RouterDrawerEntry<PostsPage>(
+    return RouterDrawerEntry<HomePage>(
       child: FilterControllerProvider(
         create: (_) => PostFilter(client),
         keys: (_) => [client],
@@ -40,11 +40,13 @@ class HomePage extends StatelessWidget {
                   // DrawerTagCounter(),
                 ],
               ),
-              body: ListenableBuilder(
-                listenable: context.watch<Settings>().tileSize,
-                builder: (context, child) => TileLayout(
-                  tileSize: context.watch<Settings>().tileSize.value,
-                  child: const PostList(),
+              body: LimitedWidthLayout(
+                child: ListenableBuilder(
+                  listenable: context.watch<Settings>().tileSize,
+                  builder: (context, child) => TileLayout(
+                    tileSize: context.watch<Settings>().tileSize.value,
+                    child: const PostList(),
+                  ),
                 ),
               ),
             ),

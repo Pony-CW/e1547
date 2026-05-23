@@ -48,11 +48,13 @@ class FollowsTimelinePage extends StatelessWidget {
                   DrawerDenySwitch(),
                 ],
               ),
-              body: ListenableBuilder(
-                listenable: context.watch<Settings>().tileSize,
-                builder: (context, child) => TileLayout(
-                  tileSize: context.watch<Settings>().tileSize.value,
-                  child: FollowTimelinePostList(tags: followedTags),
+              body: LimitedWidthLayout(
+                child: ListenableBuilder(
+                  listenable: context.watch<Settings>().tileSize,
+                  builder: (context, child) => TileLayout(
+                    tileSize: context.watch<Settings>().tileSize.value,
+                    child: FollowTimelinePostList(tags: followedTags),
+                  ),
                 ),
               ),
             );

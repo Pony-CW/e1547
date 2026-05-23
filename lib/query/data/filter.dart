@@ -7,6 +7,7 @@ abstract class FilterController<T> extends ChangeNotifier {
   final Map<Object, List<T>> _tracked = {};
 
   bool _notifyScheduled = false;
+  bool _disposed = false;
 
   Object idOf(T item);
 
@@ -37,11 +38,18 @@ abstract class FilterController<T> extends ChangeNotifier {
   int get blockedCount => tracked.where((item) => !filter(item)).length;
 
   void _scheduleNotify() {
-    if (_notifyScheduled) return;
+    if (_notifyScheduled || _disposed) return;
     _notifyScheduled = true;
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _notifyScheduled = false;
+      if (_disposed) return;
       notifyListeners();
     });
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
   }
 }

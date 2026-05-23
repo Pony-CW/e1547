@@ -28,7 +28,7 @@ abstract class ReplyParams with _$ReplyParams {
     'search[topic_id]': topicId,
     'search[body_matches]': body,
     'search[creator_name]': creator,
-    if (order != ReplyOrder.oldest) 'search[order]': order.value,
+    'search[order]': order.value,
   }.toQuery();
 }
 

@@ -42,7 +42,12 @@ class Client with Disposable {
   );
   late final UserClient users = UserClient(dio: dio);
 
-  late final PostClient posts = PostClient(dio: dio);
+  late final PostClient posts = PostClient(
+    dio: dio,
+    pools: pools,
+    traits: traits,
+    identity: identity,
+  );
 
   late final TagClient tags = TagClient(dio: dio);
   late final WikiClient wikis = WikiClient(dio: dio);

@@ -67,50 +67,68 @@ class FollowClient {
     required FollowType type,
     String? title,
     String? alias,
-  }) => repository.add(
-    FollowRequest(tags: tags, type: type, title: title, alias: alias),
-    identity.id,
-  );
+  }) async {
+    await repository.add(
+      FollowRequest(tags: tags, type: type, title: title, alias: alias),
+      identity.id,
+    );
+    _invalidateAll();
+  }
 
   Future<void> update({
     required int id,
     String? tags,
     String? title,
     FollowType? type,
-  }) => repository.transaction(() async {
-    await ((repository.update(
-      repository.followsTable,
-    ))..where((tbl) => tbl.id.equals(id))).write(
-      FollowCompanion(
-        title: title != null
-            ? Value(title.nullWhenEmpty)
-            : const Value.absent(),
-        type: type != null ? Value(type) : const Value.absent(),
-      ),
-    );
-    if (tags?.nullWhenEmpty != null) {
+  }) async {
+    await repository.transaction(() async {
       await ((repository.update(
         repository.followsTable,
       ))..where((tbl) => tbl.id.equals(id))).write(
         FollowCompanion(
-          tags: Value(tags!),
-          updated: const Value(null),
-          unseen: const Value(null),
-          thumbnail: const Value(null),
-          latest: const Value(null),
+          title: title != null
+              ? Value(title.nullWhenEmpty)
+              : const Value.absent(),
+          type: type != null ? Value(type) : const Value.absent(),
         ),
       );
-    }
-  });
+      if (tags?.nullWhenEmpty != null) {
+        await ((repository.update(
+          repository.followsTable,
+        ))..where((tbl) => tbl.id.equals(id))).write(
+          FollowCompanion(
+            tags: Value(tags!),
+            updated: const Value(null),
+            unseen: const Value(null),
+            thumbnail: const Value(null),
+            latest: const Value(null),
+          ),
+        );
+      }
+    });
+    _invalidateAll();
+  }
 
   Future<void> markSeen(int id) => markAllSeen([id]);
 
-  Future<void> markAllSeen(List<int>? ids) =>
-      repository.markAllSeen(ids: ids, identity: identity.id);
+  Future<void> markAllSeen(List<int>? ids) async {
+    await repository.markAllSeen(ids: ids, identity: identity.id);
+    _invalidateAll();
+  }
 
-  Future<void> delete(int id) => repository.remove(id);
+  Future<void> delete(int id) async {
+    await repository.remove(id);
+    _invalidateAll();
+  }
 
   Future<int> count() => repository.length(identity: identity.id);
+
+  void _invalidateAll() {
+    dio.queryCache?.invalidateCache(
+      filterFn: (key, _) =>
+          key is List && key.isNotEmpty && key.first == 'follows',
+    );
+  }
 }
 
 extension type FollowsQuery._(QueryMap self) implements QueryMap {

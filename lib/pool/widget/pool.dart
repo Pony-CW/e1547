@@ -20,58 +20,57 @@ class PoolPage extends StatefulWidget {
 
 class _PoolPageState extends State<PoolPage> {
   bool readerMode = true;
-  late bool orderByOldest = widget.orderByOldest ?? true;
 
   @override
   Widget build(BuildContext context) {
     final client = context.watch<Client>();
-    final query = client.pools.usePosts(
-      id: widget.pool.id,
-      posts: client.posts,
-      orderByOldest: orderByOldest,
-    );
+    final orderByOldest = widget.orderByOldest ?? true;
     return FilterControllerProvider(
       create: (_) => PostFilter(client),
       keys: (_) => [client],
-      child: AdaptiveScaffold(
-        appBar: DefaultAppBar(
-          title: Text(tagToName(widget.pool.name)),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.info_outline),
-              tooltip: 'Info',
-              onPressed: () =>
-                  showPoolPrompt(context: context, pool: widget.pool),
-            ),
-            const ContextDrawerButton(),
-          ],
+      child: ChangeNotifierProvider(
+        create: (_) => PostParamsController(
+          PostParams(
+            tags: orderByOldest
+                ? 'pool:${widget.pool.id} order:pool'
+                : 'pool:${widget.pool.id} order:${PostOrder.newest.value}',
+          ),
         ),
-        endDrawer: ContextDrawer(
-          title: const Text('Pool'),
-          children: [
-            PoolReaderSwitch(
-              readerMode: readerMode,
-              onChange: (value) {
-                setState(() => readerMode = value);
-                Scaffold.of(context).closeEndDrawer();
-              },
-            ),
-            PoolOrderSwitch(
-              orderByOldest: orderByOldest,
-              onChanged: (value) => setState(() => orderByOldest = value),
-            ),
-            const DrawerDenySwitch(),
-          ],
-        ),
-        body: ListenableBuilder(
-          listenable: context.watch<Settings>().tileSize,
-          builder: (context, child) => TileLayout(
-            tileSize: context.watch<Settings>().tileSize.value,
-            child: PostList(
-              displayType: readerMode
-                  ? PostDisplayType.comic
-                  : PostDisplayType.grid,
-              query: query,
+        child: AdaptiveScaffold(
+          appBar: DefaultAppBar(
+            title: Text(tagToName(widget.pool.name)),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.info_outline),
+                tooltip: 'Info',
+                onPressed: () =>
+                    showPoolPrompt(context: context, pool: widget.pool),
+              ),
+              const ContextDrawerButton(),
+            ],
+          ),
+          endDrawer: ContextDrawer(
+            title: const Text('Pool'),
+            children: [
+              PoolReaderSwitch(
+                readerMode: readerMode,
+                onChange: (value) => setState(() => readerMode = value),
+              ),
+              const PoolOrderSwitch(),
+              const DrawerDenySwitch(),
+            ],
+          ),
+          body: LimitedWidthLayout(
+            child: ListenableBuilder(
+              listenable: context.watch<Settings>().tileSize,
+              builder: (context, child) => TileLayout(
+                tileSize: context.watch<Settings>().tileSize.value,
+                child: PostList(
+                  displayType: readerMode
+                      ? PostDisplayType.comic
+                      : PostDisplayType.grid,
+                ),
+              ),
             ),
           ),
         ),
@@ -81,23 +80,27 @@ class _PoolPageState extends State<PoolPage> {
 }
 
 class PoolOrderSwitch extends StatelessWidget {
-  const PoolOrderSwitch({
-    super.key,
-    required this.orderByOldest,
-    required this.onChanged,
-  });
-
-  final bool orderByOldest;
-  final ValueChanged<bool> onChanged;
+  const PoolOrderSwitch({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<PostParamsController>();
+    final tags = TagMap(controller.value.tags);
+    final oldestFirst = tags['order'] == 'pool';
     return SwitchListTile(
       secondary: const Icon(Icons.sort),
       title: const Text('Pool order'),
-      subtitle: Text(orderByOldest ? 'oldest first' : 'newest first'),
-      value: orderByOldest,
-      onChanged: onChanged,
+      subtitle: Text(oldestFirst ? 'oldest first' : 'newest first'),
+      value: oldestFirst,
+      onChanged: (value) {
+        final next = TagMap(controller.value.tags);
+        if (value) {
+          next['order'] = 'pool';
+        } else {
+          next['order'] = PostOrder.newest.value;
+        }
+        controller.update((p) => p.copyWith(tags: next.toString()));
+      },
     );
   }
 }
@@ -119,7 +122,10 @@ class PoolReaderSwitch extends StatelessWidget {
       title: const Text('Pool reader mode'),
       subtitle: Text(readerMode ? 'large images' : 'normal grid'),
       value: readerMode,
-      onChanged: onChange,
+      onChanged: (value) {
+        onChange(value);
+        Scaffold.of(context).closeEndDrawer();
+      },
     );
   }
 }

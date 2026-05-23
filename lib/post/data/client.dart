@@ -2,13 +2,25 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
+import 'package:e1547/identity/identity.dart';
+import 'package:e1547/pool/pool.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
+import 'package:e1547/traits/traits.dart';
+import 'package:flutter/foundation.dart';
 
 class PostClient {
-  PostClient({required this.dio});
+  PostClient({
+    required this.dio,
+    required this.pools,
+    required this.traits,
+    required this.identity,
+  });
 
   final Dio dio;
+  final PoolClient pools;
+  final ValueNotifier<Traits> traits;
+  final Identity identity;
 
   Future<Post> get({required int id, bool? force, CancelToken? cancelToken}) =>
       dio
