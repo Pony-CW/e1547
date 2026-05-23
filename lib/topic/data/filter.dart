@@ -22,14 +22,12 @@ class TopicFilter extends FilterController<Topic>
     notifyListeners();
   }
 
+  @override
+  Object idOf(Topic item) => item.id;
+
   // TODO: remove this and implement fetching AIBUR inside dtext
   @override
-  List<Topic> filter(List<Topic> items) => items
-      .where(
-        (topic) =>
-            !value.hideTagEditing ||
-            topic.categoryId !=
-                TopicCategory.tagAliasAndImplicationSuggestions.id,
-      )
-      .toList();
+  bool filter(Topic item) =>
+      !value.hideTagEditing ||
+      item.categoryId != TopicCategory.tagAliasAndImplicationSuggestions.id;
 }

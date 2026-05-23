@@ -15,82 +15,12 @@ class DrawerDenySwitch extends StatelessWidget {
       animation: resolved,
       builder: (context, child) => DrawerDenySwitchBody(
         denying: resolved.denying,
-        entryCounts: _entryCounts(resolved),
+        blockedCount: resolved.blockedCount,
+        entryCounts: resolved.blockedCountsByEntry,
         updateAllowedList: (value) => resolved.allowedEntries = value,
         updateDenying: (value) => resolved.denying = value,
         allowedList: resolved.allowedEntries,
       ),
-    );
-  }
-
-  static Map<String, int> _entryCounts(PostFilter filter) {
-    final result = <String, int>{};
-    for (final entries in filter.postFilterEntries.values) {
-      for (final entry in entries) {
-        result[entry] = (result[entry] ?? 0) + 1;
-      }
-    }
-    return result;
-  }
-}
-
-class DrawerMultiDenySwitch extends StatefulWidget {
-  const DrawerMultiDenySwitch({super.key, required this.filters});
-
-  final List<PostFilter> filters;
-
-  @override
-  State<DrawerMultiDenySwitch> createState() => _DrawerMultiDenySwitchState();
-}
-
-class _DrawerMultiDenySwitchState extends State<DrawerMultiDenySwitch> {
-  bool denying = true;
-  List<String> allowedList = [];
-
-  void updateDenying(bool value) {
-    denying = value;
-    for (final f in widget.filters) {
-      f.denying = denying;
-    }
-  }
-
-  void updateAllowedList(List<String> value) {
-    allowedList = value;
-    for (final f in widget.filters) {
-      f.allowedEntries = allowedList;
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    updateDenying(denying);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: Listenable.merge(widget.filters),
-      builder: (context, child) {
-        final Map<String, int> entryCounts = {};
-        final List<String> allowed = [];
-        for (final filter in widget.filters) {
-          for (final entries in filter.postFilterEntries.values) {
-            for (final entry in entries) {
-              entryCounts[entry] = (entryCounts[entry] ?? 0) + 1;
-            }
-          }
-          allowed.addAll(filter.allowedEntries);
-        }
-
-        return DrawerDenySwitchBody(
-          denying: denying,
-          entryCounts: entryCounts,
-          updateAllowedList: updateAllowedList,
-          updateDenying: updateDenying,
-          allowedList: allowed.toSet().toList(),
-        );
-      },
     );
   }
 }
@@ -147,6 +77,7 @@ class DrawerDenySwitchBody extends StatelessWidget {
   const DrawerDenySwitchBody({
     super.key,
     required this.denying,
+    required this.blockedCount,
     required this.entryCounts,
     required this.allowedList,
     required this.updateDenying,
@@ -154,6 +85,7 @@ class DrawerDenySwitchBody extends StatelessWidget {
   });
 
   final bool denying;
+  final int blockedCount;
   final Map<String, int> entryCounts;
   final List<String> allowedList;
 
@@ -168,15 +100,13 @@ class DrawerDenySwitchBody extends StatelessWidget {
     };
     final sortedKeys = entries.keys.toList()..sort();
 
-    final int totalBlocked = entryCounts.values.fold(0, (a, b) => a + b);
-
     return Column(
       children: [
         SwitchListTile(
           title: const Text('Blacklist'),
-          subtitle: denying && totalBlocked > 0
+          subtitle: denying && blockedCount > 0
               ? TweenAnimationBuilder<int>(
-                  tween: IntTween(begin: 0, end: totalBlocked),
+                  tween: IntTween(begin: 0, end: blockedCount),
                   duration: defaultAnimationDuration,
                   builder: (context, value, child) =>
                       Text('blocked $value posts'),

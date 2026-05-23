@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/query/query.dart';
 import 'package:e1547/reply/reply.dart';
@@ -11,11 +10,11 @@ class ReplyFilter extends FilterController<Reply> {
   final Client client;
 
   @override
-  List<Reply> filter(List<Reply> items) => items
-      .whereNot(
-        (e) => client.traits.value.denylist.contains('user:${e.creatorId}'),
-      )
-      .toList();
+  Object idOf(Reply item) => item.id;
+
+  @override
+  bool filter(Reply item) =>
+      !client.traits.value.denylist.contains('user:${item.creatorId}');
 
   @override
   void dispose() {

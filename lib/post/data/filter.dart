@@ -25,6 +25,15 @@ class PostFilter extends FilterController<Post>
   }
 
   @override
+  Object idOf(Post post) => post.id;
+
+  @override
+  bool filter(Post post) {
+    if (!denying) return true;
+    return !denies(post);
+  }
+
+  @override
   PostFilterValue get value => _value;
 
   @override
@@ -79,10 +88,19 @@ class PostFilter extends FilterController<Post>
     }
   }
 
-  @override
-  List<Post> filter(List<Post> items) {
-    if (!denying) return items;
-    return items.where((post) => !denies(post)).toList();
+  /// For each denylist entry that matched at least one tracked post, the
+  /// number of distinct posts it blocked across all sources.
+  Map<String, int> get blockedCountsByEntry {
+    if (!denying) return const {};
+    final counts = <String, int>{};
+    for (final post in tracked) {
+      if (allowedPosts.contains(post.id)) continue;
+      for (final entry in entriesFor(post)) {
+        if (allowedEntries.contains(entry)) continue;
+        counts[entry] = (counts[entry] ?? 0) + 1;
+      }
+    }
+    return counts;
   }
 
   List<String> entriesFor(Post post) {
@@ -120,17 +138,6 @@ class PostFilter extends FilterController<Post>
       post,
     ).where((entry) => !allowedEntries.contains(entry));
     return activeEntries.isNotEmpty;
-  }
-
-  Map<int, List<String>> get postFilterEntries {
-    final Map<int, List<String>> result = {};
-    for (final entry in _filterCache.entries) {
-      final MapEntry(:key, :value) = entry;
-      if (value.entries.isNotEmpty) {
-        result[key] = value.entries;
-      }
-    }
-    return result;
   }
 
   @override

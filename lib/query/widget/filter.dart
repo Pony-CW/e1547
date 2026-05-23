@@ -19,11 +19,26 @@ class FilterControllerProvider<C extends FilterController<T>, T>
                child: child,
              ),
        );
+
+  // ignore: use_key_in_widget_constructors
+  FilterControllerProvider.value({
+    required C value,
+    super.child,
+    TransitionBuilder? builder,
+  }) : super(
+         create: (_) => value,
+         builder: (context, child) =>
+             ListenableProvider<FilterController<T>>.value(
+               value: context.read<C>(),
+               builder: builder,
+               child: child,
+             ),
+       );
 }
 
 typedef FilterableState<T, K> = InfiniteQueryStatus<List<T>, K>;
 
-class QueryFilter<T, K> extends StatelessWidget {
+class QueryFilter<T, K> extends StatefulWidget {
   const QueryFilter({super.key, required this.state, required this.builder});
 
   final FilterableState<T, K> state;
@@ -31,20 +46,49 @@ class QueryFilter<T, K> extends StatelessWidget {
   builder;
 
   @override
+  State<QueryFilter<T, K>> createState() => _QueryFilterState<T, K>();
+}
+
+class _QueryFilterState<T, K> extends State<QueryFilter<T, K>> {
+  final Object _key = Object();
+  FilterController<T>? _controller;
+
+  @override
+  void dispose() {
+    _controller?.untrack(_key);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final controller = context.watch<FilterController<T>?>();
-    return builder(
+    if (!identical(_controller, controller)) {
+      _controller?.untrack(_key);
+      _controller = controller;
+    }
+
+    final data = widget.state.data;
+    if (data == null || controller == null) {
+      return widget.builder(context, widget.state);
+    }
+
+    final pages = data.pages;
+    final flat = pages.expand((p) => p).toList();
+    final filtered = controller.track(_key, flat);
+    final filteredIds = filtered.map(controller.idOf).toSet();
+    final rechunked = pages
+        .map(
+          (page) => page
+              .where((item) => filteredIds.contains(controller.idOf(item)))
+              .toList(),
+        )
+        .toList();
+
+    return widget.builder(
       context,
-      state.data != null
-          ? state.copyWithData(
-              InfiniteQueryData(
-                pages:
-                    controller?.filterPages(state.data!.pages) ??
-                    state.data!.pages,
-                args: state.data!.args,
-              ),
-            )
-          : state,
+      widget.state.copyWithData(
+        InfiniteQueryData(pages: rechunked, args: data.args),
+      ),
     );
   }
 }

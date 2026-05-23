@@ -9,6 +9,7 @@ import 'package:e1547/traits/traits.dart';
 import 'package:e1547/user/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_sub/flutter_sub.dart';
 
 enum UserPageSection { favorites, uploads, info }
 
@@ -24,19 +25,20 @@ class UserPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final client = context.watch<Client>();
-    return FilterControllerProvider(
-      create: (_) => PostFilter(client),
-      keys: (_) => [client],
-      child: LayoutBuilder(
+    return SubValue.builder(
+      create: (context) => PostFilter(context.read<Client>()),
+      dispose: (_, v) => v.dispose(),
+      builder: (context, filter) => LayoutBuilder(
         builder: (context, constraints) {
           Widget body;
           PreferredSizeWidget? appbar;
           final tabs = <Widget, WidgetBuilder>{
             const Tab(text: 'Favorites'): (context) => _UserPostsTab(
+              filter: filter,
               params: PostParams(tags: 'fav:${user.name}'),
             ),
             const Tab(text: 'Uploads'): (context) => _UserPostsTab(
+              filter: filter,
               params: PostParams(tags: 'user:${user.name}'),
             ),
           };
@@ -138,9 +140,7 @@ class UserPage extends StatelessWidget {
                         children: tabs.values
                             .toList()
                             .sublist(0, tabs.length)
-                            .map(
-                              (e) => CustomScrollView(slivers: [e(context)]),
-                            )
+                            .map((e) => CustomScrollView(slivers: [e(context)]))
                             .toList(),
                       ),
                     ),
@@ -170,9 +170,9 @@ class UserPage extends StatelessWidget {
             child: Scaffold(
               appBar: appbar,
               drawer: const RouterDrawer(),
-              endDrawer: const ContextDrawer(
-                title: Text('Posts'),
-                children: [DrawerDenySwitch()],
+              endDrawer: ContextDrawer(
+                title: const Text('Posts'),
+                children: [DrawerDenySwitch(filter: filter)],
               ),
               body: body,
             ),
@@ -184,33 +184,26 @@ class UserPage extends StatelessWidget {
 }
 
 class _UserPostsTab extends StatelessWidget {
-  const _UserPostsTab({required this.params});
+  const _UserPostsTab({required this.filter, required this.params});
 
+  final PostFilter filter;
   final PostParams params;
 
   @override
   Widget build(BuildContext context) {
-    return SliverMainAxisGroup(
-      slivers: [
-        SliverPadding(
-          padding: defaultActionListPadding,
-          sliver: _UserPostsSliver(params: params),
+    return FilterControllerProvider<PostFilter, Post>.value(
+      value: filter,
+      child: ChangeNotifierProvider(
+        create: (_) => PostParamsController(params),
+        child: SliverMainAxisGroup(
+          slivers: [
+            SliverPadding(
+              padding: defaultActionListPadding,
+              sliver: const SliverPostList(),
+            ),
+          ],
         ),
-      ],
-    );
-  }
-}
-
-class _UserPostsSliver extends StatelessWidget {
-  const _UserPostsSliver({required this.params});
-
-  final PostParams params;
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => PostParamsController(params),
-      child: const SliverPostList(),
+      ),
     );
   }
 }
