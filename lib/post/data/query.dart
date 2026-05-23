@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:e1547/client/client.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/query/query.dart';
@@ -99,10 +97,6 @@ QueryMap? _normalizeSearchQuery(QueryMap? query, {String? username}) {
   if (tags.length != 1) return query;
   if (tags['order'] != null) return query;
 
-  if (int.tryParse(tags['pool'] ?? '') != null) {
-    tags['order'] = 'pool';
-    return {...?query, 'tags': tags.toString()};
-  }
   if (username != null && tags['fav'] == username) {
     tags['order'] = 'fav';
     return {...?query, 'tags': tags.toString()};
@@ -119,16 +113,6 @@ Future<List<Post>> _dispatchSearch({
   final username = client.identity.username;
 
   if (tags.length == 2 &&
-      tags['order'] == 'pool' &&
-      int.tryParse(tags['pool'] ?? '') != null) {
-    return _fetchPoolPage(
-      client: client,
-      poolId: int.parse(tags['pool']!),
-      page: page,
-    );
-  }
-
-  if (tags.length == 2 &&
       tags['order'] == 'fav' &&
       username != null &&
       tags['fav'] == username) {
@@ -136,18 +120,4 @@ Future<List<Post>> _dispatchSearch({
   }
 
   return client.posts.page(page: page, query: query);
-}
-
-Future<List<Post>> _fetchPoolPage({
-  required Client client,
-  required int poolId,
-  required int page,
-}) async {
-  final pool = await client.pools.get(id: poolId);
-  final perPage = client.traits.value.perPage ?? 75;
-  final ids = pool.postIds;
-  final lower = (page - 1) * perPage;
-  if (lower >= ids.length) return const [];
-  final slice = ids.sublist(lower, min(lower + perPage, ids.length));
-  return client.posts.byIds(ids: slice);
 }

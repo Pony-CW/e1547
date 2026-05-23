@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e1547/app/app.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/history/history.dart';
-import 'package:e1547/pool/data/controller.dart';
+import 'package:e1547/pool/pool.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
@@ -10,15 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class PoolsPageFloatingActionButton extends StatelessWidget {
-  const PoolsPageFloatingActionButton({super.key, required this.controller});
-
-  final PoolController controller;
+  const PoolsPageFloatingActionButton({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<PoolParamsController>();
     return SearchPromptFloatingActionButton(
-      tags: controller.query,
-      onSubmit: (value) => controller.query = value,
+      tags: controller.value.toQuery(),
+      onSubmit: (value) => controller.value = PoolParams.fromQuery(value),
       filters: [
         WrapperFilterConfig(
           wrapper: (value) => 'search[$value]',

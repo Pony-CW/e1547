@@ -191,14 +191,18 @@ extension LinkOnTapExtension on LinkParser {
           return navWrapper((context) => PostLoadingPage(id));
         }
         return navWrapper(
-          (context) => PostsPage(params: PostParams(tags: result.query?['tags'])),
+          (context) =>
+              PostsPage(params: PostParams(tags: result.query?['tags'])),
         );
       case LinkType.pool:
         int? id = result.id as int?;
         if (id != null) {
           return navWrapper((context) => PoolLoadingPage(id));
         }
-        return navWrapper((context) => PoolsPage(search: result.query), true);
+        return navWrapper(
+          (context) => PoolsPage(search: PoolParams.fromQuery(result.query)),
+          true,
+        );
       case LinkType.user:
         Object? id = result.id;
         if (id != null) {

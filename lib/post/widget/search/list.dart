@@ -6,12 +6,18 @@ import 'package:flutter/material.dart';
 enum PostDisplayType { grid, comic, timeline }
 
 class PostList extends StatelessWidget {
-  const PostList({super.key, this.displayType = PostDisplayType.grid});
+  const PostList({
+    super.key,
+    this.displayType = PostDisplayType.grid,
+    this.query,
+  });
 
   final PostDisplayType displayType;
+  final InfiniteQuery<List<int>, int>? query;
 
   @override
   Widget build(BuildContext context) => PostPageQueryBuilder(
+    query: query,
     builder: (context, state, query) => PullToRefresh(
       onRefresh: query.invalidate,
       child: CustomScrollView(
@@ -19,7 +25,7 @@ class PostList extends StatelessWidget {
         slivers: [
           SliverPadding(
             padding: defaultActionListPadding,
-            sliver: SliverPostList(displayType: displayType),
+            sliver: SliverPostList(displayType: displayType, query: query),
           ),
         ],
       ),
@@ -28,12 +34,18 @@ class PostList extends StatelessWidget {
 }
 
 class SliverPostList extends StatelessWidget {
-  const SliverPostList({super.key, this.displayType = PostDisplayType.grid});
+  const SliverPostList({
+    super.key,
+    this.displayType = PostDisplayType.grid,
+    this.query,
+  });
 
   final PostDisplayType displayType;
+  final InfiniteQuery<List<int>, int>? query;
 
   @override
   Widget build(BuildContext context) => PostPageQueryBuilder(
+    query: query,
     builder: (context, state, query) => switch (displayType) {
       PostDisplayType.grid => PostGridSliver(
         state: state.paging,

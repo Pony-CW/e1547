@@ -4,4 +4,5 @@ export 'loading.dart';
 export 'pool.dart';
 export 'pools.dart';
 export 'prompt.dart';
+export 'query.dart';
 export 'tile.dart';

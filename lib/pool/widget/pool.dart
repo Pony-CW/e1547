@@ -25,49 +25,53 @@ class _PoolPageState extends State<PoolPage> {
   @override
   Widget build(BuildContext context) {
     final client = context.watch<Client>();
+    final query = client.pools.usePosts(
+      id: widget.pool.id,
+      posts: client.posts,
+      orderByOldest: orderByOldest,
+    );
     return FilterControllerProvider(
       create: (_) => PostFilter(client),
       keys: (_) => [client],
-      child: ChangeNotifierProvider(
-        create: (_) => PostParamsController(
-          PostParams(tags: 'pool:${widget.pool.id} order:pool'),
+      child: AdaptiveScaffold(
+        appBar: DefaultAppBar(
+          title: Text(tagToName(widget.pool.name)),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.info_outline),
+              tooltip: 'Info',
+              onPressed: () =>
+                  showPoolPrompt(context: context, pool: widget.pool),
+            ),
+            const ContextDrawerButton(),
+          ],
         ),
-        child: AdaptiveScaffold(
-          appBar: DefaultAppBar(
-            title: Text(tagToName(widget.pool.name)),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.info_outline),
-                tooltip: 'Info',
-                onPressed: () =>
-                    showPoolPrompt(context: context, pool: widget.pool),
-              ),
-              const ContextDrawerButton(),
-            ],
-          ),
-          endDrawer: ContextDrawer(
-            title: const Text('Pool'),
-            children: [
-              PoolReaderSwitch(
-                readerMode: readerMode,
-                onChange: (value) {
-                  setState(() => readerMode = value);
-                  Scaffold.of(context).closeEndDrawer();
-                },
-              ),
-              const PoolOrderSwitch(),
-              const DrawerDenySwitch(),
-            ],
-          ),
-          body: ListenableBuilder(
-            listenable: context.watch<Settings>().tileSize,
-            builder: (context, child) => TileLayout(
-              tileSize: context.watch<Settings>().tileSize.value,
-              child: PostList(
-                displayType: readerMode
-                    ? PostDisplayType.comic
-                    : PostDisplayType.grid,
-              ),
+        endDrawer: ContextDrawer(
+          title: const Text('Pool'),
+          children: [
+            PoolReaderSwitch(
+              readerMode: readerMode,
+              onChange: (value) {
+                setState(() => readerMode = value);
+                Scaffold.of(context).closeEndDrawer();
+              },
+            ),
+            PoolOrderSwitch(
+              orderByOldest: orderByOldest,
+              onChanged: (value) => setState(() => orderByOldest = value),
+            ),
+            const DrawerDenySwitch(),
+          ],
+        ),
+        body: ListenableBuilder(
+          listenable: context.watch<Settings>().tileSize,
+          builder: (context, child) => TileLayout(
+            tileSize: context.watch<Settings>().tileSize.value,
+            child: PostList(
+              displayType: readerMode
+                  ? PostDisplayType.comic
+                  : PostDisplayType.grid,
+              query: query,
             ),
           ),
         ),
@@ -77,27 +81,23 @@ class _PoolPageState extends State<PoolPage> {
 }
 
 class PoolOrderSwitch extends StatelessWidget {
-  const PoolOrderSwitch({super.key});
+  const PoolOrderSwitch({
+    super.key,
+    required this.orderByOldest,
+    required this.onChanged,
+  });
+
+  final bool orderByOldest;
+  final ValueChanged<bool> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.watch<PostParamsController>();
-    final tags = TagMap(controller.value.tags);
-    final oldestFirst = tags['order'] == 'pool';
     return SwitchListTile(
       secondary: const Icon(Icons.sort),
       title: const Text('Pool order'),
-      subtitle: Text(oldestFirst ? 'oldest first' : 'newest first'),
-      value: oldestFirst,
-      onChanged: (value) {
-        final next = TagMap(controller.value.tags);
-        if (value) {
-          next['order'] = 'pool';
-        } else {
-          next.remove('order');
-        }
-        controller.update((p) => p.copyWith(tags: next.toString()));
-      },
+      subtitle: Text(orderByOldest ? 'oldest first' : 'newest first'),
+      value: orderByOldest,
+      onChanged: onChanged,
     );
   }
 }

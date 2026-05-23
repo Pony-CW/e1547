@@ -88,8 +88,6 @@ class PostFilter extends FilterController<Post>
     }
   }
 
-  /// For each denylist entry that matched at least one tracked post, the
-  /// number of distinct posts it blocked across all sources.
   Map<String, int> get blockedCountsByEntry {
     if (!denying) return const {};
     final counts = <String, int>{};
