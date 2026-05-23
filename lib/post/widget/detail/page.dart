@@ -26,8 +26,7 @@ class PostDetail extends StatelessWidget {
           post: post,
           onTap: () {
             PostVideoRoute.of(context).keepPlaying();
-            if (!(context.read<PostEditingController>().editing) &&
-                onTapImage != null) {
+            if (onTapImage != null) {
               onTapImage!();
             } else {
               Navigator.of(context).push(
@@ -57,11 +56,7 @@ class PostDetail extends StatelessWidget {
 
   Widget middleBody(BuildContext context) => Padding(
     padding: const EdgeInsets.symmetric(horizontal: 20),
-    child: Column(
-      children: [
-        PostEditorChild(shown: false, child: CommentDisplay(post: post)),
-      ],
-    ),
+    child: Column(children: [CommentDisplay(post: post)]),
   );
 
   Widget lowerBody(BuildContext context) => Padding(
@@ -69,10 +64,10 @@ class PostDetail extends StatelessWidget {
     child: Column(
       children: [
         RelationshipDisplay(post: post),
-        PostEditorChild(shown: false, child: PoolDisplay(post: post)),
-        PostEditorChild(shown: false, child: DenylistTagDisplay(post: post)),
+        PoolDisplay(post: post),
+        DenylistTagDisplay(post: post),
         TagDisplay(post: post),
-        PostEditorChild(shown: false, child: FileDisplay(post: post)),
+        FileDisplay(post: post),
         SourceDisplay(post: post),
       ],
     ),
@@ -84,78 +79,75 @@ class PostDetail extends StatelessWidget {
       post: post,
       child: PostHistoryConnector(
         post: post,
-        child: PostEditor(
-          post: post,
-          child: Scaffold(
-            extendBodyBehindAppBar: true,
-            appBar: PostDetailAppBar(post: post),
-            floatingActionButton: context.read<Client>().hasLogin
-                ? PostDetailFloatingActionButton(post: post)
-                : null,
-            body: MediaQuery.removeViewInsets(
-              context: context,
-              removeTop: true,
-              child: Builder(
-                builder: (context) {
-                  final size = MediaQuery.sizeOf(context);
-                  if (size.width < 1000) {
-                    return ListView(
-                      primary: true,
-                      padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).padding.top,
-                        bottom: kBottomNavigationBarHeight + 24,
-                      ),
-                      children: [
-                        image(context, size),
-                        upperBody(context),
-                        middleBody(context),
-                        lowerBody(context),
-                      ],
-                    );
+        child: Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: PostDetailAppBar(post: post),
+          floatingActionButton: context.read<Client>().hasLogin
+              ? PostDetailFloatingActionButton(post: post)
+              : null,
+          body: MediaQuery.removeViewInsets(
+            context: context,
+            removeTop: true,
+            child: Builder(
+              builder: (context) {
+                final size = MediaQuery.sizeOf(context);
+                if (size.width < 1000) {
+                  return ListView(
+                    primary: true,
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).padding.top,
+                      bottom: kBottomNavigationBarHeight + 24,
+                    ),
+                    children: [
+                      image(context, size),
+                      upperBody(context),
+                      middleBody(context),
+                      lowerBody(context),
+                    ],
+                  );
+                } else {
+                  double sideBarWidth;
+                  if (size.width > 1400) {
+                    sideBarWidth = 404;
                   } else {
-                    double sideBarWidth;
-                    if (size.width > 1400) {
-                      sideBarWidth = 404;
-                    } else {
-                      sideBarWidth = 304;
-                    }
-                    return CustomScrollView(
-                      primary: true,
-                      slivers: [
-                        SliverCrossAxisGroup(
-                          slivers: [
-                            SliverMainAxisGroup(
-                              slivers: [
-                                SliverToBoxAdapter(
-                                  child: Column(
-                                    children: [
-                                      image(context, size),
-                                      upperBody(context),
-                                    ],
-                                  ),
-                                ),
-                                SliverPostCommentSection(postId: post.id),
-                              ],
-                            ),
-                            SliverConstrainedCrossAxis(
-                              maxExtent: sideBarWidth,
-                              sliver: SliverToBoxAdapter(
+                    sideBarWidth = 304;
+                  }
+                  return CustomScrollView(
+                    primary: true,
+                    slivers: [
+                      SliverCrossAxisGroup(
+                        slivers: [
+                          SliverMainAxisGroup(
+                            slivers: [
+                              SliverToBoxAdapter(
                                 child: Column(
-                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const SizedBox(height: 56),
-                                    lowerBody(context),
+                                    image(context, size),
+                                    upperBody(context),
                                   ],
                                 ),
                               ),
+                              SliverPostCommentSection(postId: post.id),
+                            ],
+                          ),
+                          SliverConstrainedCrossAxis(
+                            maxExtent: sideBarWidth,
+                            sliver: SliverToBoxAdapter(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const SizedBox(height: 56),
+                                  lowerBody(context),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ],
-                    );
-                  }
-                },
-              ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                }
+              },
             ),
           ),
         ),
