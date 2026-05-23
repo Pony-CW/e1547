@@ -251,7 +251,11 @@ class TasksController extends ChangeNotifier {
         await client.posts.addFavorite(task.postId);
         if (settings.upvoteFavs.value) {
           try {
-            await client.posts.vote(task.postId, true, true);
+            await client.posts.vote(
+              id: task.postId,
+              upvote: true,
+              replace: true,
+            );
           } on Object catch (e, s) {
             // upvote is best-effort once the favorite succeeded
             _logger.warning(
