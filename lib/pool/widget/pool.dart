@@ -55,6 +55,7 @@ class _PoolPageState extends State<PoolPage> {
                   Scaffold.of(context).closeEndDrawer();
                 },
               ),
+              const PoolOrderSwitch(),
               const DrawerDenySwitch(),
             ],
           ),
@@ -76,23 +77,27 @@ class _PoolPageState extends State<PoolPage> {
 }
 
 class PoolOrderSwitch extends StatelessWidget {
-  const PoolOrderSwitch({
-    super.key,
-    required this.oldestFirst,
-    required this.onChange,
-  });
-
-  final bool oldestFirst;
-  final ValueChanged<bool> onChange;
+  const PoolOrderSwitch({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<PostParamsController>();
+    final tags = TagMap(controller.value.tags);
+    final oldestFirst = tags['order'] == 'pool';
     return SwitchListTile(
       secondary: const Icon(Icons.sort),
       title: const Text('Pool order'),
       subtitle: Text(oldestFirst ? 'oldest first' : 'newest first'),
       value: oldestFirst,
-      onChanged: onChange,
+      onChanged: (value) {
+        final next = TagMap(controller.value.tags);
+        if (value) {
+          next['order'] = 'pool';
+        } else {
+          next.remove('order');
+        }
+        controller.update((p) => p.copyWith(tags: next.toString()));
+      },
     );
   }
 }
