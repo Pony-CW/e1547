@@ -20,22 +20,22 @@ extension PostQuerying on PostClient {
     config: postCache.getConfig(vendored: vendored),
   );
 
-  InfiniteQuery<List<int>, int> useSearch({
-    required PostParams params,
+  InfiniteQuery<List<int>, int> usePage({
+    required QueryMap? query,
     required Client client,
   }) {
-    final normalized = _normalizeSearchParams(
-      params,
-      identity: client.identity.username,
+    final normalized = _normalizeSearchQuery(
+      query,
+      username: client.identity.username,
     );
     return InfiniteQuery<List<int>, int>(
       cache: queryCache,
-      key: [queryKey, 'search', normalized],
+      key: [queryKey, normalized],
       getNextArg: (state) => state.nextPage,
       queryFn: (pageKey) async {
         final result = await _dispatchSearch(
           client: client,
-          params: normalized,
+          query: normalized,
           page: pageKey,
         );
         return postCache.savePage(result);
@@ -48,11 +48,8 @@ extension PostQuerying on PostClient {
         cache: queryCache,
         key: [queryKey, 'by_tags', tags],
         getNextArg: (state) => state.nextPage,
-        queryFn: (page) => byTags(
-          tags: tags,
-          page: page,
-          force: true,
-        ).then(postCache.savePage),
+        queryFn: (page) =>
+            byTags(tags: tags, page: page).then(postCache.savePage),
       );
 
   Query<List<Post>> useByIds({required List<int> ids, int? limit}) => Query(
@@ -97,29 +94,29 @@ extension PostQuerying on PostClient {
   );
 }
 
-PostParams _normalizeSearchParams(PostParams params, {String? identity}) {
-  final tags = TagMap(params.tags);
-  if (tags.length != 1) return params;
-  if (tags['order'] != null) return params;
+QueryMap? _normalizeSearchQuery(QueryMap? query, {String? username}) {
+  final tags = TagMap(query?['tags']);
+  if (tags.length != 1) return query;
+  if (tags['order'] != null) return query;
 
   if (int.tryParse(tags['pool'] ?? '') != null) {
     tags['order'] = 'pool';
-    return params.copyWith(tags: tags.toString());
+    return {...?query, 'tags': tags.toString()};
   }
-  if (identity != null && tags['fav'] == identity) {
+  if (username != null && tags['fav'] == username) {
     tags['order'] = 'fav';
-    return params.copyWith(tags: tags.toString());
+    return {...?query, 'tags': tags.toString()};
   }
-  return params;
+  return query;
 }
 
 Future<List<Post>> _dispatchSearch({
   required Client client,
-  required PostParams params,
+  required QueryMap? query,
   required int page,
 }) {
-  final tags = TagMap(params.tags);
-  final identity = client.identity.username;
+  final tags = TagMap(query?['tags']);
+  final username = client.identity.username;
 
   if (tags.length == 2 &&
       tags['order'] == 'pool' &&
@@ -133,12 +130,12 @@ Future<List<Post>> _dispatchSearch({
 
   if (tags.length == 2 &&
       tags['order'] == 'fav' &&
-      identity != null &&
-      tags['fav'] == identity) {
+      username != null &&
+      tags['fav'] == username) {
     return client.posts.favorites(page: page, force: true);
   }
 
-  return client.posts.page(page: page, query: params.toQuery());
+  return client.posts.page(page: page, query: query);
 }
 
 Future<List<Post>> _fetchPoolPage({

@@ -13,8 +13,8 @@ class PostPageQueryBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final client = context.watch<Client>();
     final controller = context.watch<PostParamsController>();
-    final query = client.posts.useSearch(
-      params: controller.value,
+    final query = client.posts.usePage(
+      query: controller.value.toQuery(),
       client: client,
     );
 
