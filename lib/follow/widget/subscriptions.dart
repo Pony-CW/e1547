@@ -34,9 +34,18 @@ class FollowsSubscriptionsPage extends StatelessWidget {
           },
           keys: const [],
           child: FollowPageQueryBuilder(
-            builder: (context, state, query) => SelectionLayout<Follow>(
-              items: state.data?.pages.expand((p) => p).toList(),
-              child: PromptActions(
+            builder: (context, state, query) {
+              final paramsController = context.read<FollowParamsController>();
+              if (paramsController.value.hasUnseen == true &&
+                  state is InfiniteQuerySuccess &&
+                  (state.data?.pages.expand((p) => p).isEmpty ?? true)) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  paramsController.update((p) => p.copyWith(hasUnseen: null));
+                });
+              }
+              return SelectionLayout<Follow>(
+                items: state.data?.pages.expand((p) => p).toList(),
+                child: PromptActions(
                 child: AdaptiveScaffold(
                   appBar: const FollowSelectionAppBar(
                     child: DefaultAppBar(
@@ -91,8 +100,9 @@ class FollowsSubscriptionsPage extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),
