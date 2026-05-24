@@ -203,11 +203,14 @@ class PostInfoBar extends StatelessWidget {
 
 void defaultPushPostDetail(BuildContext context, Post post) {
   int? cacheSize = context.read<ImageCacheSize>().size;
+  final params = context.read<PostParamsController?>();
   Navigator.of(context).push(
     MaterialPageRoute(
       builder: (context) => ImageCacheSizeProvider(
         size: cacheSize,
-        child: PostDetail(post: post),
+        child: params != null
+            ? PostDetailGallery(params: params.value, initialPostId: post.id)
+            : PostDetail(post: post),
       ),
     ),
   );
@@ -373,6 +376,7 @@ class PostFeedTile extends StatelessWidget {
     }
 
     Widget image() {
+      final params = context.read<PostParamsController?>();
       return ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 400),
         child: AspectRatio(
@@ -385,7 +389,12 @@ class PostFeedTile extends StatelessWidget {
                   post: post,
                   child: ImageCacheSizeProvider(
                     size: cacheSize,
-                    child: PostFullscreen(post: post),
+                    child: params != null
+                        ? PostFullscreenGallery(
+                            params: params.value,
+                            initialPostId: post.id,
+                          )
+                        : PostFullscreen(post: post),
                   ),
                 ),
               ),

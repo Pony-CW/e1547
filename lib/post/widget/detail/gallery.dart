@@ -8,67 +8,89 @@ class PostDetailGallery extends StatelessWidget {
   const PostDetailGallery({
     super.key,
     this.params,
-    this.initialPage,
+    this.initialPostId,
     this.pageController,
     this.onPageChanged,
   }) : assert(
-         initialPage == null || pageController == null,
-         'Cannot pass both initialPage and pageController',
+         initialPostId == null || pageController == null,
+         'Cannot pass both initialPostId and pageController',
        );
 
   final PostParams? params;
-  final int? initialPage;
+  final int? initialPostId;
   final PageController? pageController;
   final ValueChanged<int>? onPageChanged;
 
   @override
-  Widget build(BuildContext context) => SubDefault<PageController>(
-    value: pageController,
-    create: () => PageController(initialPage: initialPage ?? 0),
-    builder: (context, pageController) => ChangeNotifierProvider(
-      create: (_) => PostParamsController(params),
-      child: PostPageQueryBuilder(
-        builder: (context, state, query) => PagedPageView(
-          pageController: pageController,
-          state: state.paging,
-          fetchNextPage: query.getNextPage,
-          builderDelegate: defaultPagedChildBuilderDelegate<Post>(
-            onRetry: query.getNextPage,
-            pageBuilder: (context, child) => Scaffold(
-              appBar: const TransparentAppBar(child: DefaultAppBar()),
-              body: child,
+  Widget build(BuildContext context) => ChangeNotifierProvider(
+    create: (_) => PostParamsController(params),
+    child: PostPageQueryBuilder(
+      builder: (context, state, query) {
+        final items = state.paging.items;
+        final initialPage = initialPostId == null
+            ? 0
+            : items?.indexWhere((p) => p.id == initialPostId) ?? -1;
+
+        if (initialPostId != null && initialPage < 0) {
+          return Scaffold(
+            appBar: const TransparentAppBar(child: DefaultAppBar()),
+            body: Center(
+              child: items == null
+                  ? const CircularProgressIndicator()
+                  : const Text('Post not in current results'),
             ),
-            onEmpty: const Text('No posts'),
-            onError: const Text('Failed to load posts'),
-            itemBuilder: (context, item, index) => SubScrollController(
-              builder: (context, scrollController) => PrimaryScrollController(
-                controller: scrollController,
-                child: PostDetail(
-                  post: item,
-                  onTapImage: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => PostFullscreenGallery(
-                        params: params,
-                        initialPage: index,
-                        onPageChanged: pageController.jumpToPage,
+          );
+        }
+
+        return SubDefault<PageController>(
+          value: pageController,
+          create: () => PageController(initialPage: initialPage),
+          builder: (context, pageController) => GalleryButtons(
+            controller: pageController,
+            child: PagedPageView(
+              pageController: pageController,
+              state: state.paging,
+              fetchNextPage: query.getNextPage,
+              builderDelegate: defaultPagedChildBuilderDelegate<Post>(
+                onRetry: query.getNextPage,
+                pageBuilder: (context, child) => Scaffold(
+                  appBar: const TransparentAppBar(child: DefaultAppBar()),
+                  body: child,
+                ),
+                onEmpty: const Text('No posts'),
+                onError: const Text('Failed to load posts'),
+                itemBuilder: (context, item, index) => SubScrollController(
+                  builder: (context, scrollController) =>
+                      PrimaryScrollController(
+                        controller: scrollController,
+                        child: PostDetail(
+                          post: item,
+                          onTapImage: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => PostFullscreenGallery(
+                                params: params,
+                                initialPostId: item.id,
+                                onPageChanged: pageController.jumpToPage,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
                 ),
               ),
+              onPageChanged: (index) {
+                onPageChanged?.call(index);
+                preloadPostImages(
+                  context: context,
+                  index: index,
+                  posts: state.paging.items ?? [],
+                  size: PostImageSize.sample,
+                );
+              },
             ),
           ),
-          onPageChanged: (index) {
-            onPageChanged?.call(index);
-            preloadPostImages(
-              context: context,
-              index: index,
-              posts: state.paging.items ?? [],
-              size: PostImageSize.sample,
-            );
-          },
-        ),
-      ),
+        );
+      },
     ),
   );
 }
