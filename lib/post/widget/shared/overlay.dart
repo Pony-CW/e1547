@@ -1,3 +1,4 @@
+import 'package:e1547/app/app.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,13 @@ class PostImageOverlay extends StatelessWidget {
       return IconMessage(
         title: Text('${post.ext} files are not supported'),
         icon: const Icon(Icons.image_not_supported_outlined),
+        action: Padding(
+          padding: const EdgeInsets.all(4),
+          child: TextButton(
+            onPressed: () async => launch(post.file!),
+            child: const Text('Open'),
+          ),
+        ),
       );
     }
 
