@@ -113,10 +113,14 @@ class _SuppressBubbleWhileFrameHiddenState
   Widget build(BuildContext context) {
     final ScaffoldFrameController frame = ScaffoldFrame.of(context);
     return SubListener(
-      initialize: true,
       listenable: frame,
       listener: () => _tasks?.suppressBubble.value = !frame.visible,
-      builder: (context) => widget.child,
+      builder: (context) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _tasks?.suppressBubble.value = !frame.visible;
+        });
+        return widget.child;
+      },
     );
   }
 }
