@@ -16,7 +16,7 @@ abstract class FilterController<T> extends ChangeNotifier {
   List<T> track(Object key, List<T> items) {
     final previous = _tracked[key];
     _tracked[key] = items;
-    if (!identical(previous, items)) {
+    if (!identical(previous, items) && !listEquals(previous, items)) {
       _scheduleNotify();
     }
     return items.where(filter).toList();
