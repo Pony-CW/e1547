@@ -23,9 +23,13 @@ Future<void> showTagSearchSheet({
   required BuildContext context,
   required String tag,
 }) async {
+  final controller = context.read<PostParamsController?>();
   return showDefaultSlidingBottomSheet(
     context,
-    (context, sheetState) => TagSearchSheet(tag: tag),
+    (context, sheetState) => _ProvideParams(
+      controller: controller,
+      child: TagSearchSheet(tag: tag),
+    ),
   );
 }
 
@@ -284,10 +288,30 @@ Future<void> showTagSearchDialog({
   required BuildContext context,
   required String tag,
 }) {
+  final controller = context.read<PostParamsController?>();
   return showDialog(
     context: context,
-    builder: (context) => TagSearchDialog(tag: tag),
+    builder: (context) => _ProvideParams(
+      controller: controller,
+      child: TagSearchDialog(tag: tag),
+    ),
   );
+}
+
+class _ProvideParams extends StatelessWidget {
+  const _ProvideParams({required this.controller, required this.child});
+
+  final PostParamsController? controller;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (controller == null) return child;
+    return ChangeNotifierProvider.value(
+      value: controller!,
+      child: child,
+    );
+  }
 }
 
 class TagSearchDialog extends StatelessWidget {

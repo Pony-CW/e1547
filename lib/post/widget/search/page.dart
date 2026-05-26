@@ -3,6 +3,7 @@ import 'package:e1547/post/post.dart';
 import 'package:e1547/query/query.dart';
 import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
+import 'package:e1547/tag/tag.dart';
 import 'package:e1547/traits/traits.dart';
 import 'package:flutter/material.dart';
 
@@ -34,6 +35,9 @@ class PostsPage extends StatelessWidget {
                     ...drawerActions,
                     if (drawerActions.isNotEmpty) const Divider(),
                     const DrawerDenySwitch(),
+                    DrawerTagCounter(
+                      posts: state.data?.pages.expand((p) => p).toList(),
+                    ),
                   ],
                 ),
                 body: LimitedWidthLayout(

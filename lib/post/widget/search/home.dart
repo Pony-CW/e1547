@@ -3,6 +3,7 @@ import 'package:e1547/post/post.dart';
 import 'package:e1547/query/query.dart';
 import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
+import 'package:e1547/tag/tag.dart';
 import 'package:e1547/traits/traits.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sub/flutter_sub.dart';
@@ -38,11 +39,13 @@ class HomePage extends StatelessWidget {
                   ),
                   floatingActionButton: const PostsPageFab(),
                   drawer: const RouterDrawer(),
-                  endDrawer: const ContextDrawer(
-                    title: Text('Posts'),
+                  endDrawer: ContextDrawer(
+                    title: const Text('Posts'),
                     children: [
-                      DrawerDenySwitch(),
-                      // DrawerTagCounter(),
+                      const DrawerDenySwitch(),
+                      DrawerTagCounter(
+                        posts: state.data?.pages.expand((p) => p).toList(),
+                      ),
                     ],
                   ),
                   body: LimitedWidthLayout(
