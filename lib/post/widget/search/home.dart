@@ -26,26 +26,33 @@ class HomePage extends StatelessWidget {
             listener: (PostParams value) => client.traits.value = client.traits
                 .value
                 .copyWith(homeTags: value.tags ?? ''),
-            builder: (context, _) => AdaptiveScaffold(
-              appBar: const DefaultAppBar(
-                title: Center(child: AppIcon()),
-                actions: [ContextDrawerButton()],
-              ),
-              floatingActionButton: const PostsPageFab(),
-              drawer: const RouterDrawer(),
-              endDrawer: const ContextDrawer(
-                title: Text('Posts'),
-                children: [
-                  DrawerDenySwitch(),
-                  // DrawerTagCounter(),
-                ],
-              ),
-              body: LimitedWidthLayout(
-                child: ListenableBuilder(
-                  listenable: context.watch<Settings>().tileSize,
-                  builder: (context, child) => TileLayout(
-                    tileSize: context.watch<Settings>().tileSize.value,
-                    child: const PostList(),
+            builder: (context, _) => PostPageQueryBuilder(
+              builder: (context, state, query) => SelectionLayout<Post>(
+                items: state.data?.pages.expand((p) => p).toList(),
+                child: AdaptiveScaffold(
+                  appBar: const PostSelectionAppBar(
+                    child: DefaultAppBar(
+                      title: Center(child: AppIcon()),
+                      actions: [ContextDrawerButton()],
+                    ),
+                  ),
+                  floatingActionButton: const PostsPageFab(),
+                  drawer: const RouterDrawer(),
+                  endDrawer: const ContextDrawer(
+                    title: Text('Posts'),
+                    children: [
+                      DrawerDenySwitch(),
+                      // DrawerTagCounter(),
+                    ],
+                  ),
+                  body: LimitedWidthLayout(
+                    child: ListenableBuilder(
+                      listenable: context.watch<Settings>().tileSize,
+                      builder: (context, child) => TileLayout(
+                        tileSize: context.watch<Settings>().tileSize.value,
+                        child: const PostList(),
+                      ),
+                    ),
                   ),
                 ),
               ),

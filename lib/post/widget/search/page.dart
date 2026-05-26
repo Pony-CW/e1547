@@ -21,24 +21,29 @@ class PostsPage extends StatelessWidget {
         keys: (_) => [client],
         child: ChangeNotifierProvider(
           create: (_) => PostParamsController(params),
-          child: AdaptiveScaffold(
-            appBar: const PostSelectionAppBar(child: PostPageAppBar()),
-            floatingActionButton: const PostsPageFab(),
-            drawer: const RouterDrawer(),
-            endDrawer: ContextDrawer(
-              title: const Text('Posts'),
-              children: [
-                ...drawerActions,
-                if (drawerActions.isNotEmpty) const Divider(),
-                const DrawerDenySwitch(),
-              ],
-            ),
-            body: LimitedWidthLayout(
-              child: ListenableBuilder(
-                listenable: context.watch<Settings>().tileSize,
-                builder: (context, child) => TileLayout(
-                  tileSize: context.watch<Settings>().tileSize.value,
-                  child: const PostList(),
+          child: PostPageQueryBuilder(
+            builder: (context, state, query) => SelectionLayout<Post>(
+              items: state.data?.pages.expand((p) => p).toList(),
+              child: AdaptiveScaffold(
+                appBar: const PostSelectionAppBar(child: PostPageAppBar()),
+                floatingActionButton: const PostsPageFab(),
+                drawer: const RouterDrawer(),
+                endDrawer: ContextDrawer(
+                  title: const Text('Posts'),
+                  children: [
+                    ...drawerActions,
+                    if (drawerActions.isNotEmpty) const Divider(),
+                    const DrawerDenySwitch(),
+                  ],
+                ),
+                body: LimitedWidthLayout(
+                  child: ListenableBuilder(
+                    listenable: context.watch<Settings>().tileSize,
+                    builder: (context, child) => TileLayout(
+                      tileSize: context.watch<Settings>().tileSize.value,
+                      child: const PostList(),
+                    ),
+                  ),
                 ),
               ),
             ),

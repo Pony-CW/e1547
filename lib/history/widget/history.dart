@@ -11,21 +11,26 @@ class HistoriesPage extends StatelessWidget {
   Widget build(BuildContext context) => RouterDrawerEntry<HistoriesPage>(
     child: ChangeNotifierProvider(
       create: (_) => HistoryParamsController(HistoryParams.fromQuery(query)),
-      child: const AdaptiveScaffold(
-        appBar: HistoryAppBar(),
-        floatingActionButton: HistorySearchFab(),
-        drawer: RouterDrawer(),
-        endDrawer: ContextDrawer(
-          title: Text('History'),
-          children: [
-            HistoryEnableTile(),
-            HistoryLimitTile(),
-            Divider(),
-            HistoryCategoryFilterTile(),
-            HistoryTypeFilterTile(),
-          ],
+      child: HistoryPageQueryBuilder(
+        builder: (context, state, query) => SelectionLayout<History>(
+          items: state.data?.pages.expand((p) => p).toList(),
+          child: const AdaptiveScaffold(
+            appBar: HistoryAppBar(),
+            floatingActionButton: HistorySearchFab(),
+            drawer: RouterDrawer(),
+            endDrawer: ContextDrawer(
+              title: Text('History'),
+              children: [
+                HistoryEnableTile(),
+                HistoryLimitTile(),
+                Divider(),
+                HistoryCategoryFilterTile(),
+                HistoryTypeFilterTile(),
+              ],
+            ),
+            body: HistoryList(),
+          ),
         ),
-        body: HistoryList(),
       ),
     ),
   );
