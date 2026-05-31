@@ -533,5 +533,19 @@
         "platform": "ko-fi"
       }
     ]
+  },
+  {
+    "name": "Foxfire",
+    "handles": {
+      "ko-fi": "Foxfire"
+    },
+    "donations": [
+      {
+        "amount": 51.0,
+        "currency": "USD",
+        "date": "2026-05-31T01:04:00",
+        "platform": "ko-fi"
+      }
+    ]
   }
 ]
