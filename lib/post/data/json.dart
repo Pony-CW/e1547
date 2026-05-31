@@ -43,7 +43,7 @@ abstract final class E621Post {
       createdAt: post('created_at').asDateTimeOrThrow(),
       updatedAt: post('updated_at').asDateTimeOrNull(),
       score: post('score').letOrThrow((pick) => pick('total').asIntOrThrow()),
-      vote: null,
+      vote: post('vote').asIntOrNull(),
       isDeleted: post(
         'flags',
       ).letOrThrow((pick) => pick('deleted').asBoolOrThrow()),

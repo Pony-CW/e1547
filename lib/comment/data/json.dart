@@ -12,7 +12,7 @@ abstract final class E621Comment {
       creatorId: pick('creator_id').asIntOrThrow(),
       creatorName: pick('creator_name').asStringOrThrow(),
       score: pick('score').asIntOrThrow(),
-      vote: null,
+      vote: pick('vote').asIntOrNull(),
       warning: pick(
         'warning_type',
       ).letOrNull((pick) => WarningType.values.asNameMap()[pick.asString()]!),
