@@ -3,6 +3,7 @@ import 'package:e1547/app/app.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/task/task.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:relative_time/relative_time.dart';
@@ -21,7 +22,7 @@ class TaskTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isRunning = task.id == controller.currentTask?.id;
+    final bool isRunning = controller.isRunning(task.id);
     final bool selecting = layoutData.selections.isNotEmpty;
     final bool selected = layoutData.selections.contains(task);
     final ColorScheme scheme = Theme.of(context).colorScheme;
@@ -146,6 +147,7 @@ class TaskThumbnail extends StatelessWidget {
           : placeholder,
     );
 
+    final ValueListenable<double>? progress = controller.progressOf(task.id);
     return SizedBox(
       width: 48,
       height: 48,
@@ -153,13 +155,13 @@ class TaskThumbnail extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           image,
-          if (isRunning)
+          if (isRunning && progress != null)
             Positioned(
               left: 0,
               right: 0,
               bottom: 0,
               child: ValueListenableBuilder<double>(
-                valueListenable: controller.currentProgress,
+                valueListenable: progress,
                 builder: (context, value, _) => LinearProgressIndicator(
                   value: value > 0 ? value : null,
                   minHeight: 3,

@@ -39,16 +39,28 @@ class TasksController extends ChangeNotifier {
   int get runningTotal => _runningTotal;
   int get runningDone => _runningDone;
 
-  Task? _currentTask;
-  Task? get currentTask => _currentTask;
+  final Set<int> _runningIds = {};
+  bool isRunning(int taskId) => _runningIds.contains(taskId);
 
+  /// Sum of in-flight progress across all running tasks (0..n), driving the
+  /// aggregate bubble progress.
   final ValueNotifier<double> currentProgress = ValueNotifier(0);
+
+  /// Per-task download progress, so each running tile updates on its own
+  /// without rebuilding the others.
+  final Map<int, ValueNotifier<double>> _progress = {};
+  ValueListenable<double>? progressOf(int taskId) => _progress[taskId];
 
   StreamSubscription<List<Task>>? _activeSub;
   Timer? _hideTimer;
   bool _seeded = false;
-  bool _draining = false;
+  bool _drainingDownloads = false;
+  bool _drainingApi = false;
   bool _disposed = false;
+
+  // Downloads hit the CDN, which is free of the API rate limit, so they run
+  // concurrently. Favorites and unfavorites stay on a single sequential lane.
+  static const int _maxConcurrentDownloads = 4;
 
   // Kept separate from the controller's own listeners so toggling doesn't
   // mark Provider scopes dirty mid-build.
@@ -69,9 +81,15 @@ class TasksController extends ChangeNotifier {
 
   double get progress {
     if (_runningTotal == 0) return 0;
-    final double inFlight = _currentTask != null ? currentProgress.value : 0;
-    final value = (_runningDone + inFlight) / _runningTotal;
-    return value.clamp(0, 1);
+    return ((_runningDone + currentProgress.value) / _runningTotal).clamp(0, 1);
+  }
+
+  void _recomputeProgress() {
+    double inFlight = 0;
+    for (final notifier in _progress.values) {
+      inFlight += notifier.value;
+    }
+    currentProgress.value = inFlight;
   }
 
   Future<void> _init() async {
@@ -96,7 +114,7 @@ class TasksController extends ChangeNotifier {
       notifyListeners();
     });
     unawaited(_runSweep());
-    unawaited(_drain());
+    _kick();
   }
 
   void _resetCounters() {
@@ -139,7 +157,7 @@ class TasksController extends ChangeNotifier {
     final task = await repository.add(request, identity);
     _runningTotal++;
     notifyListeners();
-    unawaited(_drain());
+    _kick();
     return task;
   }
 
@@ -151,41 +169,77 @@ class TasksController extends ChangeNotifier {
     final List<Task> created = await repository.addAll(list, identity);
     _runningTotal += created.length;
     notifyListeners();
-    unawaited(_drain());
+    _kick();
     return created;
   }
 
-  Future<void> _drain() async {
-    if (_draining || _disposed) return;
-    _draining = true;
+  void _kick() {
+    unawaited(_drainDownloads());
+    unawaited(_drainApi());
+  }
+
+  Future<void> _drainDownloads() async {
+    if (_drainingDownloads || _disposed) return;
+    _drainingDownloads = true;
+    try {
+      await Future.wait([
+        for (int i = 0; i < _maxConcurrentDownloads; i++) _downloadWorker(),
+      ]);
+    } finally {
+      _drainingDownloads = false;
+    }
+  }
+
+  Future<void> _downloadWorker() async {
+    while (!_disposed) {
+      final Task? next = await repository.claimNext(
+        identity: identity,
+        actions: const {TaskAction.download},
+      );
+      if (next == null) break;
+      await _process(next);
+    }
+  }
+
+  Future<void> _drainApi() async {
+    if (_drainingApi || _disposed) return;
+    _drainingApi = true;
     try {
       while (!_disposed) {
-        final Task? next = await repository.claimNext(identity: identity);
+        final Task? next = await repository.claimNext(
+          identity: identity,
+          actions: const {TaskAction.favorite, TaskAction.unfavorite},
+        );
         if (next == null) break;
-        _currentTask = next;
-        currentProgress.value = 0;
-        notifyListeners();
-        try {
-          await _runOne(next);
-          final TaskStatus? current = await repository.readStatus(next.id);
-          if (current == TaskStatus.running) {
-            await repository.markCompleted(next.id);
-          }
-        } on Object catch (e, s) {
-          _logger.warning('Task ${next.id} (${next.action}) failed', e, s);
-          final TaskStatus? current = await repository.readStatus(next.id);
-          if (current == TaskStatus.running) {
-            await repository.markFailed(next.id, e.toString());
-          }
-        } finally {
-          _runningDone++;
-          _currentTask = null;
-          currentProgress.value = 0;
-          notifyListeners();
-        }
+        await _process(next);
       }
     } finally {
-      _draining = false;
+      _drainingApi = false;
+    }
+  }
+
+  Future<void> _process(Task task) async {
+    _runningIds.add(task.id);
+    _progress[task.id] = ValueNotifier<double>(0);
+    notifyListeners();
+    try {
+      await _runOne(task);
+      final TaskStatus? current = await repository.readStatus(task.id);
+      if (current == TaskStatus.running) {
+        await repository.markCompleted(task.id);
+      }
+    } on Object catch (e, s) {
+      _logger.warning('Task ${task.id} (${task.action}) failed', e, s);
+      final TaskStatus? current = await repository.readStatus(task.id);
+      if (current == TaskStatus.running) {
+        await repository.markFailed(task.id, e.toString());
+      }
+    } finally {
+      _runningDone++;
+      _runningIds.remove(task.id);
+      _progress.remove(task.id)?.dispose();
+      _recomputeProgress();
+      notifyListeners();
     }
   }
 
@@ -220,12 +274,14 @@ class TasksController extends ChangeNotifier {
         'Download task missing file metadata (post #${task.postId})',
       );
     }
+    final ValueNotifier<double>? progress = _progress[task.id];
     await for (final response in cacheManager.getFileStream(
       url,
       withProgress: true,
     )) {
       if (response is DownloadProgress) {
-        currentProgress.value = (response.progress ?? 0).clamp(0, 1);
+        progress?.value = (response.progress ?? 0).clamp(0, 1);
+        _recomputeProgress();
       } else if (response is FileInfo) {
         try {
           await FileDownloader.downloadImage(
@@ -269,6 +325,10 @@ class TasksController extends ChangeNotifier {
     _disposed = true;
     _activeSub?.cancel();
     _hideTimer?.cancel();
+    for (final notifier in _progress.values) {
+      notifier.dispose();
+    }
+    _progress.clear();
     currentProgress.dispose();
     suppressBubble.dispose();
     super.dispose();

@@ -179,22 +179,28 @@ class TaskRepository extends DatabaseAccessor<GeneratedDatabase>
         return created;
       });
 
-  Future<Task?> claimNext({int? identity}) async => transaction(() async {
-    final Task? next =
-        await (select(tasksTable)
-              ..where((tbl) => _identityQuery(tbl, identity))
-              ..where((tbl) => tbl.status.equals(TaskStatus.pending.name))
-              ..orderBy([
-                (t) => OrderingTerm(expression: t.createdAt),
-                (t) => OrderingTerm(expression: t.id),
-              ])
-              ..limit(1))
-            .getSingleOrNull();
-    if (next == null) return null;
-    return (update(tasksTable)..where((tbl) => tbl.id.equals(next.id)))
-        .writeReturning(const TaskCompanion(status: Value(TaskStatus.running)))
-        .then((rows) => rows.single);
-  });
+  Future<Task?> claimNext({int? identity, Set<TaskAction>? actions}) async =>
+      transaction(() async {
+        final query = select(tasksTable)
+          ..where((tbl) => _identityQuery(tbl, identity))
+          ..where((tbl) => tbl.status.equals(TaskStatus.pending.name));
+        if (actions != null) {
+          query.where((tbl) => tbl.action.isIn(actions.map((e) => e.name)));
+        }
+        query
+          ..orderBy([
+            (t) => OrderingTerm(expression: t.createdAt),
+            (t) => OrderingTerm(expression: t.id),
+          ])
+          ..limit(1);
+        final Task? next = await query.getSingleOrNull();
+        if (next == null) return null;
+        return (update(tasksTable)..where((tbl) => tbl.id.equals(next.id)))
+            .writeReturning(
+              const TaskCompanion(status: Value(TaskStatus.running)),
+            )
+            .then((rows) => rows.single);
+      });
 
   Future<void> markCompleted(int id) =>
       (update(tasksTable)..where((tbl) => tbl.id.equals(id))).write(
