@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$User {
 
- int get id; String get name; int? get avatarId; UserAbout? get about; UserStats? get stats;
+ int get id; String get name; int? get avatarId; bool get hasCroppedAvatar; UserAbout? get about; UserStats? get stats;
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserCopyWith<User> get copyWith => _$UserCopyWithImpl<User>(this as User, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.avatarId, avatarId) || other.avatarId == avatarId)&&(identical(other.about, about) || other.about == about)&&(identical(other.stats, stats) || other.stats == stats));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.avatarId, avatarId) || other.avatarId == avatarId)&&(identical(other.hasCroppedAvatar, hasCroppedAvatar) || other.hasCroppedAvatar == hasCroppedAvatar)&&(identical(other.about, about) || other.about == about)&&(identical(other.stats, stats) || other.stats == stats));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,avatarId,about,stats);
+int get hashCode => Object.hash(runtimeType,id,name,avatarId,hasCroppedAvatar,about,stats);
 
 @override
 String toString() {
-  return 'User(id: $id, name: $name, avatarId: $avatarId, about: $about, stats: $stats)';
+  return 'User(id: $id, name: $name, avatarId: $avatarId, hasCroppedAvatar: $hasCroppedAvatar, about: $about, stats: $stats)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserCopyWith<$Res>  {
   factory $UserCopyWith(User value, $Res Function(User) _then) = _$UserCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, int? avatarId, UserAbout? about, UserStats? stats
+ int id, String name, int? avatarId, bool hasCroppedAvatar, UserAbout? about, UserStats? stats
 });
 
 
@@ -65,12 +65,13 @@ class _$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? avatarId = freezed,Object? about = freezed,Object? stats = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? avatarId = freezed,Object? hasCroppedAvatar = null,Object? about = freezed,Object? stats = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,avatarId: freezed == avatarId ? _self.avatarId : avatarId // ignore: cast_nullable_to_non_nullable
-as int?,about: freezed == about ? _self.about : about // ignore: cast_nullable_to_non_nullable
+as int?,hasCroppedAvatar: null == hasCroppedAvatar ? _self.hasCroppedAvatar : hasCroppedAvatar // ignore: cast_nullable_to_non_nullable
+as bool,about: freezed == about ? _self.about : about // ignore: cast_nullable_to_non_nullable
 as UserAbout?,stats: freezed == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
 as UserStats?,
   ));
@@ -108,12 +109,13 @@ $UserStatsCopyWith<$Res>? get stats {
 @JsonSerializable()
 
 class _User implements User {
-  const _User({required this.id, required this.name, required this.avatarId, required this.about, required this.stats});
+  const _User({required this.id, required this.name, required this.avatarId, this.hasCroppedAvatar = false, required this.about, required this.stats});
   factory _User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
 @override final  int id;
 @override final  String name;
 @override final  int? avatarId;
+@override@JsonKey() final  bool hasCroppedAvatar;
 @override final  UserAbout? about;
 @override final  UserStats? stats;
 
@@ -130,16 +132,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.avatarId, avatarId) || other.avatarId == avatarId)&&(identical(other.about, about) || other.about == about)&&(identical(other.stats, stats) || other.stats == stats));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.avatarId, avatarId) || other.avatarId == avatarId)&&(identical(other.hasCroppedAvatar, hasCroppedAvatar) || other.hasCroppedAvatar == hasCroppedAvatar)&&(identical(other.about, about) || other.about == about)&&(identical(other.stats, stats) || other.stats == stats));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,avatarId,about,stats);
+int get hashCode => Object.hash(runtimeType,id,name,avatarId,hasCroppedAvatar,about,stats);
 
 @override
 String toString() {
-  return 'User(id: $id, name: $name, avatarId: $avatarId, about: $about, stats: $stats)';
+  return 'User(id: $id, name: $name, avatarId: $avatarId, hasCroppedAvatar: $hasCroppedAvatar, about: $about, stats: $stats)';
 }
 
 
@@ -150,7 +152,7 @@ abstract mixin class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
   factory _$UserCopyWith(_User value, $Res Function(_User) _then) = __$UserCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, int? avatarId, UserAbout? about, UserStats? stats
+ int id, String name, int? avatarId, bool hasCroppedAvatar, UserAbout? about, UserStats? stats
 });
 
 
@@ -167,12 +169,13 @@ class __$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? avatarId = freezed,Object? about = freezed,Object? stats = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? avatarId = freezed,Object? hasCroppedAvatar = null,Object? about = freezed,Object? stats = freezed,}) {
   return _then(_User(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,avatarId: freezed == avatarId ? _self.avatarId : avatarId // ignore: cast_nullable_to_non_nullable
-as int?,about: freezed == about ? _self.about : about // ignore: cast_nullable_to_non_nullable
+as int?,hasCroppedAvatar: null == hasCroppedAvatar ? _self.hasCroppedAvatar : hasCroppedAvatar // ignore: cast_nullable_to_non_nullable
+as bool,about: freezed == about ? _self.about : about // ignore: cast_nullable_to_non_nullable
 as UserAbout?,stats: freezed == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
 as UserStats?,
   ));
