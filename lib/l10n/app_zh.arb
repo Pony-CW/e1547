@@ -1,0 +1,307 @@
+{
+  "@@locale": "zh",
+
+  "home": "主页",
+  "hot": "热门",
+  "search": "搜索",
+  
+  "favorites": "喜爱",
+  "favoritesError": "Favorites are unavailable for anonymous users",
+
+  "timeline": "时间线",
+  "timelineEmpty": "没有帖子",
+  "timelineError": "加载帖子失败",
+
+  "subscriptions": "订阅",
+  "subscriptionsEmpty": "没有订阅",
+  "subscriptionsError": "加载订阅失败",
+
+  "bookmarks": "书签",
+  "bookmarksEmpty": "没有书签",
+  "bookmarksError": "加载书签失败",
+
+  "pools": "图池",
+
+  "forum": "论坛",
+  "topics": "话题",
+  "topicsHide": "隐藏标签编辑",
+  "topicsHideOn": "hide tag alias and implications",
+  "topicsHideOff": "show tag alias and implications",
+
+  "share": "分享",
+  "download": "下载",
+  "browse": "浏览器",
+  "edit": "编辑",
+  "comment": "评论",
+  "report": "举报",
+  "flag": "标记",
+  "editError": "你需要登录才能编辑帖子！",
+  "commentError": "你需要登录才能评论！",
+  "reportError": "你需要登录才能举报帖子！",
+  "flagError": "你需要登录才能标记帖子",
+  "chooseIdentity": "选择身份",
+
+  "commentsLC": "评论",
+  "commentsNumUC": "评论 ({count})",
+  "@commentsNumUC": {
+    "description": "lib/post/widget/detail/widget/comments.dart - COMMENTS",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commentsPostIdLC" :"#{postId} 评论",
+  "@commentsPostIdLC": {
+    "description": "lib/comment/widget/post.dart - comments",
+    "placeholders": {
+      "postId": {
+        "type": "int"
+      }
+    }
+  },
+  "file": "文件",
+  "sources": "来源",
+
+  "version": "版本",
+  "webSite": "主页",
+  "email": "邮箱",
+  "playstore": "谷歌商店",
+  "donors": "捐赠者",
+  "donorsSubtitle": "感谢你帮助我保持开发！",
+  "donorsLite": "没在名单里？联系我们！",
+
+  "settings": "设置",
+
+  "identity": "身份",
+  "host": "服务器",
+  "hostNullWarn": "您需要填写服务器地址",
+  "hostUrlWarn": "无效的服务器地址",
+  "authentication": "认证",
+  "login": "登录",
+  "anonymous": "匿名",
+  "username": "用户名",
+  "userWarn": "您需要填写用户名",
+  "apiKey": "API 密钥",
+  "apiKeyHelper": "例如 {example}",
+  "@apiKeyHelper": {
+    "description": "lib/identity/widget/identity.dart - API Key Helper",
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "apiKeyWran": "你需要填写 API 密钥 \n例如 {example}",
+  "@apiKeyWran": {
+    "description": "lib/identity/widget/identity.dart - API Key Warning",
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+
+  "user": "用户",
+  "unblock": "解除阻止",
+  "block": "阻止",
+  "blacklist": "黑名单",
+  "follows": "关注",
+  "uploads": "上传",
+  "about": "关于",
+  "aboutLC": "关于",
+  "comission": "Comission",
+  "info": "信息",
+  "infoLC": "信息",
+  "idLC": "id",
+  "joinedLC": "joined",
+  "rankLC": "rank",
+  "postsLC": "帖子",
+  "editsLC": "编辑",
+  "favoritesLC": "喜爱",
+  "comissionLC": "评论",
+  "forumLC": "论坛",
+
+  "history": "历史",
+  "historySubtitle": "{num} 页已访问",
+  "@historySubtitle": {
+    "description": "lib/settings/widget/settings.dart &\nlib/history/widget/drawer.dart - History subtitle",
+    "placeholders": {
+      "num": {
+        "type": "int"
+      }
+    }
+  },
+  "historyClear": "清除历史",
+  "historyClearSub": "删除所有条目",
+  "historyClearWarn": "清除历史？",
+  "historyClearWarnInfo": "所有历史记录条目都将被永久删除。此操作无法撤销。",
+  "historyLimit": "限制历史",
+  "historyLimitSub": "限制于 {days} 个月内或 \n少于 {num} 条目",
+  "@historyLimitSub": {
+    "description": "lib/history/widget/drawer.dart - History Limit Subtitle",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "num": {
+        "type": "String"
+      }
+    }
+  },
+  "historyLimitWarnTitle": "历史限制",
+  "historyLimitWarn": "启用历史限制意味着超过 {num} 条\n或超过 {days} 个月的所有条目都将被自动删除",
+  "@historyLimitWarn": {
+    "description": "lib/history/widget/drawer.dart - History Limit Warning",
+    "placeholders": {
+      "num": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "historyInfinite": "历史是无限制的",
+  "historyPosts": "帖子 - {tag}",
+  "@historyPosts": {
+    "description": "lib/history/data/actions.dart - Posts History",
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "historyPools": "图池 - {name_matches}",
+  "@historyPools": {
+    "description": "lib/history/data/actions.dart - Pools History",
+    "placeholders": {
+      "name_matches": {
+        "type": "String"
+      }
+    }
+  },
+  "historyUsers": "用户 - {name_matches}",
+  "@historyUsers": {
+    "description": "lib/history/data/actions.dart - Users History",
+    "placeholders": {
+      "name_matches": {
+        "type": "String"
+      }
+    }
+  },
+  "historyWikis": "维基 - {title}",
+  "@historyWikis": {
+    "description": "lib/history/data/actions.dart - Wikis History",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "historyTopics": "话题 - {title_matches}",
+  "@historyTopics": {
+    "description": "lib/history/data/actions.dart - Topics History",
+    "placeholders": {
+      "title_matches": {
+        "type": "String"
+      }
+    }
+  },
+  "historyReplies": "回复 - {topic_title_matches}",
+    "@historyReplies": {
+    "description": "lib/history/data/actions.dart - Replies History",
+    "placeholders": {
+      "topic_title_matches": {
+        "type": "String"
+      }
+    }
+  },
+  "hotPosts": "热门帖子",
+  "entries": "条目",
+  "type": "类型",
+  "posts": "帖子",
+  "users": "用户",
+  "wikis": "维基",
+  "replies": "回复",
+  "tags": "标签",
+
+  "tasks": "任务",
+
+  "appearance": "外观",
+  "language": "语言",
+  "theme": "主题",
+  "tileSize": "瓷贴大小",
+  "postInfo": "帖子信息",
+  "postInfoTrue": "信息在瓷贴上",
+  "postInfoFalse": "仅图像",
+
+  "interactions": "交互",
+  "downloadLocation": "下载路径",
+  "upvoteFavorites": "顶和喜爱选项",
+  "upvoteFavoritesTrue": "顶和喜爱",
+  "upvoteFavoritesFalse": "仅喜爱",
+  "videoVolume": "视频声音",
+  "videoVolumeTrue": "静音",
+  "videoVolumeFalse": "有声",
+  "videoResolution": "视频分辨率",
+  "videoResolutionStandard": "标准 (480p)",
+  "videoResolutionHigh": "高清 (720p)",
+  "videoResolutionFull": "全高清 (1080p)",
+  "videoResolutionUltra": "超高清 (4K)",
+  "videoResolutionSource": "原始分辨率",
+
+  "security": "安全",
+  "secureDisplay": "安全显示",
+  "secureDisplayTrue": "屏幕保护",
+  "secureDisplayFalse": "屏幕可见",
+  "incognitoKeyboard": "隐身键盘",
+  "pinLock": "PIN 锁",
+  "pinLockTrue": "PIN 已启用",
+  "pinLockFalse": "PIN 已禁用",
+  "biometricLock": "指纹锁",
+  "biometricLockTrue": "指纹已启用",
+  "biometricLockFalse": "指纹已禁用",
+
+  "development": "开发者选项",
+  "developerMode": "开发者模式",
+  "developerModeTrue": "显示设置",
+  "developerModeFalse": "隐藏设置",
+
+  "logs": "日志",
+  "logsUC": "日志",
+  "logsSubtitle": "{num} 条错误日志",
+  "@logsSubtitle": {
+    "description": "lib/settings/widget/settings.dart - Logs subtitle",
+    "placeholders": {
+      "num": {
+        "type": "int"
+      }
+    }
+  },
+  "logsError": "A critical error has occured!",
+
+  "database": "数据库",
+  "databaseExport": "保存并备份您的数据库",
+  "databaseExportPush": "正在导出数据库...",
+  "databaseImport": "导入并替换当前数据库",
+  "databaseImportPush": "导入数据库",
+  "databaseImportPushWarn": "这将替换您当前的数据库 \n所有数据将会丢失。此操作无法撤销！",
+
+  "okUC": "好的",
+  "clear": "清除",
+  "export": "导出",
+  "import": "导入",
+  "cancel": "取消",
+  "importUC": "导入",
+  "cancelUC": "取消",
+  "restart": "需要重启",
+  "restartWarn": "App 需要重启以完成更改",
+  "restartNow": "现在重启",
+
+  "noArtist": "无作者",
+
+  "enabled": "启用",
+  "enabledLC": "启用",
+  "disabledLC": "禁用"
+}

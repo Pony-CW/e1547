@@ -1,4 +1,5 @@
 import 'package:e1547/history/history.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 extension HistorySearchFilterDisplaying on HistoryCategory {
@@ -22,13 +23,17 @@ extension HistorySearchFilterDisplaying on HistoryCategory {
 }
 
 extension HistoryTypeFilterDisplaying on HistoryType {
-  String get title => switch (this) {
-    HistoryType.posts => 'Posts',
-    HistoryType.pools => 'Pools',
-    HistoryType.topics => 'Topics',
-    HistoryType.wikis => 'Wikis',
-    HistoryType.users => 'Users',
-  };
+  String title(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return switch (this) {
+      HistoryType.posts => l10n.posts,
+      HistoryType.pools => l10n.pools,
+      HistoryType.topics => l10n.topics,
+      HistoryType.wikis => l10n.wikis,
+      HistoryType.users => l10n.users,
+    };
+  }
 
   Widget? get icon => switch (this) {
     HistoryType.posts => const Icon(Icons.image),

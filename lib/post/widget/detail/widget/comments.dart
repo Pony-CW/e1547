@@ -1,4 +1,5 @@
 import 'package:e1547/comment/comment.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +32,9 @@ class CommentDisplay extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  'COMMENTS'
-                  ' (${post.commentCount})',
+                  AppLocalizations.of(
+                    context,
+                  )!.commentsNumUC(post.commentCount),
                 ),
               ),
             ),

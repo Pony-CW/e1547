@@ -1,4 +1,5 @@
 import 'package:e1547/history/history.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/topic/topic.dart';
 import 'package:flutter/material.dart';
@@ -23,14 +24,14 @@ class TopicsPage extends StatelessWidget {
               ),
             ),
             child: AdaptiveScaffold(
-              appBar: const DefaultAppBar(
-                title: Text('Topics'),
-                actions: [ContextDrawerButton()],
+              appBar: DefaultAppBar(
+                title: Text(AppLocalizations.of(context)!.topics),
+                actions: const [ContextDrawerButton()],
               ),
               floatingActionButton: const TopicSearchFab(),
               drawer: const RouterDrawer(),
               endDrawer: ContextDrawer(
-                title: const Text('Topics'),
+                title: Text(AppLocalizations.of(context)!.topics),
                 children: [TopicTagEditingTile(controller: controller)],
               ),
               body: const TopicList(),

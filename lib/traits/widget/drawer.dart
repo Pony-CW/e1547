@@ -1,3 +1,4 @@
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
@@ -163,7 +164,7 @@ class DrawerDenySwitchBody extends StatelessWidget {
     return Column(
       children: [
         SwitchListTile(
-          title: const Text('Blacklist'),
+          title: Text(AppLocalizations.of(context)!.blacklist),
           subtitle: denying && count > 0
               ? TweenAnimationBuilder<int>(
                   tween: IntTween(begin: 0, end: count),

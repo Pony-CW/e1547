@@ -1,5 +1,6 @@
 import 'package:e1547/client/client.dart';
 import 'package:e1547/history/history.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class HistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('History'),
+              Text(AppLocalizations.of(context)!.history),
               CrossFade.builder(
                 showChild: HistoryQuery.from(controller.search).date != null,
                 builder: (context) => Text(

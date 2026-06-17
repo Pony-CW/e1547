@@ -1,5 +1,6 @@
 import 'package:e1547/client/client.dart';
 import 'package:e1547/follow/follow.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +29,10 @@ class FollowsBookmarkPage extends StatelessWidget {
               items: controller.items,
               child: PromptActions(
                 child: AdaptiveScaffold(
-                  appBar: const FollowSelectionAppBar(
-                    child: DefaultAppBar(title: Text('Bookmarks')),
+                  appBar: FollowSelectionAppBar(
+                    child: DefaultAppBar(
+                      title: Text(AppLocalizations.of(context)!.bookmarks),
+                    ),
                   ),
                   drawer: const RouterDrawer(),
                   floatingActionButton: AddTagFloatingActionButton(
@@ -59,8 +62,12 @@ class FollowsBookmarkPage extends StatelessWidget {
                             onRetry: controller.getNextPage,
                             itemBuilder: (context, item, index) =>
                                 FollowTile(follow: item),
-                            onEmpty: const Text('No bookmarks'),
-                            onError: const Text('Failed to load bookmarks'),
+                            onEmpty: Text(
+                              AppLocalizations.of(context)!.bookmarksEmpty,
+                            ),
+                            onError: Text(
+                              AppLocalizations.of(context)!.bookmarksError,
+                            ),
                           ),
                           crossAxisCount: TileLayout.of(context).crossAxisCount,
                         ),

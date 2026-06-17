@@ -2,6 +2,7 @@ import 'package:e1547/app/app.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/comment/comment.dart';
 import 'package:e1547/flag/flag.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/ticket/ticket.dart';
@@ -15,18 +16,18 @@ List<PopupMenuItem<VoidCallback>> postMenuPostActions(
     PopupMenuTile(
       value: () async =>
           Share.text(context, context.read<Client>().withHost(post.link)),
-      title: 'Share',
+      title: AppLocalizations.of(context)!.share,
       icon: Icons.share,
     ),
     if (post.file != null)
       PopupMenuTile(
         value: () => postDownloadingNotification(context, {post}),
-        title: 'Download',
+        title: AppLocalizations.of(context)!.download,
         icon: Icons.file_download,
       ),
     PopupMenuTile(
       value: () async => launch(context.read<Client>().withHost(post.link)),
-      title: 'Browse',
+      title: AppLocalizations.of(context)!.browse,
       icon: Icons.open_in_browser,
     ),
   ];
@@ -38,7 +39,7 @@ List<PopupMenuItem<VoidCallback>> postMenuUserActions(
 ) {
   return [
     PopupMenuTile(
-      title: 'Edit',
+      title: AppLocalizations.of(context)!.edit,
       icon: Icons.edit,
       value: () => guardWithLogin(
         context: context,
@@ -63,7 +64,7 @@ List<PopupMenuItem<VoidCallback>> postMenuUserActions(
       ),
     ),
     PopupMenuTile(
-      title: 'Comment',
+      title: AppLocalizations.of(context)!.comment,
       icon: Icons.comment,
       value: () => guardWithLogin(
         context: context,
@@ -80,7 +81,7 @@ List<PopupMenuItem<VoidCallback>> postMenuUserActions(
       ),
     ),
     PopupMenuTile(
-      title: 'Report',
+      title: AppLocalizations.of(context)!.report,
       icon: Icons.report,
       value: () => guardWithLogin(
         context: context,
@@ -91,7 +92,7 @@ List<PopupMenuItem<VoidCallback>> postMenuUserActions(
       ),
     ),
     PopupMenuTile(
-      title: 'Flag',
+      title: AppLocalizations.of(context)!.flag,
       icon: Icons.flag,
       value: () => guardWithLogin(
         context: context,

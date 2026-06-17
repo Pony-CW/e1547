@@ -1,6 +1,7 @@
 import 'package:e1547/client/client.dart';
 import 'package:e1547/follow/follow.dart';
 import 'package:e1547/history/history.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/pool/pool.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
@@ -118,7 +119,7 @@ class _PostsSearchPageState extends State<PostsSearchPage> {
               return tagToName(pool!.name);
             }
             String tags = (controller.query['tags'] ?? '').trim();
-            if (tags.isEmpty) return 'Search';
+            if (tags.isEmpty) return AppLocalizations.of(context)!.search;
             return tagToName(tags);
           }
 

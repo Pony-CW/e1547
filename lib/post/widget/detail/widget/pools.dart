@@ -1,3 +1,4 @@
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/pool/pool.dart';
 import 'package:e1547/post/post.dart';
 import 'package:flutter/material.dart';
@@ -13,9 +14,12 @@ class PoolDisplay extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-            child: Text('Pools', style: TextStyle(fontSize: 16)),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+            child: Text(
+              AppLocalizations.of(context)!.pools,
+              style: const TextStyle(fontSize: 16),
+            ),
           ),
           ...post.pools!.map(
             (id) => ListTile(

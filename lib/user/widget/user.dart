@@ -1,6 +1,7 @@
 import 'package:e1547/app/app.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/history/history.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/markup/markup.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
@@ -33,14 +34,14 @@ class UserPage extends StatelessWidget {
             Widget body;
             PreferredSizeWidget? appbar;
             Map<Widget, WidgetBuilder> tabs = {
-              const Tab(text: 'Favorites'): (context) =>
+              Tab(text: AppLocalizations.of(context)!.favorites): (context) =>
                   ChangeNotifierProvider<PostController>.value(
                     value: controllers.favoritePosts,
                     builder: (context, child) => PostSliverDisplay(
                       controller: controllers.favoritePosts,
                     ),
                   ),
-              const Tab(text: 'Uploads'): (context) =>
+              Tab(text: AppLocalizations.of(context)!.uploads): (context) =>
                   ChangeNotifierProvider<PostController>.value(
                     value: controllers.uploadedPosts,
                     builder: (context, child) => PostSliverDisplay(
@@ -88,7 +89,9 @@ class UserPage extends StatelessWidget {
                   ),
                 ),
               );
-              tabs[const Tab(text: 'About')] = (context) => SliverPadding(
+              tabs[Tab(
+                text: AppLocalizations.of(context)!.about,
+              )] = (context) => SliverPadding(
                 padding: defaultListPadding.add(
                   LimitedWidthLayout.of(context).padding,
                 ),
@@ -188,7 +191,7 @@ class UserPage extends StatelessWidget {
                   appBar: appbar,
                   drawer: const RouterDrawer(),
                   endDrawer: ContextDrawer(
-                    title: const Text('Posts'),
+                    title: Text(AppLocalizations.of(context)!.posts),
                     children: [
                       DrawerMultiDenySwitch(controllers: controllers.all),
                       DrawerMultiTagCounter(controllers: controllers.all),
@@ -288,12 +291,12 @@ class _UserProfileActions extends StatelessWidget {
       onSelected: (value) => value(),
       itemBuilder: (context) => [
         PopupMenuTile(
-          title: 'Browse',
+          title: AppLocalizations.of(context)!.browse,
           icon: Icons.open_in_browser,
           value: () async => launch(context.read<Client>().withHost(user.link)),
         ),
         PopupMenuTile(
-          title: 'Report',
+          title: AppLocalizations.of(context)!.report,
           icon: Icons.report,
           value: () => guardWithLogin(
             context: context,
@@ -304,11 +307,13 @@ class _UserProfileActions extends StatelessWidget {
                 ),
               );
             },
-            error: 'You must be logged in to report users!',
+            error: AppLocalizations.of(context)!.reportError,
           ),
         ),
         PopupMenuTile(
-          title: blocked ? 'Unblock' : 'Block',
+          title: blocked
+              ? AppLocalizations.of(context)!.unblock
+              : AppLocalizations.of(context)!.block,
           icon: blocked ? Icons.check : Icons.block,
           value: () {
             if (blocked) {
@@ -398,10 +403,13 @@ class UserInfo extends StatelessWidget {
             if (user.about?.bio case final bio? when bio.isNotEmpty)
               Card(
                 child: ExpandablePanel(
-                  controller: Expandables.of(context, 'about'),
-                  header: const ListTile(
-                    leading: Icon(Icons.person),
-                    title: Text('About'),
+                  controller: Expandables.of(
+                    context,
+                    AppLocalizations.of(context)!.aboutLC,
+                  ),
+                  header: ListTile(
+                    leading: const Icon(Icons.person),
+                    title: Text(AppLocalizations.of(context)!.about),
                   ),
                   collapsed: const SizedBox.shrink(),
                   expanded: Padding(
@@ -417,10 +425,13 @@ class UserInfo extends StatelessWidget {
                 when comission.isNotEmpty)
               Card(
                 child: ExpandablePanel(
-                  controller: Expandables.of(context, 'comission'),
-                  header: const ListTile(
-                    leading: Icon(Icons.attach_money),
-                    title: Text('Comission'),
+                  controller: Expandables.of(
+                    context,
+                    AppLocalizations.of(context)!.comissionLC,
+                  ),
+                  header: ListTile(
+                    leading: const Icon(Icons.attach_money),
+                    title: Text(AppLocalizations.of(context)!.comission),
                   ),
                   collapsed: const SizedBox.shrink(),
                   expanded: Padding(
@@ -434,10 +445,13 @@ class UserInfo extends StatelessWidget {
               ),
             Card(
               child: ExpandablePanel(
-                controller: Expandables.of(context, 'info'),
-                header: const ListTile(
-                  leading: Icon(Icons.info_outline),
-                  title: Text('Info'),
+                controller: Expandables.of(
+                  context,
+                  AppLocalizations.of(context)!.infoLC,
+                ),
+                header: ListTile(
+                  leading: const Icon(Icons.info_outline),
+                  title: Text(AppLocalizations.of(context)!.info),
                 ),
                 collapsed: const SizedBox.shrink(),
                 expanded: Padding(
@@ -446,7 +460,7 @@ class UserInfo extends StatelessWidget {
                     children: [
                       info(
                         Icons.tag,
-                        'id',
+                        AppLocalizations.of(context)!.idLC,
                         user.id.toString(),
                         onLongPress: () {
                           Clipboard.setData(
@@ -463,21 +477,41 @@ class UserInfo extends StatelessWidget {
                       if (user.stats case final stats?) ...[
                         info(
                           Icons.calendar_today,
-                          'joined',
+                          AppLocalizations.of(context)!.joinedLC,
                           stats.createdAt != null
                               ? DateFormatting.named(stats.createdAt!)
                               : null,
                         ),
                         info(
                           Icons.shield,
-                          'rank',
+                          AppLocalizations.of(context)!.rankLC,
                           stats.levelString?.toLowerCase(),
                         ),
-                        info(Icons.upload, 'posts', stats.postUploadCount),
-                        info(Icons.edit, 'edits', stats.postUpdateCount),
-                        info(Icons.favorite, 'favorites', stats.favoriteCount),
-                        info(Icons.comment, 'comments', stats.commentCount),
-                        info(Icons.forum, 'forum', stats.forumPostCount),
+                        info(
+                          Icons.upload,
+                          AppLocalizations.of(context)!.postsLC,
+                          stats.postUploadCount,
+                        ),
+                        info(
+                          Icons.edit,
+                          AppLocalizations.of(context)!.editsLC,
+                          stats.postUpdateCount,
+                        ),
+                        info(
+                          Icons.favorite,
+                          AppLocalizations.of(context)!.favoritesLC,
+                          stats.favoriteCount,
+                        ),
+                        info(
+                          Icons.comment,
+                          AppLocalizations.of(context)!.commentsLC,
+                          stats.commentCount,
+                        ),
+                        info(
+                          Icons.forum,
+                          AppLocalizations.of(context)!.forumLC,
+                          stats.forumPostCount,
+                        ),
                       ],
                     ],
                   ),

@@ -1,5 +1,6 @@
 import 'package:e1547/client/client.dart';
 import 'package:e1547/follow/follow.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +73,7 @@ class FollowEditingTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: const Text('Edit'),
+      title: Text(AppLocalizations.of(context)!.edit),
       leading: const Icon(Icons.edit),
       onTap: () {
         Scaffold.of(context).closeEndDrawer();

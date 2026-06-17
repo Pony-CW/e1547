@@ -1,4 +1,5 @@
 import 'package:e1547/identity/identity.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -83,7 +84,7 @@ class IdentitiesPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Text(
-              'Identity',
+              AppLocalizations.of(context)!.identity,
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),

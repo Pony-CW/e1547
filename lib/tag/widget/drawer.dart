@@ -1,3 +1,4 @@
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
@@ -82,9 +83,9 @@ class DrawerTagCounterBody extends StatelessWidget {
               iconColor: Theme.of(context).iconTheme.color,
             ),
             child: ExpandablePanel(
-              header: const ListTile(
-                title: Text('Tags'),
-                leading: Icon(Icons.tag),
+              header: ListTile(
+                title: Text(AppLocalizations.of(context)!.tags),
+                leading: const Icon(Icons.tag),
               ),
               collapsed: const SizedBox.shrink(),
               expanded: Column(

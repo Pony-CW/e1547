@@ -1,5 +1,6 @@
 import 'package:e1547/client/client.dart';
 import 'package:e1547/history/history.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -24,20 +25,22 @@ class FavPage extends StatelessWidget {
             child: LoadingPage(
               isEmpty: controller.error is NoUserLoginException,
               isError: controller.error is NoUserLoginException,
-              onError: const IconMessage(
-                icon: Icon(Icons.person_search),
-                title: Text('Favorites are unavailable for anonymous users'),
+              onError: IconMessage(
+                icon: const Icon(Icons.person_search),
+                title: Text(AppLocalizations.of(context)!.favoritesError),
               ),
               loadingBuilder: (context, child) => AdaptiveScaffold(
-                appBar: const DefaultAppBar(title: Text('Favorites')),
+                appBar: DefaultAppBar(
+                  title: Text(AppLocalizations.of(context)!.favorites),
+                ),
                 body: Center(child: child(context)),
                 drawer: const RouterDrawer(),
               ),
               child: (context) => PostsPage(
                 controller: controller,
-                appBar: const DefaultAppBar(
-                  title: Text('Favorites'),
-                  actions: [ContextDrawerButton()],
+                appBar: DefaultAppBar(
+                  title: Text(AppLocalizations.of(context)!.favorites),
+                  actions: const [ContextDrawerButton()],
                 ),
                 drawerActions: [
                   if (controller.query['tags']?.isEmpty ?? true)

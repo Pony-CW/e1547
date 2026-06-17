@@ -1,3 +1,4 @@
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +16,9 @@ class HotPage extends StatelessWidget {
               PostsControllerHistoryConnector(
                 controller: controller,
                 child: PostsPage(
-                  appBar: const DefaultAppBar(
-                    title: Text('Hot'),
-                    actions: [ContextDrawerButton()],
+                  appBar: DefaultAppBar(
+                    title: Text(AppLocalizations.of(context)!.hot),
+                    actions: const [ContextDrawerButton()],
                   ),
                   controller: controller,
                 ),

@@ -1,4 +1,5 @@
 import 'package:e1547/follow/follow.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +19,9 @@ class _FollowsTimelinePageState extends State<FollowsTimelinePage> {
         create: (context, client) => FollowTimelineController(client: client),
         child: Consumer<PostController>(
           builder: (context, controller, child) => PostsPage(
-            appBar: const DefaultAppBar(
-              title: Text('Timeline'),
-              actions: [ContextDrawerButton()],
+            appBar: DefaultAppBar(
+              title: Text(AppLocalizations.of(context)!.timeline),
+              actions: const [ContextDrawerButton()],
             ),
             controller: controller,
             drawerActions: const [FollowEditingTile()],

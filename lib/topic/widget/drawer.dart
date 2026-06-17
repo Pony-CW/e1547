@@ -1,3 +1,4 @@
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/topic/topic.dart';
 import 'package:flutter/material.dart';
 
@@ -12,11 +13,11 @@ class TopicTagEditingTile extends StatelessWidget {
       animation: controller,
       builder: (context, child) => SwitchListTile(
         secondary: const Icon(Icons.inventory_outlined),
-        title: const Text('hide tags edits'),
+        title: Text(AppLocalizations.of(context)!.topicsHide),
         subtitle: Text(
           controller.hideTagEditing
-              ? 'hide tag alias and implications'
-              : 'show tag alias and implications',
+              ? AppLocalizations.of(context)!.topicsHideOn
+              : AppLocalizations.of(context)!.topicsHideOff,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

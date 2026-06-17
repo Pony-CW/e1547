@@ -1,6 +1,7 @@
 export 'background.dart';
 export 'capabilities.dart';
 export 'initialize.dart';
+export 'language.dart';
 export 'link.dart';
 export 'navigation.dart';
 export 'notification.dart';

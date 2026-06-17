@@ -1,3 +1,4 @@
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -128,8 +129,8 @@ class PostSliverTimeline extends StatelessWidget {
         fetchNextPage: controller.getNextPage,
         builderDelegate: defaultPagedChildBuilderDelegate<Post>(
           onRetry: controller.getNextPage,
-          onEmpty: const Text('No posts'),
-          onError: const Text('Failed to load posts'),
+          onEmpty: Text(AppLocalizations.of(context)!.timelineEmpty),
+          onError: Text(AppLocalizations.of(context)!.timelineError),
           itemBuilder: (context, item, index) => Padding(
             padding:
                 LimitedWidthLayout.maybeOf(context)?.padding ?? EdgeInsets.zero,

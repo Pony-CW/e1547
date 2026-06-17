@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:e1547/app/app.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/topic/topic.dart';
@@ -241,7 +242,7 @@ class AboutVersion extends StatelessWidget {
               children: [
                 ListTile(
                   leading: icon,
-                  title: const Text('Version'),
+                  title: Text(AppLocalizations.of(context)!.version),
                   subtitle: Text(message),
                   onTap: onTap,
                 ),
@@ -317,7 +318,7 @@ class AboutLinks extends StatelessWidget {
         if (appInfo.website != null)
           linkListTile(
             leading: const FaIcon(FontAwesomeIcons.house),
-            title: const Text('Website'),
+            title: Text(AppLocalizations.of(context)!.webSite),
             link: 'https://',
             extra: appInfo.website,
           ),
@@ -335,14 +336,14 @@ class AboutLinks extends StatelessWidget {
         if (appInfo.email != null)
           linkListTile(
             leading: const FaIcon(FontAwesomeIcons.solidEnvelope),
-            title: const Text('Email'),
+            title: Text(AppLocalizations.of(context)!.email),
             link: 'mailto:',
             extra: appInfo.email,
           ),
         const Divider(),
         linkListTile(
           leading: const FaIcon(FontAwesomeIcons.googlePlay),
-          title: const Text('Playstore'),
+          title: Text(AppLocalizations.of(context)!.playstore),
           link: Platform.isAndroid
               ? 'https://play.google.com/store/apps/details?id='
               : 'https://play.google.com/store/search?q=',
@@ -387,10 +388,10 @@ class AboutDonations extends StatelessWidget {
 
           return Column(
             children: [
-              const ListTile(
-                title: Text('Donors'),
-                leading: FaIcon(FontAwesomeIcons.handHoldingHeart),
-                subtitle: Text('Thanks for helping me keep up development!'),
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.donors),
+                leading: const FaIcon(FontAwesomeIcons.handHoldingHeart),
+                subtitle: Text(AppLocalizations.of(context)!.donorsSubtitle),
               ),
               const Divider(),
               const SizedBox(height: 8),

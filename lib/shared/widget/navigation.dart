@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:e1547/app/data/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,7 @@ typedef RouterDrawerSettingCallback = bool Function(BuildContext context);
 class NamedRouterDrawerDestination<T extends Widget>
     extends RouterDrawerDestination {
   const NamedRouterDrawerDestination({
-    required this.name,
+    this.name,
     this.icon,
     this.group,
     this.visible,
@@ -29,7 +30,7 @@ class NamedRouterDrawerDestination<T extends Widget>
     super.unique,
   }) : super(builder: builder);
 
-  final String name;
+  final DrawerTitle? name;
   final RouterDrawerSettingCallback? visible;
   final RouterDrawerSettingCallback? enabled;
   final Widget? icon;
@@ -119,7 +120,7 @@ class RouterDrawer extends StatelessWidget {
           selected:
               destination.unique &&
               destination.path == controller.drawerSelection,
-          title: Text(destination.name),
+          title: Text(drawerTitleText(context, destination.name!)),
           leading: destination.icon,
           onTap: destination.unique
               ? () => Navigator.of(

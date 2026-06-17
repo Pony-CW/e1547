@@ -1,5 +1,6 @@
 import 'package:e1547/client/client.dart';
 import 'package:e1547/comment/comment.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ class PostCommentsPage extends StatelessWidget {
       postId: postId,
       child: AdaptiveScaffold(
         appBar: DefaultAppBar(
-          title: Text('#$postId comments'),
+          title: Text(AppLocalizations.of(context)!.commentsPostIdLC(postId)),
           actions: const [ContextDrawerButton()],
         ),
         floatingActionButton: client.hasLogin

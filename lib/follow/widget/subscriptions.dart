@@ -1,5 +1,6 @@
 import 'package:e1547/client/client.dart';
 import 'package:e1547/follow/follow.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
@@ -38,16 +39,16 @@ class FollowsSubscriptionsPage extends StatelessWidget {
               items: controller.items,
               child: PromptActions(
                 child: AdaptiveScaffold(
-                  appBar: const FollowSelectionAppBar(
+                  appBar: FollowSelectionAppBar(
                     child: DefaultAppBar(
-                      title: Text('Subscriptions'),
-                      actions: [ContextDrawerButton()],
+                      title: Text(AppLocalizations.of(context)!.subscriptions),
+                      actions: const [ContextDrawerButton()],
                     ),
                   ),
                   drawer: const RouterDrawer(),
-                  endDrawer: const ContextDrawer(
-                    title: Text('Subscriptions'),
-                    children: [
+                  endDrawer: ContextDrawer(
+                    title: Text(AppLocalizations.of(context)!.subscriptions),
+                    children: const [
                       FollowEditingTile(),
                       Divider(),
                       FollowFilterReadTile(),
@@ -83,8 +84,12 @@ class FollowsSubscriptionsPage extends StatelessWidget {
                             onRetry: controller.getNextPage,
                             itemBuilder: (context, item, index) =>
                                 FollowTile(follow: item),
-                            onEmpty: const Text('No subscriptions'),
-                            onError: const Text('Failed to load subscriptions'),
+                            onEmpty: Text(
+                              AppLocalizations.of(context)!.subscriptionsEmpty,
+                            ),
+                            onError: Text(
+                              AppLocalizations.of(context)!.subscriptionsError,
+                            ),
                           ),
                           crossAxisCount: TileLayout.of(context).crossAxisCount,
                         ),

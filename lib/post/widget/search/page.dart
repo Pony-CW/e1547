@@ -1,3 +1,4 @@
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
@@ -37,7 +38,7 @@ class _PostsPageState extends State<PostsPage> {
 
     Widget? endDrawer() {
       return ContextDrawer(
-        title: const Text('Posts'),
+        title: Text(AppLocalizations.of(context)!.posts),
         children: [
           CrossFade.builder(
             showChild: widget.drawerActions?.isNotEmpty ?? false,

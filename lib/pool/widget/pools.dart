@@ -1,4 +1,5 @@
 import 'package:e1547/history/history.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/pool/pool.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/settings/settings.dart';
@@ -33,16 +34,16 @@ class _PoolsPageState extends State<PoolsPage> with RouterDrawerEntryWidget {
                 ),
               ),
           child: AdaptiveScaffold(
-            appBar: const DefaultAppBar(
-              title: Text('Pools'),
-              actions: [ContextDrawerButton()],
+            appBar: DefaultAppBar(
+              title: Text(AppLocalizations.of(context)!.pools),
+              actions: const [ContextDrawerButton()],
             ),
             floatingActionButton: PoolsPageFloatingActionButton(
               controller: controller,
             ),
             drawer: const RouterDrawer(),
             endDrawer: ContextDrawer(
-              title: const Text('Pools'),
+              title: Text(AppLocalizations.of(context)!.pools),
               children: [
                 DrawerDenySwitch(controller: controller.thumbnails),
                 DrawerTagCounter(controller: controller.thumbnails),

@@ -6,6 +6,7 @@ import 'package:drift/native.dart';
 import 'package:e1547/app/app.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/identity/identity.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -141,8 +142,10 @@ class _IdentityPageState extends State<IdentityPage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: CheckboxFormField(
-                label: 'Authentication',
-                title: withAuth ? const Text('Login') : const Text('Anonymous'),
+                label: AppLocalizations.of(context)!.authentication,
+                title: withAuth
+                    ? Text(AppLocalizations.of(context)!.login)
+                    : Text(AppLocalizations.of(context)!.anonymous),
                 value: withAuth,
                 onChanged: (value) => setState(() => withAuth = value!),
               ),
@@ -449,7 +452,7 @@ class _HostFormFieldState extends State<HostFormField> {
         controller: controller,
         readOnly: widget.readOnly,
         decoration: InputDecoration(
-          labelText: 'Host',
+          labelText: AppLocalizations.of(context)!.host,
           border: const OutlineInputBorder(),
           prefixText: isHttps ? 'https://' : 'http://',
         ),
@@ -458,7 +461,7 @@ class _HostFormFieldState extends State<HostFormField> {
         textInputAction: TextInputAction.next,
         validator: (value) {
           if (value!.trim().isEmpty) {
-            return 'You must provide a host URL.';
+            return AppLocalizations.of(context)!.hostNullWarn;
           }
           try {
             if (isHttps) {
@@ -468,7 +471,7 @@ class _HostFormFieldState extends State<HostFormField> {
             }
             Uri.parse(value);
           } on FormatException {
-            return 'Invalid host URL';
+            return AppLocalizations.of(context)!.hostUrlWarn;
           }
           return null;
         },
@@ -489,16 +492,16 @@ class UsernameFormField extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         autocorrect: false,
-        decoration: const InputDecoration(
-          labelText: 'Username',
-          border: OutlineInputBorder(),
+        decoration: InputDecoration(
+          labelText: AppLocalizations.of(context)!.username,
+          border: const OutlineInputBorder(),
         ),
         inputFormatters: [FilteringTextInputFormatter.deny(' ')],
         autofillHints: const [AutofillHints.username],
         textInputAction: TextInputAction.next,
         validator: (value) {
           if (value!.trim().isEmpty) {
-            return 'You must provide a username.';
+            return AppLocalizations.of(context)!.userWarn;
           }
           return null;
         },
@@ -533,8 +536,8 @@ class _ApikeyFormFieldState extends State<ApikeyFormField> {
         autocorrect: false,
         controller: widget.controller,
         decoration: InputDecoration(
-          labelText: 'API key',
-          helperText: 'e.g. $apiKeyExample',
+          labelText: AppLocalizations.of(context)!.apiKey,
+          helperText: AppLocalizations.of(context)!.apiKeyHelper(apiKeyExample),
           border: const OutlineInputBorder(),
           suffixIcon: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -562,8 +565,7 @@ class _ApikeyFormFieldState extends State<ApikeyFormField> {
         textInputAction: TextInputAction.done,
         validator: (value) {
           if (value!.isEmpty) {
-            return 'You must provide an API key.\n'
-                'e.g. $apiKeyExample';
+            return AppLocalizations.of(context)!.apiKeyWran(apiKeyExample);
           }
 
           if (widget.canOmit &&

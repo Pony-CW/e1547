@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/logs/logs.dart';
 import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
@@ -115,14 +116,6 @@ enum VideoResolution {
   ultra,
   source;
 
-  String get title => switch (this) {
-    VideoResolution.standard => 'Standard (480p)',
-    VideoResolution.high => 'High (720p)',
-    VideoResolution.full => 'Full (1080p)',
-    VideoResolution.ultra => 'Ultra (4K)',
-    VideoResolution.source => 'Source',
-  };
-
   int get pixels => switch (this) {
     VideoResolution.standard => 640 * 480,
     VideoResolution.high => 1280 * 720,
@@ -130,4 +123,18 @@ enum VideoResolution {
     VideoResolution.ultra => 3840 * 2160,
     VideoResolution.source => 4096 * 2160,
   };
+}
+
+extension VideoResolutionL10n on VideoResolution {
+  String title(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return switch (this) {
+      VideoResolution.standard => l10n.videoResolutionStandard,
+      VideoResolution.high => l10n.videoResolutionHigh,
+      VideoResolution.full => l10n.videoResolutionFull,
+      VideoResolution.ultra => l10n.videoResolutionUltra,
+      VideoResolution.source => l10n.videoResolutionSource,
+    };
+  }
 }

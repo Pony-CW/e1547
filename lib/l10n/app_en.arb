@@ -1,0 +1,307 @@
+{
+  "@@locale": "en",
+
+  "home": "Home",
+  "hot": "Hot",
+  "search": "Search",
+
+  "favorites": "Favorites",
+  "favoritesError": "Favorites are unavailable for anonymous users",
+
+  "timeline": "Timeline",
+  "timelineEmpty": "No posts",
+  "timelineError": "Failed to load posts",
+
+  "subscriptions": "Subscriptions",
+  "subscriptionsEmpty": "No subscriptions",
+  "subscriptionsError": "Failed to load subscriptions",
+
+  "bookmarks": "Bookmarks",
+  "bookmarksEmpty": "No bookmarks",
+  "bookmarksError": "Failed to load bookmarks",
+
+  "pools": "Pools",
+
+  "forum": "Forum",
+  "topics": "Topics",
+  "topicsHide": "hide tags edits",
+  "topicsHideOn": "hide tag alias and implications",
+  "topicsHideOff": "show tag alias and implications",
+
+  "share": "Share",
+  "download": "Download",
+  "browse": "Browse",
+  "edit": "Edit",
+  "comment": "Comment",
+  "report": "Report",
+  "flag": "Flag",
+  "editError": "You must be logged in to edit posts!",
+  "commentError": "You must be logged in to comment!",
+  "reportError": "You must be logged in to report posts!",
+  "flagError": "You must be logged in to flag posts!",
+  "chooseIdentity": "Choose identity",
+
+  "commentsLC": "comments",
+  "commentsNumUC": "COMMENTS ({count})",
+  "@commentsNumUC": {
+    "description": "lib/post/widget/detail/widget/comments.dart - COMMENTS",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commentsPostIdLC" :"#{postId} comments",
+  "@commentsPostIdLC": {
+    "description": "lib/comment/widget/post.dart - comments",
+    "placeholders": {
+      "postId": {
+        "type": "int"
+      }
+    }
+  },
+  "file": "File",
+  "sources": "Sources",
+
+  "version": "Version",
+  "webSite": "Website",
+  "email": "Email",
+  "playstore": "Playstore",
+  "donors": "Donors",
+  "donorsSubtitle": "Thanks for helping me keep up development!",
+  "donorsLite": "Not on the list? contact us!",
+
+  "settings": "Settings",
+
+  "identity": "Identity",
+  "host": "Host",
+  "hostNullWarn": "You must provide a host URL.",
+  "hostUrlWarn": "Invalid host URL",
+  "authentication": "Authentication",
+  "login": "Login",
+  "anonymous": "Anonymous",
+  "username": "Username",
+  "userWarn": "You must provide a username.",
+  "apiKey": "API key",
+  "apiKeyHelper": "e.g. {example}",
+  "@apiKeyHelper": {
+    "description": "lib/identity/widget/identity.dart - API Key Helper",
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "apiKeyWran": "You must provide an API key.\ne.g. {example}",
+  "@apiKeyWran": {
+    "description": "lib/identity/widget/identity.dart - API Key Warning",
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+
+  "user": "User",
+  "unblock": "Unblock",
+  "block": "Block",
+  "blacklist": "Blacklist",
+  "follows": "Follows",
+  "uploads": "Uploads",
+  "about": "About",
+  "aboutLC": "about",
+  "comission": "Comission",
+  "info": "Info",
+  "infoLC": "info",
+  "idLC": "id",
+  "joinedLC": "joined",
+  "rankLC": "rank",
+  "postsLC": "posts",
+  "editsLC": "edits",
+  "favoritesLC": "favorites",
+  "comissionLC": "comission",
+  "forumLC": "forum",
+
+  "history": "History",
+  "historySubtitle": "{num} pages visited",
+  "@historySubtitle": {
+    "description": "lib/settings/widget/settings.dart &\nlib/history/widget/drawer.dart - History subtitle",
+    "placeholders": {
+      "num": {
+        "type": "int"
+      }
+    }
+  },
+  "historyClear": "Clear history",
+  "historyClearSub": "Delete all entries",
+  "historyClearWarn": "Clear history?",
+  "historyClearWarnInfo": "All history entries will be permanently deleted. This action cannot be undone.",
+  "historyLimit": "Limit history",
+  "historyLimitSub": "Limited to newer than {days} months or \nless than {num} entries.",
+  "@historyLimitSub": {
+    "description": "lib/history/widget/drawer.dart - History Limit Subtitle",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "num": {
+        "type": "String"
+      }
+    }
+  },
+  "historyLimitWarnTitle": "History limit",
+  "historyLimitWarn": "Enabling history limit means all history entries beyond {num} \nand all entries older than {days} months are automatically deleted.",
+  "@historyLimitWarn": {
+    "description": "lib/history/widget/drawer.dart - History Limit Warning",
+    "placeholders": {
+      "num": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "historyInfinite": "history is infinite",
+  "historyPosts": "Posts - {tag}",
+  "@historyPosts": {
+    "description": "lib/history/data/actions.dart - Posts History",
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "historyPools": "Pools - {name_matches}",
+  "@historyPools": {
+    "description": "lib/history/data/actions.dart - Pools History",
+    "placeholders": {
+      "name_matches": {
+        "type": "String"
+      }
+    }
+  },
+  "historyUsers": "Users - {name_matches}",
+  "@historyUsers": {
+    "description": "lib/history/data/actions.dart - Users History",
+    "placeholders": {
+      "name_matches": {
+        "type": "String"
+      }
+    }
+  },
+  "historyWikis": "Wikis - {title}",
+  "@historyWikis": {
+    "description": "lib/history/data/actions.dart - Wikis History",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "historyTopics": "Topics - {title_matches}",
+  "@historyTopics": {
+    "description": "lib/history/data/actions.dart - Topics History",
+    "placeholders": {
+      "title_matches": {
+        "type": "String"
+      }
+    }
+  },
+  "historyReplies": "Replies - {topic_title_matches}",
+  "@historyReplies": {
+    "description": "lib/history/data/actions.dart - Replies History",
+    "placeholders": {
+      "topic_title_matches": {
+        "type": "String"
+      }
+    }
+  },
+  "hotPosts": "Hot posts",
+  "entries": "Entries",
+  "type": "Type",
+  "posts": "Posts",
+  "users": "Users",
+  "wikis": "Wikis",
+  "replies": "Replies",
+  "tags": "Tags",
+
+  "tasks": "Tasks",
+
+  "appearance": "Appearance",
+  "language": "Language",
+  "theme": "Theme",
+  "tileSize": "Tile size",
+  "postInfo": "Post info",
+  "postInfoTrue": "info on post tiles",
+  "postInfoFalse": "image tiles only",
+
+  "interactions": "Interactions",
+  "downloadLocation": "Download location",
+  "upvoteFavorites": "Upvote favorites",
+  "upvoteFavoritesTrue": "upvote and favorite",
+  "upvoteFavoritesFalse": "favorite only",
+  "videoVolume": "Video volume",
+  "videoVolumeTrue": "muted",
+  "videoVolumeFalse": "with sound",
+  "videoResolution": "Video resolution",
+  "videoResolutionStandard": "Standard (480p)",
+  "videoResolutionHigh": "High (720p)",
+  "videoResolutionFull": "Full (1080p)",
+  "videoResolutionUltra": "Ultra (4K)",
+  "videoResolutionSource": "Source",
+
+  "security": "Security",
+  "secureDisplay": "Secure display",
+  "secureDisplayTrue": "screen protected",
+  "secureDisplayFalse": "screen visible",
+  "incognitoKeyboard": "Incognito keyboard",
+  "pinLock": "PIN lock",
+  "pinLockTrue": "PIN enabled",
+  "pinLockFalse": "PIN disabled",
+  "biometricLock": "Biometric lock",
+  "biometricLockTrue": "biometrics enabled",
+  "biometricLockFalse": "biometrics disabled",
+
+  "development": "Development",
+  "developerMode": "Developer mode",
+  "developerModeTrue": "options shown",
+  "developerModeFalse": "options hidden",
+
+  "logs": "Logs",
+  "logsUC": "LOGS",
+  "logsSubtitle": "{num} errors logged",
+  "@logsSubtitle": {
+    "description": "lib/settings/widget/settings.dart - Logs subtitle",
+    "placeholders": {
+      "num": {
+        "type": "int"
+      }
+    }
+  },
+  "logsError": "A critical error has occured!",
+
+  "database": "Database",
+  "databaseExport": "Save a backup copy of your database",
+  "databaseExportPush": "Exporting database...",
+  "databaseImport": "Replace current database with imported one",
+  "databaseImportPush": "Import Database",
+  "databaseImportPushWarn": "This will replace your current database. \nAll data will be lost. This cannot be undone!",
+
+  "okUC": "OK",
+  "clear": "Clear",
+  "export": "Export",
+  "import": "Import",
+  "cancel": "Cancel",
+  "importUC": "IMPORT",
+  "cancelUC": "CANCEL",
+  "restart": "Restart Required",
+  "restartWarn": "The app needs to restart to apply changes.",
+  "restartNow": "RESTART NOW",
+
+  "noArtist": "no artist",
+
+  "enabled": "Enabled",
+  "enabledLC": "enabled",
+  "disabledLC": "disabled"
+}

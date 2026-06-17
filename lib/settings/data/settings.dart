@@ -14,6 +14,12 @@ class Settings extends NotifiedSettings {
     initialValue: 1,
   );
 
+  late final ValueNotifier<Language> languages = createEnumSetting(
+    key: 'language',
+    initialValue: Language.values.first,
+    values: Language.values,
+  );
+
   late final ValueNotifier<AppTheme> theme = createEnumSetting(
     key: 'theme',
     initialValue: AppTheme.values.first,

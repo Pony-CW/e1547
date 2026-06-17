@@ -1,5 +1,6 @@
 import 'package:e1547/client/client.dart';
 import 'package:e1547/identity/identity.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +24,7 @@ Future<void> guardWithLogin({
         duration: const Duration(seconds: 3),
         content: Text(error ?? 'You must be logged in to perform this action.'),
         action: SnackBarAction(
-          label: 'Choose identity',
+          label: AppLocalizations.of(context)!.chooseIdentity,
           onPressed: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => const IdentitiesPage()),
           ),

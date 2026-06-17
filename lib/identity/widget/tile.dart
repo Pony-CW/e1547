@@ -1,4 +1,5 @@
 import 'package:e1547/identity/identity.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/user/user.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,9 @@ class IdentityTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       key: ValueKey(identity.id),
-      title: Text(identity.usernameOrAnon),
+      title: identity.usernameOrAnon != 'Anonymous'
+          ? Text(identity.usernameOrAnon)
+          : Text(AppLocalizations.of(context)!.anonymous),
       subtitle: Text(linkToDisplay(identity.host)),
       leading: IdentityAvatar(identity.id),
       trailing: trailing,
@@ -59,10 +62,16 @@ class CurrentIdentityTile extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            identity.usernameOrAnon,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
+                          if (identity.usernameOrAnon != 'Anonymous')
+                            Text(
+                              identity.usernameOrAnon,
+                              style: Theme.of(context).textTheme.titleLarge,
+                            )
+                          else
+                            Text(
+                              AppLocalizations.of(context)!.anonymous,
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
                           Text(
                             linkToDisplay(identity.host),
                             style: Theme.of(context).textTheme.bodySmall,

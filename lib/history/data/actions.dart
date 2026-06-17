@@ -1,6 +1,7 @@
 import 'package:e1547/app/app.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/history/history.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
 import 'package:flutter/widgets.dart';
@@ -72,38 +73,50 @@ extension Identification on History {
           String? username = context.read<Client>().identity.username;
           if (username != null &&
               favRegex(username).hasMatch(search['tags'] ?? '')) {
-            return 'Favorites';
+            return AppLocalizations.of(context)!.favorites;
           }
           if (search['tags'] == 'order:rank') {
-            return 'Hot posts';
+            return AppLocalizations.of(context)!.hotPosts;
           }
-          return 'Posts - ${tagToName(search['tags'] ?? '')}';
+          return AppLocalizations.of(
+            context,
+          )!.historyPosts(tagToName(search['tags'] ?? ''));
         case LinkType.pool:
-          return 'Pools - ${search['search[name_matches]'] ?? ''}';
+          return AppLocalizations.of(
+            context,
+          )!.historyPools(search['search[name_matches]'] ?? '');
         case LinkType.user:
-          return 'Users - ${search['search[name_matches]'] ?? ''}';
+          return AppLocalizations.of(
+            context,
+          )!.historyUsers(search['search[name_matches]'] ?? '');
         case LinkType.wiki:
-          return 'Wikis - ${search['search[title]'] ?? ''}';
+          return AppLocalizations.of(
+            context,
+          )!.historyWikis(search['search[title]'] ?? '');
         case LinkType.topic:
-          return 'Topics - ${search['search[title_matches]'] ?? ''}';
+          return AppLocalizations.of(
+            context,
+          )!.historyTopics(search['search[title_matches]'] ?? '');
         case LinkType.reply:
-          return 'Replies - ${search['search[topic_title_matches]'] ?? ''}';
+          return AppLocalizations.of(
+            context,
+          )!.historyReplies(search['search[topic_title_matches]'] ?? '');
       }
     }
 
     switch (type) {
       case LinkType.post:
-        return 'Posts';
+        return AppLocalizations.of(context)!.posts;
       case LinkType.pool:
-        return 'Pools';
+        return AppLocalizations.of(context)!.pools;
       case LinkType.user:
-        return 'Users';
+        return AppLocalizations.of(context)!.users;
       case LinkType.wiki:
-        return 'Wikis';
+        return AppLocalizations.of(context)!.wikis;
       case LinkType.topic:
-        return 'Topics';
+        return AppLocalizations.of(context)!.topics;
       case LinkType.reply:
-        return 'Replies';
+        return AppLocalizations.of(context)!.replies;
     }
   }
 }

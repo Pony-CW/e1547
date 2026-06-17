@@ -1,3 +1,4 @@
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/logs/logs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,7 @@ class LoggerErrorNotifier extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'A critical error has occured!',
+                      AppLocalizations.of(context)!.logsError,
                       style: style.copyWith(color: textColor),
                     ),
                     Text(
@@ -68,7 +69,10 @@ class LoggerErrorNotifier extends StatelessWidget {
             backgroundColor: background,
             behavior: SnackBarBehavior.floating,
             action: onOpenLogs != null
-                ? SnackBarAction(label: 'LOGS', onPressed: onOpenLogs!)
+                ? SnackBarAction(
+                    label: AppLocalizations.of(context)!.logsUC,
+                    onPressed: onOpenLogs!,
+                  )
                 : null,
           ),
         );

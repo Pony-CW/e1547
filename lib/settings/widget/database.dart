@@ -4,6 +4,7 @@ import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:e1547/app/app.dart';
 import 'package:e1547/app/widget/initialize.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/logs/logs.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:file_picker/file_picker.dart';
@@ -112,11 +113,11 @@ class DatabaseExportTile extends StatelessWidget {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => const AlertDialog(
+        builder: (context) => AlertDialog(
           content: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Padding(
+              const Padding(
                 padding: EdgeInsets.all(4),
                 child: SizedBox(
                   height: 28,
@@ -125,8 +126,8 @@ class DatabaseExportTile extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text('Exporting database...'),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(AppLocalizations.of(context)!.databaseExportPush),
               ),
             ],
           ),
@@ -164,9 +165,9 @@ class DatabaseExportTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.file_download),
-      title: const Text('Export'),
-      subtitle: const Text(
-        'Save a backup copy of your database',
+      title: Text(AppLocalizations.of(context)!.export),
+      subtitle: Text(
+        AppLocalizations.of(context)!.databaseExport,
         overflow: TextOverflow.ellipsis,
       ),
       onTap: () => _exportDatabase(context),
@@ -262,22 +263,19 @@ class DatabaseImportTile extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 600),
         child: AlertDialog(
-          title: const Text('Import Database'),
-          content: const Text(
-            'This will replace your current database. \n'
-            'All data will be lost. This cannot be undone!',
-          ),
+          title: Text(AppLocalizations.of(context)!.databaseImportPush),
+          content: Text(AppLocalizations.of(context)!.databaseImportPushWarn),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('CANCEL'),
+              child: Text(AppLocalizations.of(context)!.cancelUC),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
               style: TextButton.styleFrom(
                 foregroundColor: Theme.of(context).colorScheme.error,
               ),
-              child: const Text('IMPORT'),
+              child: Text(AppLocalizations.of(context)!.importUC),
             ),
           ],
         ),
@@ -289,12 +287,12 @@ class DatabaseImportTile extends StatelessWidget {
     context: context,
     barrierDismissible: false,
     builder: (context) => AlertDialog(
-      title: const Text('Restart Required'),
-      content: const Text('The app needs to restart to apply changes.'),
+      title: Text(AppLocalizations.of(context)!.restart),
+      content: Text(AppLocalizations.of(context)!.restartWarn),
       actions: [
         TextButton(
           onPressed: () => AppInit.of(context).reinitialize(),
-          child: const Text('RESTART NOW'),
+          child: Text(AppLocalizations.of(context)!.restartNow),
         ),
       ],
     ),
@@ -304,9 +302,9 @@ class DatabaseImportTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.file_upload),
-      title: const Text('Import'),
-      subtitle: const Text(
-        'Replace current database with imported one',
+      title: Text(AppLocalizations.of(context)!.import),
+      subtitle: Text(
+        AppLocalizations.of(context)!.databaseImport,
         overflow: TextOverflow.ellipsis,
       ),
       onTap: () => _importDatabase(context),
