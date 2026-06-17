@@ -1,3 +1,4 @@
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -71,6 +72,14 @@ enum AppTheme {
   }
 }
 
+String? fontFamily() {
+  if (Platform.isWindows) {
+    return 'Microsoft YaHei';
+  } else {
+    return null;
+  }
+}
+
 extension M2ThemeData on ThemeData {
   static ThemeData from({required ColorScheme colorScheme}) {
     final bool isDark = colorScheme.brightness == Brightness.dark;
@@ -98,6 +107,7 @@ extension M2ThemeData on ThemeData {
         tabBarTheme: TabBarThemeData(indicatorColor: onPrimarySurfaceColor),
         applyElevationOverlayColor: isDark,
         useMaterial3: false,
+        fontFamily: fontFamily(),
       ),
     );
   }
