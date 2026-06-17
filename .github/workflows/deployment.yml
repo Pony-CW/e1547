@@ -165,6 +165,73 @@ jobs:
           name: release-ios
           path: Runner.ipa
 
+  windows-build:
+    runs-on: windows-2022
+    steps:
+      - name: setup actions
+        uses: actions/checkout@v6
+
+      # https://github.com/kira-96/Inno-Setup-Chinese-Simplified-Translation
+      - name: install Inno Setup
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+
+          curl.exe -OL https://github.com/jrsoftware/issrc/releases/download/is-6_7_3/innosetup-6.7.3.exe
+          .\innosetup-6.7.3.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
+          "C:\Program Files (x86)\Inno Setup 6" >> $env:GITHUB_PATH
+
+      # All AI
+      - name: setup Chinese language for Inno Setup
+        shell: pwsh
+        run: |
+          curl.exe -L `
+          "https://raw.githubusercontent.com/kira-96/Inno-Setup-Chinese-Simplified-Translation/master/ChineseSimplified.isl" `
+          -o "C:\Program Files (x86)\Inno Setup 6\Languages\ChineseSimplified.isl"
+
+      - name: parse flutter version
+        shell: pwsh
+        run: |
+          $flutterVersion = .\.github\workflows\get_flutter_version.ps1
+          Write-Host "Flutter version: $flutterVersion"
+          "FLUTTER_VERSION=$flutterVersion" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: setup flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: cache flutter dependencies
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.PUB_CACHE }}
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-flutter-
+
+      - name: setup fastforge
+        run: dart pub global activate fastforge
+
+      - name: get flutter dependencies
+        run: flutter pub get
+
+      - name: bump version
+        if: ${{ github.event.inputs.version != 'none' }}
+        run: |
+          dart pub global activate cider
+          cider bump ${{ env.VERSION_BUMP }} --bump-build
+
+      - name: build Release EXE
+        run: |
+          fastforge package --platform windows --targets exe
+
+      - name: upload Release Installer EXE
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-windows
+          path: dist\*
+
   release:
     needs: [android-build, ios-build]
     if: ${{ github.ref == 'refs/heads/master' && github.event.inputs.version != 'none' }}
