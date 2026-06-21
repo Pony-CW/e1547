@@ -11,6 +11,12 @@
       {
         "amount": 3.0,
         "currency": "USD",
+        "date": "2026-06-07T12:20:00",
+        "platform": "ko-fi"
+      },
+      {
+        "amount": 3.0,
+        "currency": "USD",
         "date": "2026-05-07T11:55:00",
         "platform": "ko-fi"
       },
@@ -436,6 +442,12 @@
       "github": "hunting4code"
     },
     "donations": [
+      {
+        "amount": 45.0,
+        "currency": "USD",
+        "date": "2026-06-21T12:27:00",
+        "platform": "ko-fi"
+      },
       {
         "amount": 25.0,
         "currency": "USD",
