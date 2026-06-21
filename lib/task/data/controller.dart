@@ -318,7 +318,16 @@ class TasksController extends ChangeNotifier {
     );
   }
 
-  Future<void> clearAll() => repository.removeAll(null, identity: identity);
+  /// Cancels every queued and in-progress task. Canceled tasks stay in the
+  /// list and can be retried.
+  Future<void> cancelAll() => repository.cancelAll(identity: identity);
+
+  /// Removes completed and canceled tasks. Failed tasks are kept so they stay
+  /// visible for retry.
+  Future<void> clearDone() => repository.clear(
+    statuses: const {TaskStatus.completed, TaskStatus.canceled},
+    identity: identity,
+  );
 
   @override
   void dispose() {

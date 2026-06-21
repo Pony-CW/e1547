@@ -7,18 +7,11 @@ List<Widget> taskBulkActions(
   SelectionLayoutData<Task> layoutData,
 ) {
   final Set<Task> selected = layoutData.selections;
-  final bool hasActive = selected.any(
-    (t) => t.status == TaskStatus.pending || t.status == TaskStatus.running,
-  );
+  final bool hasActive = selected.any((t) => t.status.isActive);
   final bool hasRetryable = selected.any(
     (t) => t.status == TaskStatus.failed || t.status == TaskStatus.canceled,
   );
-  final bool hasTerminal = selected.any(
-    (t) =>
-        t.status == TaskStatus.completed ||
-        t.status == TaskStatus.failed ||
-        t.status == TaskStatus.canceled,
-  );
+  final bool hasTerminal = selected.any((t) => t.status.isTerminal);
   return [
     if (hasActive)
       IconButton(
@@ -26,8 +19,7 @@ List<Widget> taskBulkActions(
         icon: const Icon(Icons.block),
         onPressed: () async {
           for (final t in selected) {
-            if (t.status == TaskStatus.pending ||
-                t.status == TaskStatus.running) {
+            if (t.status.isActive) {
               await controller.cancel(t.id);
             }
           }
@@ -54,9 +46,7 @@ List<Widget> taskBulkActions(
         icon: const Icon(Icons.clear_all),
         onPressed: () async {
           for (final t in selected) {
-            if (t.status == TaskStatus.completed ||
-                t.status == TaskStatus.failed ||
-                t.status == TaskStatus.canceled) {
+            if (t.status.isTerminal) {
               await controller.dismiss(t.id);
             }
           }

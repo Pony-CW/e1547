@@ -55,7 +55,10 @@ class TasksDialog extends StatelessWidget {
           child: AlertDialog(
             titlePadding: EdgeInsets.zero,
             contentPadding: EdgeInsets.zero,
-            title: _PromptHeader(controller: context.read<TasksController>()),
+            title: SizedBox(
+              width: 600,
+              child: _PromptHeader(controller: context.read<TasksController>()),
+            ),
             content: const SizedBox(width: 600, child: TasksListView()),
           ),
         ),
@@ -84,8 +87,9 @@ class _PromptHeader extends StatelessWidget {
                 layoutData: layoutData,
                 controller: controller,
               )
-            : _ClearAllBar(
-                key: const ValueKey('clear'),
+            : _GlobalActionsBar(
+                key: const ValueKey('actions'),
+                layoutData: layoutData,
                 controller: controller,
               ),
       ),
@@ -93,28 +97,54 @@ class _PromptHeader extends StatelessWidget {
   }
 }
 
-class _ClearAllBar extends StatelessWidget {
-  const _ClearAllBar({super.key, required this.controller});
+class _GlobalActionsBar extends StatelessWidget {
+  const _GlobalActionsBar({
+    super.key,
+    required this.layoutData,
+    required this.controller,
+  });
 
+  final SelectionLayoutData<Task> layoutData;
   final TasksController controller;
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    height: 56,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          TextButton.icon(
-            onPressed: controller.clearAll,
-            icon: const Icon(Icons.delete_sweep),
-            label: const Text('clear all'),
-          ),
-        ],
+  Widget build(BuildContext context) {
+    final bool hasActive = layoutData.items.any((t) => t.status.isActive);
+    final bool hasDone = layoutData.items.any(
+      (t) =>
+          t.status == TaskStatus.completed || t.status == TaskStatus.canceled,
+    );
+    return SizedBox(
+      height: 60,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                'Tasks',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            const Spacer(),
+            if (hasActive)
+              ActionButton(
+                icon: const Icon(Icons.block),
+                label: const Text('Cancel all'),
+                onTap: controller.cancelAll,
+              ),
+            if (hasDone)
+              ActionButton(
+                icon: const Icon(Icons.delete_sweep),
+                label: const Text('Clear done'),
+                onTap: controller.clearDone,
+              ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class _SelectionBar extends StatelessWidget {

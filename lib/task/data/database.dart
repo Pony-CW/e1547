@@ -229,6 +229,28 @@ class TaskRepository extends DatabaseAccessor<GeneratedDatabase>
         ),
       );
 
+  Future<int> cancelAll({int? identity}) =>
+      (update(tasksTable)
+            ..where((tbl) => _identityQuery(tbl, identity))
+            ..where(
+              (tbl) => tbl.status.isIn(
+                [TaskStatus.pending, TaskStatus.running].map((e) => e.name),
+              ),
+            ))
+          .write(
+            TaskCompanion(
+              status: const Value(TaskStatus.canceled),
+              error: const Value(null),
+              completedAt: Value(DateTime.now()),
+            ),
+          );
+
+  Future<int> clear({required Set<TaskStatus> statuses, int? identity}) =>
+      (delete(tasksTable)
+            ..where((tbl) => _identityQuery(tbl, identity))
+            ..where((tbl) => tbl.status.isIn(statuses.map((e) => e.name))))
+          .go();
+
   Future<TaskStatus?> readStatus(int id) async {
     final task = await (select(
       tasksTable,
