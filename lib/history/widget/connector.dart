@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cached_query_flutter/cached_query_flutter.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/history/history.dart';
 import 'package:e1547/shared/shared.dart';
@@ -85,4 +88,64 @@ class _ControllerHistoryConnectorState<T extends DataController?>
       builder: (context) => widget.child,
     );
   }
+}
+
+class QueryHistoryConnector<S> extends StatefulWidget {
+  const QueryHistoryConnector({
+    super.key,
+    required this.query,
+    required this.getEntry,
+    required this.child,
+  });
+
+  final Cacheable<S> query;
+  final HistoryRequest? Function(BuildContext context, S state) getEntry;
+  final Widget child;
+
+  @override
+  State<QueryHistoryConnector<S>> createState() =>
+      _QueryHistoryConnectorState<S>();
+}
+
+class _QueryHistoryConnectorState<S> extends State<QueryHistoryConnector<S>> {
+  StreamSubscription<S>? _sub;
+  bool _added = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _subscribe();
+  }
+
+  @override
+  void didUpdateWidget(covariant QueryHistoryConnector<S> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(widget.query, oldWidget.query)) {
+      _sub?.cancel();
+      _added = false;
+      _subscribe();
+    }
+  }
+
+  void _subscribe() {
+    _try(widget.query.state);
+    _sub = widget.query.stream.listen(_try);
+  }
+
+  void _try(S state) {
+    if (_added || !mounted) return;
+    final request = widget.getEntry(context, state);
+    if (request == null) return;
+    _added = true;
+    context.read<Client>().histories.useAdd().mutate(request);
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
