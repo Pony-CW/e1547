@@ -14,8 +14,9 @@ class FavPage extends StatelessWidget {
       child: client.identity.username == null
           ? const AdaptiveScaffold(
               appBar: DefaultAppBar(title: Text('Favorites')),
-              body: Center(
-                child: Text('Favorites are unavailable for anonymous users'),
+              body: IconMessage(
+                icon: Icon(Icons.person_search),
+                title: Text('Favorites are unavailable for anonymous users'),
               ),
             )
           : PostsPage(
