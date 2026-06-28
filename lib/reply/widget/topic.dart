@@ -26,22 +26,25 @@ class TopicRepliesPage extends StatelessWidget {
                 : ReplyOrder.newest,
           ),
         ),
-        builder: (context, _) => AdaptiveScaffold(
-          appBar: DefaultAppBar(
-            title: Text(topic.title),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.info_outline),
-                tooltip: 'Info',
-                onPressed: () =>
-                    showTopicPrompt(context: context, topic: topic),
-              ),
-              const ContextDrawerButton(),
-            ],
+        builder: (context, _) => TopicHistoryConnector(
+          topic: topic,
+          child: AdaptiveScaffold(
+            appBar: DefaultAppBar(
+              title: Text(topic.title),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.info_outline),
+                  tooltip: 'Info',
+                  onPressed: () =>
+                      showTopicPrompt(context: context, topic: topic),
+                ),
+                const ContextDrawerButton(),
+              ],
+            ),
+            drawer: const RouterDrawer(),
+            endDrawer: const ReplyListDrawer(),
+            body: const ReplyList(),
           ),
-          drawer: const RouterDrawer(),
-          endDrawer: const ReplyListDrawer(),
-          body: const ReplyList(),
         ),
       ),
     );

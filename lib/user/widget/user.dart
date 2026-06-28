@@ -25,159 +25,164 @@ class UserPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SubValue.builder(
-      create: (context) => PostFilter(context.read<Client>()),
-      dispose: (_, v) => v.dispose(),
-      builder: (context, filter) => LayoutBuilder(
-        builder: (context, constraints) {
-          Widget body;
-          PreferredSizeWidget? appbar;
-          final tabs = <Widget, WidgetBuilder>{
-            const Tab(text: 'Favorites'): (context) => _UserPostsTab(
-              filter: filter,
-              params: PostParams(tags: 'fav:${user.name}'),
-            ),
-            const Tab(text: 'Uploads'): (context) => _UserPostsTab(
-              filter: filter,
-              params: PostParams(tags: 'user:${user.name}'),
-            ),
-          };
+    return UserHistoryConnector(
+      user: user,
+      child: SubValue.builder(
+        create: (context) => PostFilter(context.read<Client>()),
+        dispose: (_, v) => v.dispose(),
+        builder: (context, filter) => LayoutBuilder(
+          builder: (context, constraints) {
+            Widget body;
+            PreferredSizeWidget? appbar;
+            final tabs = <Widget, WidgetBuilder>{
+              const Tab(text: 'Favorites'): (context) => _UserPostsTab(
+                filter: filter,
+                params: PostParams(tags: 'fav:${user.name}'),
+              ),
+              const Tab(text: 'Uploads'): (context) => _UserPostsTab(
+                filter: filter,
+                params: PostParams(tags: 'user:${user.name}'),
+              ),
+            };
 
-          if (constraints.maxWidth < 1100) {
-            body = NestedScrollView(
-              controller: PrimaryScrollController.of(context),
-              headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                SliverOverlapAbsorber(
-                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                    context,
-                  ),
-                  sliver: UserSliverAppBar(
-                    user: user,
-                    tabs: tabs.keys.toList(),
-                  ),
-                ),
-              ],
-              body: LimitedWidthLayout(
-                child: TileLayout(
-                  child: Builder(
-                    builder: (context) => TabBarView(
-                      children: tabs.values
-                          .map(
-                            (e) => CustomScrollView(
-                              slivers: [
-                                SliverOverlapInjector(
-                                  handle:
-                                      NestedScrollView.sliverOverlapAbsorberHandleFor(
-                                        context,
-                                      ),
-                                ),
-                                e(context),
-                              ],
-                            ),
-                          )
-                          .toList(),
+            if (constraints.maxWidth < 1100) {
+              body = NestedScrollView(
+                controller: PrimaryScrollController.of(context),
+                headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                  SliverOverlapAbsorber(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                      context,
+                    ),
+                    sliver: UserSliverAppBar(
+                      user: user,
+                      tabs: tabs.keys.toList(),
                     ),
                   ),
-                ),
-              ),
-            );
-            tabs[const Tab(text: 'About')] = (context) => SliverPadding(
-              padding: defaultListPadding.add(
-                LimitedWidthLayout.of(context).padding,
-              ),
-              sliver: SliverToBoxAdapter(
-                child: UserInfo(
-                  user: user,
-                  compact: constraints.maxWidth < 600,
-                ),
-              ),
-            );
-          } else {
-            body = Row(
-              children: [
-                SizedBox(
-                  width: 360,
-                  child: ListView(
-                    primary: false,
-                    padding: defaultListPadding,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: 100,
-                              width: 100,
-                              child: UserAvatar(
-                                id: user.avatarId,
-                                userId: user.id,
-                                hasCroppedAvatar: user.hasCroppedAvatar,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: 16,
-                                bottom: 32,
-                              ),
-                              child: Text(
-                                user.name,
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      UserInfo(user: user, compact: false),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: LimitedWidthLayout(
-                    child: TileLayout(
-                      child: TabBarView(
+                ],
+                body: LimitedWidthLayout(
+                  child: TileLayout(
+                    child: Builder(
+                      builder: (context) => TabBarView(
                         children: tabs.values
-                            .toList()
-                            .sublist(0, tabs.length)
-                            .map((e) => CustomScrollView(slivers: [e(context)]))
+                            .map(
+                              (e) => CustomScrollView(
+                                slivers: [
+                                  SliverOverlapInjector(
+                                    handle:
+                                        NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                          context,
+                                        ),
+                                  ),
+                                  e(context),
+                                ],
+                              ),
+                            )
                             .toList(),
                       ),
                     ),
                   ),
                 ),
-              ],
-            );
-            appbar = DefaultAppBar(
-              ignoreTitlePointer: false,
-              title: TabBar(
-                isScrollable: true,
-                labelColor: Theme.of(context).iconTheme.color,
-                indicatorColor: Theme.of(context).iconTheme.color,
-                tabs: tabs.keys.toList().sublist(0, tabs.length).toList(),
-              ),
-              actions: [
-                _UserProfileActions(user: user),
-                const ContextDrawerButton(),
-              ],
-              elevation: 0,
-            );
-          }
+              );
+              tabs[const Tab(text: 'About')] = (context) => SliverPadding(
+                padding: defaultListPadding.add(
+                  LimitedWidthLayout.of(context).padding,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: UserInfo(
+                    user: user,
+                    compact: constraints.maxWidth < 600,
+                  ),
+                ),
+              );
+            } else {
+              body = Row(
+                children: [
+                  SizedBox(
+                    width: 360,
+                    child: ListView(
+                      primary: false,
+                      padding: defaultListPadding,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 100,
+                                width: 100,
+                                child: UserAvatar(
+                                  id: user.avatarId,
+                                  userId: user.id,
+                                  hasCroppedAvatar: user.hasCroppedAvatar,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 16,
+                                  bottom: 32,
+                                ),
+                                child: Text(
+                                  user.name,
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        UserInfo(user: user, compact: false),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: LimitedWidthLayout(
+                      child: TileLayout(
+                        child: TabBarView(
+                          children: tabs.values
+                              .toList()
+                              .sublist(0, tabs.length)
+                              .map(
+                                (e) => CustomScrollView(slivers: [e(context)]),
+                              )
+                              .toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+              appbar = DefaultAppBar(
+                ignoreTitlePointer: false,
+                title: TabBar(
+                  isScrollable: true,
+                  labelColor: Theme.of(context).iconTheme.color,
+                  indicatorColor: Theme.of(context).iconTheme.color,
+                  tabs: tabs.keys.toList().sublist(0, tabs.length).toList(),
+                ),
+                actions: [
+                  _UserProfileActions(user: user),
+                  const ContextDrawerButton(),
+                ],
+                elevation: 0,
+              );
+            }
 
-          return DefaultTabController(
-            length: tabs.length,
-            initialIndex: initialPage.index,
-            child: Scaffold(
-              appBar: appbar,
-              drawer: const RouterDrawer(),
-              endDrawer: ContextDrawer(
-                title: const Text('Posts'),
-                children: [DrawerDenySwitch(filter: filter)],
+            return DefaultTabController(
+              length: tabs.length,
+              initialIndex: initialPage.index,
+              child: Scaffold(
+                appBar: appbar,
+                drawer: const RouterDrawer(),
+                endDrawer: ContextDrawer(
+                  title: const Text('Posts'),
+                  children: [DrawerDenySwitch(filter: filter)],
+                ),
+                body: body,
               ),
-              body: body,
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+export 'connector.dart';
 export 'drawer.dart';
 export 'fab.dart';
 export 'list.dart';

@@ -19,14 +19,20 @@ class PoolHistoryConnector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final client = context.watch<Client>();
-    return ItemHistoryConnector<Pool>(
-      item: pool,
-      getEntry: (context, item) {
-        final posts = item.postIds
+    final controller = context.watch<PostParamsController>();
+    final query = client.posts.usePage(query: controller.value.toQuery());
+
+    return QueryHistoryConnector<InfiniteQueryStatus<List<int>, int>>(
+      query: query,
+      getEntry: (context, state) {
+        final data = state.data;
+        if (data == null || data.pages.isEmpty) return null;
+        final posts = data.pages
+            .expand((p) => p)
             .map((id) => client.posts.postCache.get(id))
             .whereType<Post>()
             .toList();
-        return PoolHistoryRequest.item(pool: item, posts: posts);
+        return PoolHistoryRequest.item(pool: pool, posts: posts);
       },
       child: child,
     );

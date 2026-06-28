@@ -36,43 +36,46 @@ class _PoolPageState extends State<PoolPage> {
                 : 'pool:${widget.pool.id} order:${PostOrder.newest.value}',
           ),
         ),
-        child: PostPageQueryBuilder(
-          builder: (context, state, query) => AdaptiveScaffold(
-            appBar: DefaultAppBar(
-              title: Text(tagToName(widget.pool.name)),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.info_outline),
-                  tooltip: 'Info',
-                  onPressed: () =>
-                      showPoolPrompt(context: context, pool: widget.pool),
-                ),
-                const ContextDrawerButton(),
-              ],
-            ),
-            endDrawer: ContextDrawer(
-              title: const Text('Pool'),
-              children: [
-                PoolReaderSwitch(
-                  readerMode: readerMode,
-                  onChange: (value) => setState(() => readerMode = value),
-                ),
-                const PoolOrderSwitch(),
-                const DrawerDenySwitch(),
-                DrawerTagCounter(
-                  posts: state.data?.pages.expand((p) => p).toList(),
-                ),
-              ],
-            ),
-            body: LimitedWidthLayout(
-              child: ListenableBuilder(
-                listenable: context.watch<Settings>().tileSize,
-                builder: (context, child) => TileLayout(
-                  tileSize: context.watch<Settings>().tileSize.value,
-                  child: PostList(
-                    displayType: readerMode
-                        ? PostDisplayType.comic
-                        : PostDisplayType.grid,
+        child: PoolHistoryConnector(
+          pool: widget.pool,
+          child: PostPageQueryBuilder(
+            builder: (context, state, query) => AdaptiveScaffold(
+              appBar: DefaultAppBar(
+                title: Text(tagToName(widget.pool.name)),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.info_outline),
+                    tooltip: 'Info',
+                    onPressed: () =>
+                        showPoolPrompt(context: context, pool: widget.pool),
+                  ),
+                  const ContextDrawerButton(),
+                ],
+              ),
+              endDrawer: ContextDrawer(
+                title: const Text('Pool'),
+                children: [
+                  PoolReaderSwitch(
+                    readerMode: readerMode,
+                    onChange: (value) => setState(() => readerMode = value),
+                  ),
+                  const PoolOrderSwitch(),
+                  const DrawerDenySwitch(),
+                  DrawerTagCounter(
+                    posts: state.data?.pages.expand((p) => p).toList(),
+                  ),
+                ],
+              ),
+              body: LimitedWidthLayout(
+                child: ListenableBuilder(
+                  listenable: context.watch<Settings>().tileSize,
+                  builder: (context, child) => TileLayout(
+                    tileSize: context.watch<Settings>().tileSize.value,
+                    child: PostList(
+                      displayType: readerMode
+                          ? PostDisplayType.comic
+                          : PostDisplayType.grid,
+                    ),
                   ),
                 ),
               ),
