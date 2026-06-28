@@ -3,6 +3,7 @@ import 'package:e1547/app/app.dart';
 import 'package:e1547/app/widget/initialize.dart';
 import 'package:e1547/follow/follow.dart';
 import 'package:e1547/logs/logs.dart';
+import 'package:e1547/onboarding/onboarding.dart';
 import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/task/task.dart';
@@ -76,16 +77,18 @@ class App extends StatelessWidget {
                               child: LoadingCore(
                                 child: ErrorNotifier(
                                   navigatorKey: navigatorKey,
-                                  child: AccountConnector(
-                                    navigatorKey: navigatorKey,
-                                    child: FollowConnector(
-                                      child: AppLinkHandler(
-                                        navigatorKey: navigatorKey,
-                                        child: NotificationHandler(
+                                  child: OnboardingGate(
+                                    child: AccountConnector(
+                                      navigatorKey: navigatorKey,
+                                      child: FollowConnector(
+                                        child: AppLinkHandler(
                                           navigatorKey: navigatorKey,
-                                          child: TasksOverlayHost(
+                                          child: NotificationHandler(
                                             navigatorKey: navigatorKey,
-                                            child: child!,
+                                            child: TasksOverlayHost(
+                                              navigatorKey: navigatorKey,
+                                              child: child!,
+                                            ),
                                           ),
                                         ),
                                       ),
