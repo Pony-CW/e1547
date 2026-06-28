@@ -1,7 +1,10 @@
 import 'package:e1547/client/client.dart';
 import 'package:e1547/post/post.dart';
+import 'package:e1547/query/query.dart';
+import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
+import 'package:e1547/traits/traits.dart';
 import 'package:flutter/material.dart';
 
 class FavPage extends StatelessWidget {
@@ -19,9 +22,54 @@ class FavPage extends StatelessWidget {
                 title: Text('Favorites are unavailable for anonymous users'),
               ),
             )
-          : PostsPage(
-              params: PostParams(tags: 'fav:${client.identity.username}'),
-              drawerActions: const [FavoriteOrderSwitch()],
+          : FilterControllerProvider(
+              create: (_) => FavoritePostFilter(client),
+              keys: (_) => [client],
+              child: ChangeNotifierProvider(
+                create: (_) => PostParamsController(
+                  PostParams(tags: 'fav:${client.identity.username}'),
+                ),
+                child: PostPageHistoryConnector(
+                  child: PostPageQueryBuilder(
+                    builder: (context, state, query) => SelectionLayout<Post>(
+                      items: state.data?.pages.expand((p) => p).toList(),
+                      child: AdaptiveScaffold(
+                        appBar: const PostSelectionAppBar(
+                          child: PostPageAppBar(),
+                        ),
+                        floatingActionButton: const PostsPageFab(),
+                        drawer: const RouterDrawer(),
+                        endDrawer: ContextDrawer(
+                          title: const Text('Posts'),
+                          children: [
+                            const FavoriteOrderSwitch(),
+                            const Divider(),
+                            const DrawerDenySwitch(),
+                            DrawerTagCounter(
+                              posts: state.data?.pages
+                                  .expand((p) => p)
+                                  .toList(),
+                              error: state.error,
+                            ),
+                          ],
+                        ),
+                        body: LimitedWidthLayout(
+                          child: ListenableBuilder(
+                            listenable: context.watch<Settings>().tileSize,
+                            builder: (context, child) => TileLayout(
+                              tileSize: context
+                                  .watch<Settings>()
+                                  .tileSize
+                                  .value,
+                              child: const PostList(),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
     );
   }

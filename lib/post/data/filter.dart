@@ -145,6 +145,16 @@ class PostFilter extends FilterController<Post>
   }
 }
 
+class FavoritePostFilter extends PostFilter {
+  FavoritePostFilter(super.client, [super.value]);
+
+  @override
+  bool filter(Post post) {
+    if (post.isFavorited) return true;
+    return super.filter(post);
+  }
+}
+
 typedef _PostFilterCache = ({
   int hash,
   List<String> entries,
