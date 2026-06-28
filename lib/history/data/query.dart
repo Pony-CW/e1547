@@ -50,4 +50,11 @@ extension HistoryQuerying on HistoryClient {
       filterFn: (key, _) => key is List && key.first == queryKey,
     ),
   );
+
+  Mutation<void, void> useClear() => Mutation(
+    mutationFn: (_) => removeAll(null),
+    onSuccess: (_, __) => queryCache.invalidateCache(
+      filterFn: (key, _) => key is List && key.first == queryKey,
+    ),
+  );
 }

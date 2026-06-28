@@ -54,7 +54,7 @@ class HistoryClearTile extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                client.histories.removeAll(null);
+                client.histories.useClear().mutate();
               },
               child: const Text('Clear'),
             ),
