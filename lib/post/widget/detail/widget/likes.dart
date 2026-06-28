@@ -1,6 +1,7 @@
 import 'package:e1547/client/client.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/query/query.dart';
+import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
@@ -96,6 +97,7 @@ class FavoriteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final client = context.watch<Client>();
+    final settings = context.read<Settings>();
     final messenger = ScaffoldMessenger.of(context);
 
     final addMutation = client.posts.useAddFavorite();
@@ -119,6 +121,15 @@ class FavoriteButton extends StatelessWidget {
             onTap: (isLiked) async {
               try {
                 await mutate(post.id);
+                if (!isLiked && settings.upvoteFavs.value) {
+                  try {
+                    await client.posts
+                        .useVote(id: post.id)
+                        .mutate((upvote: true, replace: true));
+                  } on Exception {
+                    // upvote is best-effort once the favorite succeeded
+                  }
+                }
               } on Exception {
                 messenger.showSnackBar(
                   SnackBar(
