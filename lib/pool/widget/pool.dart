@@ -63,6 +63,7 @@ class _PoolPageState extends State<PoolPage> {
                   const DrawerDenySwitch(),
                   DrawerTagCounter(
                     posts: state.data?.pages.expand((p) => p).toList(),
+                    error: state.error,
                   ),
                 ],
               ),

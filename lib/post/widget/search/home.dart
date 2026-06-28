@@ -47,6 +47,7 @@ class HomePage extends StatelessWidget {
                         const DrawerDenySwitch(),
                         DrawerTagCounter(
                           posts: state.data?.pages.expand((p) => p).toList(),
+                          error: state.error,
                         ),
                       ],
                     ),
