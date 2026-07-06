@@ -559,5 +559,19 @@
         "platform": "ko-fi"
       }
     ]
+  },
+  {
+    "name": "Sludgemau5",
+    "handles": {
+      "ko-fi": "Sludgemau5"
+    },
+    "donations": [
+      {
+        "amount": 15.0,
+        "currency": "USD",
+        "date": "2026-06-27T00:05:00",
+        "platform": "ko-fi"
+      }
+    ]
   }
 ]
