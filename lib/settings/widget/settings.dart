@@ -30,7 +30,7 @@ class SettingsPage extends StatelessWidget {
               LimitedWidthLayout.of(context).padding,
             ),
             children: [
-              ListTileHeader(title: AppLocalizations.of(context)!.identity),
+              const ListTileHeader(title: 'Account'),
               Consumer<IdentityClient>(
                 builder: (context, client, child) => IdentityTile(
                   identity: client.identity,

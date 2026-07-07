@@ -20,6 +20,11 @@ class Settings extends NotifiedSettings {
     values: Language.values,
   );
 
+  late final ValueNotifier<bool> onboardingSeen = createSetting<bool>(
+    key: 'onboardingSeen',
+    initialValue: false,
+  );
+
   late final ValueNotifier<AppTheme> theme = createEnumSetting(
     key: 'theme',
     initialValue: AppTheme.values.first,

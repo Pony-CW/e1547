@@ -23,6 +23,18 @@ on:
         description: "Build and validate without publishing"
         type: boolean
         default: false
+      skip_playstore:
+        description: "Skip the Play Store upload"
+        type: boolean
+        default: false
+      skip_github_release:
+        description: "Skip the GitHub release"
+        type: boolean
+        default: false
+      skip_forum:
+        description: "Skip the forum post"
+        type: boolean
+        default: false
 
 env:
   VERSION_BUMP: ${{ github.event.inputs.version }}
@@ -234,12 +246,12 @@ jobs:
 
   release:
     needs: [android-build, ios-build]
-    if: ${{ github.ref == 'refs/heads/master' && github.event.inputs.version != 'none' }}
+    if: ${{ github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-latest
     steps:
       - name: mint publisher token
         id: publisher
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ secrets.PUBLISHER_APP_ID }}
           private-key: ${{ secrets.PUBLISHER_PRIVATE_KEY }}
@@ -270,6 +282,7 @@ jobs:
         run: dart pub global activate cider
 
       - name: bump and release version
+        if: ${{ github.event.inputs.version != 'none' }}
         run: |
           cider bump ${{ env.VERSION_BUMP }} --bump-build
           cider release
@@ -295,8 +308,8 @@ jobs:
           fi
 
       - name: commit version increase
-        if: ${{ github.event.inputs.dry_run != 'true' }}
-        uses: EndBug/add-and-commit@v9
+        if: ${{ github.event.inputs.version != 'none' && github.event.inputs.dry_run != 'true' }}
+        uses: EndBug/add-and-commit@v10
         with:
           message: increased version
           default_author: github_actions
@@ -348,14 +361,14 @@ jobs:
           echo "$KEYSTORE" > android/keys/playstore.json
 
       - name: publish to Play Store
+        if: ${{ github.event.inputs.skip_playstore != 'true' }}
         run: bundle exec fastlane android upload validate_only:${{ github.event.inputs.dry_run }}
 
       - name: create release
-        if: ${{ github.event.inputs.dry_run != 'true' }}
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ steps.publisher.outputs.token }}
+        if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.skip_github_release != 'true' }}
+        uses: softprops/action-gh-release@v3
         with:
+          token: ${{ steps.publisher.outputs.token }}
           tag_name: ${{ env.VERSION }}
           name: ${{ env.RELEASE_TITLE }}
           body_path: ./fastlane/metadata/android/en-US/changelogs/${{ env.BUILD_NUMBER }}.txt
@@ -367,7 +380,7 @@ jobs:
 
   forum-publish:
     needs: [release]
-    if: ${{ github.ref == 'refs/heads/master' && github.event.inputs.version != 'none' && github.event.inputs.dry_run != 'true' }}
+    if: ${{ github.ref == 'refs/heads/master' && github.event.inputs.skip_forum != 'true' && github.event.inputs.dry_run != 'true' }}
     runs-on: ubuntu-latest
     env:
       DMARK_VERSION: '0.0.6'

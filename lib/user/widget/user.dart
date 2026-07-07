@@ -123,6 +123,8 @@ class UserPage extends StatelessWidget {
                                 child: UserAvatar(
                                   id: user.avatarId,
                                   controller: controllers.profilePost,
+                                  userId: user.id,
+                                  hasCroppedAvatar: user.hasCroppedAvatar,
                                 ),
                               ),
                               Padding(
@@ -250,7 +252,12 @@ class UserSliverAppBar extends StatelessWidget {
                 SizedBox(
                   height: 100,
                   width: 100,
-                  child: UserAvatar(id: user.avatarId, controller: avatar),
+                  child: UserAvatar(
+                    id: user.avatarId,
+                    controller: avatar,
+                    userId: user.id,
+                    hasCroppedAvatar: user.hasCroppedAvatar,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 16, bottom: 32),

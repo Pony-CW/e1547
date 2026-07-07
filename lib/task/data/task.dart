@@ -41,3 +41,14 @@ abstract class TaskMetadata with _$TaskMetadata {
 enum TaskAction { download, favorite, unfavorite }
 
 enum TaskStatus { pending, running, completed, failed, canceled }
+
+extension TaskStatusX on TaskStatus {
+  /// Still queued or in progress.
+  bool get isActive => this == TaskStatus.pending || this == TaskStatus.running;
+
+  /// Finished, regardless of outcome.
+  bool get isTerminal =>
+      this == TaskStatus.completed ||
+      this == TaskStatus.failed ||
+      this == TaskStatus.canceled;
+}
