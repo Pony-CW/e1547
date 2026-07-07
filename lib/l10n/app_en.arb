@@ -227,6 +227,67 @@
   "tags": "Tags",
 
   "tasks": "Tasks",
+  "tasksEmpty": "No tasks",
+  "tasksError": "Failed to load tasks",
+  "tasksClear": "clear all",
+  "tasksDownload": "download",
+  "tasksFavorite": "favorite",
+  "tasksUnfavorite": "unfavorite",
+  "tasksDownloading": "downloading",
+  "tasksFavoriting": "favoriting",
+  "tasksUnfavoriting": "unfavoriting",
+  "tasksDownloaded": "downloaded",
+  "tasksFavorited": "favorited",
+  "tasksUnfavorited": "unfavorited",
+  "tasksLabel": "{label, select, active{active} done{done} other{}}",
+  "@tasksLabel": {
+    "description": "lib/task/widget/list_view.dart - Task label",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksPending": "queued to {present}",
+  "@tasksPending": {
+    "description": "lib/task/widget/tile.dart - TaskStatus pending",
+    "placeholders": {
+      "present": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksFailed": "failed to {present}",
+  "@tasksFailed": {
+    "description": "lib/task/widget/tile.dart - TaskStatus failed",
+    "placeholders": {
+      "present": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksCanceled": "canceled {present}",
+  "@tasksCanceled": {
+    "description": "lib/task/widget/tile.dart - TaskStatus canceled",
+    "placeholders": {
+      "present": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksTitle": "{taskActionLabel} post #{postId}",
+  "@tasksTitle": {
+    "description": "lib/task/widget/tile.dart - TaskS title",
+    "placeholders": {
+      "taskActionLabel": {
+        "type": "String"
+      },
+      "postId": {
+        "type": "int"
+      }
+    }
+  },
+
 
   "appearance": "Appearance",
   "language": "Language",

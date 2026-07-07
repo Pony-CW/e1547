@@ -227,6 +227,66 @@
   "tags": "标签",
 
   "tasks": "任务",
+  "tasksEmpty": "没有任务",
+  "tasksError": "加载任务失败",
+  "tasksClear": "清理所有",
+  "tasksDownload": "下载",
+  "tasksFavorite": "喜爱",
+  "tasksUnfavorite": "取消喜爱",
+  "tasksDownloading": "正在下载",
+  "tasksFavoriting": "正在喜爱",
+  "tasksUnfavoriting": "正在取消喜爱",
+  "tasksDownloaded": "下载完成",
+  "tasksFavorited": "喜爱完成",
+  "tasksUnfavorited": "取消喜爱完成",
+  "tasksLabel": "{label, select, active{进行中} done{已完成} other{}}",
+  "@tasksLabel": {
+    "description": "lib/task/widget/list_view.dart - Task label",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksPending": "{present}排队",
+  "@tasksPending": {
+    "description": "lib/task/widget/tile.dart - TaskStatus pending",
+    "placeholders": {
+      "present": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksFailed": "{present}失败",
+  "@tasksFailed": {
+    "description": "lib/task/widget/tile.dart - TaskStatus failed",
+    "placeholders": {
+      "present": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksCanceled": "取消{present}",
+  "@tasksCanceled": {
+    "description": "lib/task/widget/tile.dart - TaskStatus canceled",
+    "placeholders": {
+      "present": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksTitle": "帖子 #{postId} {taskActionLabel}",
+  "@tasksTitle": {
+    "description": "lib/task/widget/tile.dart - TaskS title",
+    "placeholders": {
+      "taskActionLabel": {
+        "type": "String"
+      },
+      "postId": {
+        "type": "int"
+      }
+    }
+  },
 
   "appearance": "外观",
   "language": "语言",

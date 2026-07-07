@@ -712,6 +712,108 @@ abstract class AppLocalizations {
   /// **'Tasks'**
   String get tasks;
 
+  /// No description provided for @tasksEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks'**
+  String get tasksEmpty;
+
+  /// No description provided for @tasksError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load tasks'**
+  String get tasksError;
+
+  /// No description provided for @tasksClear.
+  ///
+  /// In en, this message translates to:
+  /// **'clear all'**
+  String get tasksClear;
+
+  /// No description provided for @tasksDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'download'**
+  String get tasksDownload;
+
+  /// No description provided for @tasksFavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'favorite'**
+  String get tasksFavorite;
+
+  /// No description provided for @tasksUnfavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'unfavorite'**
+  String get tasksUnfavorite;
+
+  /// No description provided for @tasksDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'downloading'**
+  String get tasksDownloading;
+
+  /// No description provided for @tasksFavoriting.
+  ///
+  /// In en, this message translates to:
+  /// **'favoriting'**
+  String get tasksFavoriting;
+
+  /// No description provided for @tasksUnfavoriting.
+  ///
+  /// In en, this message translates to:
+  /// **'unfavoriting'**
+  String get tasksUnfavoriting;
+
+  /// No description provided for @tasksDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'downloaded'**
+  String get tasksDownloaded;
+
+  /// No description provided for @tasksFavorited.
+  ///
+  /// In en, this message translates to:
+  /// **'favorited'**
+  String get tasksFavorited;
+
+  /// No description provided for @tasksUnfavorited.
+  ///
+  /// In en, this message translates to:
+  /// **'unfavorited'**
+  String get tasksUnfavorited;
+
+  /// lib/task/widget/list_view.dart - Task label
+  ///
+  /// In en, this message translates to:
+  /// **'{label, select, active{active} done{done} other{}}'**
+  String tasksLabel(String label);
+
+  /// lib/task/widget/tile.dart - TaskStatus pending
+  ///
+  /// In en, this message translates to:
+  /// **'queued to {present}'**
+  String tasksPending(String present);
+
+  /// lib/task/widget/tile.dart - TaskStatus failed
+  ///
+  /// In en, this message translates to:
+  /// **'failed to {present}'**
+  String tasksFailed(String present);
+
+  /// lib/task/widget/tile.dart - TaskStatus canceled
+  ///
+  /// In en, this message translates to:
+  /// **'canceled {present}'**
+  String tasksCanceled(String present);
+
+  /// lib/task/widget/tile.dart - TaskS title
+  ///
+  /// In en, this message translates to:
+  /// **'{taskActionLabel} post #{postId}'**
+  String tasksTitle(String taskActionLabel, int postId);
+
   /// No description provided for @appearance.
   ///
   /// In en, this message translates to:

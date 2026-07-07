@@ -1,3 +1,4 @@
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/task/task.dart';
 import 'package:flutter/material.dart';
@@ -109,7 +110,7 @@ class _ClearAllBar extends StatelessWidget {
           TextButton.icon(
             onPressed: controller.clearAll,
             icon: const Icon(Icons.delete_sweep),
-            label: const Text('clear all'),
+            label: Text(AppLocalizations.of(context)!.tasksClear),
           ),
         ],
       ),

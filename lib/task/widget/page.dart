@@ -1,3 +1,4 @@
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/task/task.dart';
 import 'package:flutter/material.dart';
@@ -22,10 +23,10 @@ class TasksPage extends StatelessWidget {
                 actionBuilder: (context, layoutData) =>
                     taskBulkActions(controller, layoutData),
                 child: DefaultAppBar(
-                  title: const Text('Tasks'),
+                  title: Text(AppLocalizations.of(context)!.tasks),
                   actions: [
                     IconButton(
-                      tooltip: 'clear all',
+                      tooltip: AppLocalizations.of(context)!.tasksClear,
                       icon: const Icon(Icons.delete_sweep),
                       onPressed: controller.clearAll,
                     ),

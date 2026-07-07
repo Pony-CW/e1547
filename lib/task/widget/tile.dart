@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e1547/app/app.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/task/task.dart';
@@ -46,7 +47,10 @@ class TaskTile extends StatelessWidget {
             isRunning: isRunning,
           ),
           title: Text(
-            '${taskActionLabel(task.action, task.status)} post #${task.postId}',
+            AppLocalizations.of(context)!.tasksTitle(
+              taskActionLabel(context, task.action, task.status),
+              task.postId,
+            ),
           ),
           subtitle: Text(
             RelativeTime.locale(
@@ -77,28 +81,32 @@ class TaskTile extends StatelessWidget {
   }
 }
 
-String taskActionLabel(TaskAction action, TaskStatus status) {
+String taskActionLabel(
+  BuildContext context,
+  TaskAction action,
+  TaskStatus status,
+) {
   final String present = switch (action) {
-    TaskAction.download => 'download',
-    TaskAction.favorite => 'favorite',
-    TaskAction.unfavorite => 'unfavorite',
+    TaskAction.download => AppLocalizations.of(context)!.tasksDownload,
+    TaskAction.favorite => AppLocalizations.of(context)!.tasksFavorite,
+    TaskAction.unfavorite => AppLocalizations.of(context)!.tasksUnfavorite,
   };
   final String gerund = switch (action) {
-    TaskAction.download => 'downloading',
-    TaskAction.favorite => 'favoriting',
-    TaskAction.unfavorite => 'unfavoriting',
+    TaskAction.download => AppLocalizations.of(context)!.tasksDownloading,
+    TaskAction.favorite => AppLocalizations.of(context)!.tasksFavoriting,
+    TaskAction.unfavorite => AppLocalizations.of(context)!.tasksUnfavoriting,
   };
   final String past = switch (action) {
-    TaskAction.download => 'downloaded',
-    TaskAction.favorite => 'favorited',
-    TaskAction.unfavorite => 'unfavorited',
+    TaskAction.download => AppLocalizations.of(context)!.tasksDownloaded,
+    TaskAction.favorite => AppLocalizations.of(context)!.tasksFavorited,
+    TaskAction.unfavorite => AppLocalizations.of(context)!.tasksUnfavorited,
   };
   return switch (status) {
-    TaskStatus.pending => 'queued to $present',
+    TaskStatus.pending => AppLocalizations.of(context)!.tasksPending(present),
     TaskStatus.running => gerund,
     TaskStatus.completed => past,
-    TaskStatus.failed => 'failed to $present',
-    TaskStatus.canceled => 'canceled $present',
+    TaskStatus.failed => AppLocalizations.of(context)!.tasksFailed(present),
+    TaskStatus.canceled => AppLocalizations.of(context)!.tasksCanceled(present),
   };
 }
 

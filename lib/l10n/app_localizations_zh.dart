@@ -341,6 +341,72 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tasks => '任务';
 
   @override
+  String get tasksEmpty => '没有任务';
+
+  @override
+  String get tasksError => '加载任务失败';
+
+  @override
+  String get tasksClear => '清理所有';
+
+  @override
+  String get tasksDownload => '下载';
+
+  @override
+  String get tasksFavorite => '喜爱';
+
+  @override
+  String get tasksUnfavorite => '取消喜爱';
+
+  @override
+  String get tasksDownloading => '正在下载';
+
+  @override
+  String get tasksFavoriting => '正在喜爱';
+
+  @override
+  String get tasksUnfavoriting => '正在取消喜爱';
+
+  @override
+  String get tasksDownloaded => '下载完成';
+
+  @override
+  String get tasksFavorited => '喜爱完成';
+
+  @override
+  String get tasksUnfavorited => '取消喜爱完成';
+
+  @override
+  String tasksLabel(String label) {
+    String _temp0 = intl.Intl.selectLogic(label, {
+      'active': '进行中',
+      'done': '已完成',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String tasksPending(String present) {
+    return '$present排队';
+  }
+
+  @override
+  String tasksFailed(String present) {
+    return '$present失败';
+  }
+
+  @override
+  String tasksCanceled(String present) {
+    return '取消$present';
+  }
+
+  @override
+  String tasksTitle(String taskActionLabel, int postId) {
+    return '帖子 #$postId $taskActionLabel';
+  }
+
+  @override
   String get appearance => '外观';
 
   @override

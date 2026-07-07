@@ -1,3 +1,4 @@
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/task/task.dart';
 import 'package:flutter/material.dart';
@@ -47,8 +48,8 @@ class SliverTasksList extends StatelessWidget {
       groupSeparatorBuilder: (value) => TasksSectionHeader(value),
       builderDelegate: defaultPagedChildBuilderDelegate<Task>(
         onRetry: controller.getNextPage,
-        onEmpty: const Text('No tasks'),
-        onError: const Text('Failed to load tasks'),
+        onEmpty: Text(AppLocalizations.of(context)!.tasksEmpty),
+        onError: Text(AppLocalizations.of(context)!.tasksError),
         itemBuilder: (context, task, index) => TaskTile(
           task: task,
           controller: context.read<TasksController>(),
@@ -70,7 +71,7 @@ class TasksSectionHeader extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 6),
       child: Text(
-        label,
+        AppLocalizations.of(context)!.tasksLabel(label),
         style: Theme.of(
           context,
         ).textTheme.titleSmall?.copyWith(color: scheme.primary),

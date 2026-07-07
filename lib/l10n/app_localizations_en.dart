@@ -342,6 +342,72 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tasks => 'Tasks';
 
   @override
+  String get tasksEmpty => 'No tasks';
+
+  @override
+  String get tasksError => 'Failed to load tasks';
+
+  @override
+  String get tasksClear => 'clear all';
+
+  @override
+  String get tasksDownload => 'download';
+
+  @override
+  String get tasksFavorite => 'favorite';
+
+  @override
+  String get tasksUnfavorite => 'unfavorite';
+
+  @override
+  String get tasksDownloading => 'downloading';
+
+  @override
+  String get tasksFavoriting => 'favoriting';
+
+  @override
+  String get tasksUnfavoriting => 'unfavoriting';
+
+  @override
+  String get tasksDownloaded => 'downloaded';
+
+  @override
+  String get tasksFavorited => 'favorited';
+
+  @override
+  String get tasksUnfavorited => 'unfavorited';
+
+  @override
+  String tasksLabel(String label) {
+    String _temp0 = intl.Intl.selectLogic(label, {
+      'active': 'active',
+      'done': 'done',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String tasksPending(String present) {
+    return 'queued to $present';
+  }
+
+  @override
+  String tasksFailed(String present) {
+    return 'failed to $present';
+  }
+
+  @override
+  String tasksCanceled(String present) {
+    return 'canceled $present';
+  }
+
+  @override
+  String tasksTitle(String taskActionLabel, int postId) {
+    return '$taskActionLabel post #$postId';
+  }
+
+  @override
   String get appearance => 'Appearance';
 
   @override
