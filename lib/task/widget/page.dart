@@ -35,13 +35,13 @@ class TasksPage extends StatelessWidget {
                     actions: [
                       if (hasActive)
                         IconButton(
-                          tooltip: 'cancel all',
+                          tooltip: AppLocalizations.of(context)!.tasksCancelLC,
                           icon: const Icon(Icons.block),
                           onPressed: controller.cancelAll,
                         ),
                       if (hasDone)
                         IconButton(
-                          tooltip: 'clear done',
+                          tooltip: AppLocalizations.of(context)!.tasksClearLC,
                           icon: const Icon(Icons.delete_sweep),
                           onPressed: controller.clearDone,
                         ),

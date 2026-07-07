@@ -31,7 +31,6 @@
   "share": "分享",
   "download": "下载",
   "browse": "浏览器",
-  "edit": "编辑",
   "comment": "评论",
   "report": "举报",
   "flag": "标记",
@@ -64,6 +63,27 @@
   "sources": "来源",
 
   "version": "版本",
+  "versionMessage1": "检查更新中……",
+  "versionMessage2": "检查更新失败",
+  "versionMessage3": "您处在最新版本",
+  "versionMessage4": "新版本可用: {version}",
+  "@versionMessage4": {
+    "description": "lib/settings/widget/about.dart - First Version",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "forumThread": "e621 线程 #{TopicId}",
+  "@forumThread": {
+    "description": "lib/settings/widget/about.dart - Forum Thread",
+    "placeholders": {
+      "TopicId": {
+        "type": "int"
+      }
+    }
+  },
   "webSite": "主页",
   "email": "邮箱",
   "playstore": "谷歌商店",
@@ -71,30 +91,38 @@
   "donorsSubtitle": "感谢你帮助我保持开发！",
   "donorsLite": "没在名单里？联系我们！",
 
-  "settings": "设置",
-
-  "identity": "身份",
-  "host": "服务器",
-  "hostNullWarn": "您需要填写服务器地址",
-  "hostUrlWarn": "无效的服务器地址",
-  "authentication": "认证",
-  "login": "登录",
+  "accounts": "账户",
+  "accountsHelper": "没有帐户？从这里注册",
+  "addAccount": "添加账户",
+  "editAccount": "编辑账户",
+  "site": "网站",
+  "siteNullWarn": "您需要填写网站地址",
+  "siteUrlWarn": "无效的网站地址",
+  "siteChangedWarn": "网站无法更改 \n添加新账户以使用不同站点",
+  "siteInfo": "The site is where your posts and account live.",
+  "signIn": "登录",
+  "guest": "访客",
+  "removeWarn": "移除账户？",
+  "removeWarnInfo": "其所有数据将被永久移除，包括历史与关注等",
   "anonymous": "匿名",
   "username": "用户名",
   "userWarn": "您需要填写用户名",
+  "show": "显示",
+  "hide": "隐藏",
   "apiKey": "API 密钥",
-  "apiKeyHelper": "例如 {example}",
-  "@apiKeyHelper": {
-    "description": "lib/identity/widget/identity.dart - API Key Helper",
+  "apiKeyHelper": "哪里可以找到我的 API 密钥？",
+  "apiKeyRuleWarn": "API 密钥是由 '{A..z}' 和 '{0..9}' 组成的 24 或 32 位字符序列  \n例如 {example}",
+  "@apiKeyRuleWarn": {
+    "description": "lib/identity/widget/input.dart - API Key Rule",
     "placeholders": {
       "example": {
         "type": "String"
       }
     }
   },
-  "apiKeyWran": "你需要填写 API 密钥 \n例如 {example}",
-  "@apiKeyWran": {
-    "description": "lib/identity/widget/identity.dart - API Key Warning",
+  "apiKeyNullWran": "你需要填写 API 密钥 \n例如 {example}",
+  "@apiKeyNullWran": {
+    "description": "lib/identity/widget/input.dart - API Key Null",
     "placeholders": {
       "example": {
         "type": "String"
@@ -110,12 +138,12 @@
   "uploads": "上传",
   "about": "关于",
   "aboutLC": "关于",
-  "comission": "Comission",
+  "comission": "委托",
   "info": "信息",
   "infoLC": "信息",
   "idLC": "id",
-  "joinedLC": "joined",
-  "rankLC": "rank",
+  "joinedLC": "加入日期",
+  "rankLC": "级别",
   "postsLC": "帖子",
   "editsLC": "编辑",
   "favoritesLC": "喜爱",
@@ -227,7 +255,82 @@
   "tags": "标签",
 
   "tasks": "任务",
+  "tasksEmpty": "没有任务",
+  "tasksError": "加载任务失败",
+  "tasksCancel": "取消全部",
+  "tasksCancelLC": "取消全部",
+  "tasksClear": "清理已完成",
+  "tasksClearLC": "清理已完成",
+  "tasksDownload": "下载",
+  "tasksFavorite": "喜爱",
+  "tasksUnfavorite": "取消喜爱",
+  "tasksDownloading": "正在下载",
+  "tasksFavoriting": "正在喜爱",
+  "tasksUnfavoriting": "正在取消喜爱",
+  "tasksDownloaded": "下载完成",
+  "tasksFavorited": "喜爱完成",
+  "tasksUnfavorited": "取消喜爱完成",
+  "tasksSelected": "{num} 项已选择",
+  "@tasksSelected": {
+    "description": "lib/task/widget/prompt.dart - Selected Num",
+    "placeholders": {
+      "num": {
+        "type": "int"
+      }
+    }
+  },
+  "tasksLabel": "{label, select, active{进行中} done{已完成} other{}}",
+  "@tasksLabel": {
+    "description": "lib/task/widget/list_view.dart - Task label",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksPending": "{present}排队",
+  "@tasksPending": {
+    "description": "lib/task/widget/tile.dart - TaskStatus pending",
+    "placeholders": {
+      "present": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksFailed": "{present}失败",
+  "@tasksFailed": {
+    "description": "lib/task/widget/tile.dart - TaskStatus failed",
+    "placeholders": {
+      "present": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksCanceled": "取消{present}",
+  "@tasksCanceled": {
+    "description": "lib/task/widget/tile.dart - TaskStatus canceled",
+    "placeholders": {
+      "present": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksTitle": "帖子 #{postId} {taskActionLabel}",
+  "@tasksTitle": {
+    "description": "lib/task/widget/tile.dart - TaskS title",
+    "placeholders": {
+      "taskActionLabel": {
+        "type": "String"
+      },
+      "postId": {
+        "type": "int"
+      }
+    }
+  },
 
+  "settings": "设置",
+
+  "account": "账户",
   "appearance": "外观",
   "language": "语言",
   "theme": "主题",
@@ -279,7 +382,7 @@
       }
     }
   },
-  "logsError": "A critical error has occured!",
+  "logsError": "发生严重错误！",
 
   "database": "数据库",
   "databaseExport": "保存并备份您的数据库",
@@ -295,6 +398,8 @@
   "cancel": "取消",
   "importUC": "导入",
   "cancelUC": "取消",
+  "remove": "移除",
+  "removeUC": "移除",
   "restart": "需要重启",
   "restartWarn": "App 需要重启以完成更改",
   "restartNow": "现在重启",
@@ -303,5 +408,11 @@
 
   "enabled": "启用",
   "enabledLC": "启用",
-  "disabledLC": "禁用"
+  "disabledLC": "禁用",
+
+  "selectAll": "选择全部",
+  "dismiss": "消除",
+
+  "edit": "编辑",
+  "delete": "删除"
 }

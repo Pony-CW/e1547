@@ -31,7 +31,6 @@
   "share": "Share",
   "download": "Download",
   "browse": "Browse",
-  "edit": "Edit",
   "comment": "Comment",
   "report": "Report",
   "flag": "Flag",
@@ -64,6 +63,27 @@
   "sources": "Sources",
 
   "version": "Version",
+  "versionMessage1": "Fetching updates...",
+  "versionMessage2": "Failed to check for updates",
+  "versionMessage3": "You have the newest version",
+  "versionMessage4": "A newer version is available: {version}",
+  "@versionMessage4": {
+    "description": "lib/settings/widget/about.dart - First Version",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "forumThread": "e621 thread #{TopicId}",
+  "@forumThread": {
+    "description": "lib/settings/widget/about.dart - Forum Thread",
+    "placeholders": {
+      "TopicId": {
+        "type": "int"
+      }
+    }
+  },
   "webSite": "Website",
   "email": "Email",
   "playstore": "Playstore",
@@ -71,30 +91,38 @@
   "donorsSubtitle": "Thanks for helping me keep up development!",
   "donorsLite": "Not on the list? contact us!",
 
-  "settings": "Settings",
-
-  "identity": "Identity",
-  "host": "Host",
-  "hostNullWarn": "You must provide a host URL.",
-  "hostUrlWarn": "Invalid host URL",
-  "authentication": "Authentication",
-  "login": "Login",
+  "accounts": "Accounts",
+  "accountsHelper": "Don''t have an account? Sign up here",
+  "addAccount": "Add account",
+  "editAccount": "Edit account",
+  "site": "Site",
+  "siteNullWarn": "You must provide a host URL.",
+  "siteUrlWarn": "Invalid host URL",
+  "siteChangedWarn": "Site can''t be changed. \nAdd a new account to use a different one.",
+  "siteInfo": "The site is where your posts and account live.",
+  "signIn": "Sign in",
+  "guest": "Guest",
+  "removeWarn": "Remove account?",
+  "removeWarnInfo": "All its data will be permanently removed, including history and follows.",
   "anonymous": "Anonymous",
   "username": "Username",
   "userWarn": "You must provide a username.",
+  "show": "Show",
+  "hide": "Hide",
   "apiKey": "API key",
-  "apiKeyHelper": "e.g. {example}",
-  "@apiKeyHelper": {
-    "description": "lib/identity/widget/identity.dart - API Key Helper",
+  "apiKeyHelper": "Where do I find my API key?",
+  "apiKeyRuleWarn": "API key is a 24 or 32-character sequence of '{A..z}' and '{0..9}' \ne.g. {example}",
+  "@apiKeyRuleWarn": {
+    "description": "lib/identity/widget/input.dart - API Key Rule",
     "placeholders": {
       "example": {
         "type": "String"
       }
     }
   },
-  "apiKeyWran": "You must provide an API key.\ne.g. {example}",
-  "@apiKeyWran": {
-    "description": "lib/identity/widget/identity.dart - API Key Warning",
+  "apiKeyNullWran": "You must provide an API key.\ne.g. {example}",
+  "@apiKeyNullWran": {
+    "description": "lib/identity/widget/input.dart - API Key Null",
     "placeholders": {
       "example": {
         "type": "String"
@@ -229,7 +257,10 @@
   "tasks": "Tasks",
   "tasksEmpty": "No tasks",
   "tasksError": "Failed to load tasks",
-  "tasksClear": "clear all",
+  "tasksCancel": "Cancel all",
+  "tasksCancelLC": "cancel all",
+  "tasksClear": "Clear done",
+  "tasksClearLC": "clear done",
   "tasksDownload": "download",
   "tasksFavorite": "favorite",
   "tasksUnfavorite": "unfavorite",
@@ -239,6 +270,15 @@
   "tasksDownloaded": "downloaded",
   "tasksFavorited": "favorited",
   "tasksUnfavorited": "unfavorited",
+  "tasksSelected": "{num} selected",
+  "@tasksSelected": {
+    "description": "lib/task/widget/prompt.dart - Selected Num",
+    "placeholders": {
+      "num": {
+        "type": "int"
+      }
+    }
+  },
   "tasksLabel": "{label, select, active{active} done{done} other{}}",
   "@tasksLabel": {
     "description": "lib/task/widget/list_view.dart - Task label",
@@ -288,7 +328,9 @@
     }
   },
 
+  "settings": "Settings",
 
+  "account": "Account",
   "appearance": "Appearance",
   "language": "Language",
   "theme": "Theme",
@@ -356,6 +398,8 @@
   "cancel": "Cancel",
   "importUC": "IMPORT",
   "cancelUC": "CANCEL",
+  "remove": "Remove",
+  "removeUC": "REMOVE",
   "restart": "Restart Required",
   "restartWarn": "The app needs to restart to apply changes.",
   "restartNow": "RESTART NOW",
@@ -364,5 +408,11 @@
 
   "enabled": "Enabled",
   "enabledLC": "enabled",
-  "disabledLC": "disabled"
+  "disabledLC": "disabled",
+
+  "selectAll": "Select all",
+  "dismiss": "dismiss",
+
+  "edit": "Edit",
+  "delete": "Delete"
 }

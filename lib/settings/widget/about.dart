@@ -216,18 +216,19 @@ class AboutVersion extends StatelessWidget {
         Widget icon;
         VoidCallback? onTap;
         if (snapshot.connectionState != ConnectionState.done) {
-          message = 'Fetching updates...';
+          message = AppLocalizations.of(context)!.versionMessage1;
           icon = const FaIcon(FontAwesomeIcons.clockRotateLeft);
         } else if (snapshot.data == null) {
-          message = 'Failed to check for updates';
+          message = AppLocalizations.of(context)!.versionMessage2;
           onTap = openGithub;
           icon = const FaIcon(FontAwesomeIcons.circleExclamation);
         } else if (snapshot.data!.isEmpty) {
-          message = 'You have the newest version';
+          message = AppLocalizations.of(context)!.versionMessage3;
           icon = const FaIcon(FontAwesomeIcons.clockRotateLeft);
         } else {
-          message =
-              'A newer version is available: ${snapshot.data!.first.version}';
+          message = AppLocalizations.of(
+            context,
+          )!.versionMessage4(snapshot.data!.first.version.toString());
           onTap = () => showDialog(
             context: context,
             builder: (context) => changesDialog(snapshot.data!),
@@ -307,8 +308,10 @@ class AboutLinks extends StatelessWidget {
         if (appInfo.forumTopicId != null)
           ListTile(
             leading: const FaIcon(FontAwesomeIcons.comments),
-            title: const Text('Forum'),
-            subtitle: Text('e621 thread #${appInfo.forumTopicId}'),
+            title: Text(AppLocalizations.of(context)!.forum),
+            subtitle: Text(
+              AppLocalizations.of(context)!.forumThread(appInfo.forumTopicId!),
+            ),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => TopicLoadingPage(appInfo.forumTopicId!),

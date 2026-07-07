@@ -237,12 +237,6 @@ abstract class AppLocalizations {
   /// **'Browse'**
   String get browse;
 
-  /// No description provided for @edit.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit'**
-  String get edit;
-
   /// No description provided for @comment.
   ///
   /// In en, this message translates to:
@@ -327,6 +321,36 @@ abstract class AppLocalizations {
   /// **'Version'**
   String get version;
 
+  /// No description provided for @versionMessage1.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching updates...'**
+  String get versionMessage1;
+
+  /// No description provided for @versionMessage2.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to check for updates'**
+  String get versionMessage2;
+
+  /// No description provided for @versionMessage3.
+  ///
+  /// In en, this message translates to:
+  /// **'You have the newest version'**
+  String get versionMessage3;
+
+  /// lib/settings/widget/about.dart - First Version
+  ///
+  /// In en, this message translates to:
+  /// **'A newer version is available: {version}'**
+  String versionMessage4(String version);
+
+  /// lib/settings/widget/about.dart - Forum Thread
+  ///
+  /// In en, this message translates to:
+  /// **'e621 thread #{TopicId}'**
+  String forumThread(int TopicId);
+
   /// No description provided for @webSite.
   ///
   /// In en, this message translates to:
@@ -363,47 +387,83 @@ abstract class AppLocalizations {
   /// **'Not on the list? contact us!'**
   String get donorsLite;
 
-  /// No description provided for @settings.
+  /// No description provided for @accounts.
   ///
   /// In en, this message translates to:
-  /// **'Settings'**
-  String get settings;
+  /// **'Accounts'**
+  String get accounts;
 
-  /// No description provided for @identity.
+  /// No description provided for @accountsHelper.
   ///
   /// In en, this message translates to:
-  /// **'Identity'**
-  String get identity;
+  /// **'Don\'\'t have an account? Sign up here'**
+  String get accountsHelper;
 
-  /// No description provided for @host.
+  /// No description provided for @addAccount.
   ///
   /// In en, this message translates to:
-  /// **'Host'**
-  String get host;
+  /// **'Add account'**
+  String get addAccount;
 
-  /// No description provided for @hostNullWarn.
+  /// No description provided for @editAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit account'**
+  String get editAccount;
+
+  /// No description provided for @site.
+  ///
+  /// In en, this message translates to:
+  /// **'Site'**
+  String get site;
+
+  /// No description provided for @siteNullWarn.
   ///
   /// In en, this message translates to:
   /// **'You must provide a host URL.'**
-  String get hostNullWarn;
+  String get siteNullWarn;
 
-  /// No description provided for @hostUrlWarn.
+  /// No description provided for @siteUrlWarn.
   ///
   /// In en, this message translates to:
   /// **'Invalid host URL'**
-  String get hostUrlWarn;
+  String get siteUrlWarn;
 
-  /// No description provided for @authentication.
+  /// No description provided for @siteChangedWarn.
   ///
   /// In en, this message translates to:
-  /// **'Authentication'**
-  String get authentication;
+  /// **'Site can\'\'t be changed. \nAdd a new account to use a different one.'**
+  String get siteChangedWarn;
 
-  /// No description provided for @login.
+  /// No description provided for @siteInfo.
   ///
   /// In en, this message translates to:
-  /// **'Login'**
-  String get login;
+  /// **'The site is where your posts and account live.'**
+  String get siteInfo;
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signIn;
+
+  /// No description provided for @guest.
+  ///
+  /// In en, this message translates to:
+  /// **'Guest'**
+  String get guest;
+
+  /// No description provided for @removeWarn.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove account?'**
+  String get removeWarn;
+
+  /// No description provided for @removeWarnInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'All its data will be permanently removed, including history and follows.'**
+  String get removeWarnInfo;
 
   /// No description provided for @anonymous.
   ///
@@ -423,23 +483,41 @@ abstract class AppLocalizations {
   /// **'You must provide a username.'**
   String get userWarn;
 
+  /// No description provided for @show.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get show;
+
+  /// No description provided for @hide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get hide;
+
   /// No description provided for @apiKey.
   ///
   /// In en, this message translates to:
   /// **'API key'**
   String get apiKey;
 
-  /// lib/identity/widget/identity.dart - API Key Helper
+  /// No description provided for @apiKeyHelper.
   ///
   /// In en, this message translates to:
-  /// **'e.g. {example}'**
-  String apiKeyHelper(String example);
+  /// **'Where do I find my API key?'**
+  String get apiKeyHelper;
 
-  /// lib/identity/widget/identity.dart - API Key Warning
+  /// lib/identity/widget/input.dart - API Key Rule
+  ///
+  /// In en, this message translates to:
+  /// **'API key is a 24 or 32-character sequence of \'{A..z}\' and \'{0..9}\' \ne.g. {example}'**
+  String apiKeyRuleWarn(String example);
+
+  /// lib/identity/widget/input.dart - API Key Null
   ///
   /// In en, this message translates to:
   /// **'You must provide an API key.\ne.g. {example}'**
-  String apiKeyWran(String example);
+  String apiKeyNullWran(String example);
 
   /// No description provided for @user.
   ///
@@ -724,11 +802,29 @@ abstract class AppLocalizations {
   /// **'Failed to load tasks'**
   String get tasksError;
 
+  /// No description provided for @tasksCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel all'**
+  String get tasksCancel;
+
+  /// No description provided for @tasksCancelLC.
+  ///
+  /// In en, this message translates to:
+  /// **'cancel all'**
+  String get tasksCancelLC;
+
   /// No description provided for @tasksClear.
   ///
   /// In en, this message translates to:
-  /// **'clear all'**
+  /// **'Clear done'**
   String get tasksClear;
+
+  /// No description provided for @tasksClearLC.
+  ///
+  /// In en, this message translates to:
+  /// **'clear done'**
+  String get tasksClearLC;
 
   /// No description provided for @tasksDownload.
   ///
@@ -784,6 +880,12 @@ abstract class AppLocalizations {
   /// **'unfavorited'**
   String get tasksUnfavorited;
 
+  /// lib/task/widget/prompt.dart - Selected Num
+  ///
+  /// In en, this message translates to:
+  /// **'{num} selected'**
+  String tasksSelected(int num);
+
   /// lib/task/widget/list_view.dart - Task label
   ///
   /// In en, this message translates to:
@@ -813,6 +915,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{taskActionLabel} post #{postId}'**
   String tasksTitle(String taskActionLabel, int postId);
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
 
   /// No description provided for @appearance.
   ///
@@ -1132,6 +1246,18 @@ abstract class AppLocalizations {
   /// **'CANCEL'**
   String get cancelUC;
 
+  /// No description provided for @remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remove;
+
+  /// No description provided for @removeUC.
+  ///
+  /// In en, this message translates to:
+  /// **'REMOVE'**
+  String get removeUC;
+
   /// No description provided for @restart.
   ///
   /// In en, this message translates to:
@@ -1173,6 +1299,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'disabled'**
   String get disabledLC;
+
+  /// No description provided for @selectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get selectAll;
+
+  /// No description provided for @dismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'dismiss'**
+  String get dismiss;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
 }
 
 class _AppLocalizationsDelegate

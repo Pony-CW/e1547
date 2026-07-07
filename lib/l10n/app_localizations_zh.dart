@@ -78,9 +78,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browse => '浏览器';
 
   @override
-  String get edit => '编辑';
-
-  @override
   String get comment => '评论';
 
   @override
@@ -127,6 +124,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get version => '版本';
 
   @override
+  String get versionMessage1 => '检查更新中……';
+
+  @override
+  String get versionMessage2 => '检查更新失败';
+
+  @override
+  String get versionMessage3 => '您处在最新版本';
+
+  @override
+  String versionMessage4(String version) {
+    return '新版本可用: $version';
+  }
+
+  @override
+  String forumThread(int TopicId) {
+    return 'e621 线程 #$TopicId';
+  }
+
+  @override
   String get webSite => '主页';
 
   @override
@@ -145,25 +161,43 @@ class AppLocalizationsZh extends AppLocalizations {
   String get donorsLite => '没在名单里？联系我们！';
 
   @override
-  String get settings => '设置';
+  String get accounts => '账户';
 
   @override
-  String get identity => '身份';
+  String get accountsHelper => '没有帐户？从这里注册';
 
   @override
-  String get host => '服务器';
+  String get addAccount => '添加账户';
 
   @override
-  String get hostNullWarn => '您需要填写服务器地址';
+  String get editAccount => '编辑账户';
 
   @override
-  String get hostUrlWarn => '无效的服务器地址';
+  String get site => '网站';
 
   @override
-  String get authentication => '认证';
+  String get siteNullWarn => '您需要填写网站地址';
 
   @override
-  String get login => '登录';
+  String get siteUrlWarn => '无效的网站地址';
+
+  @override
+  String get siteChangedWarn => '网站无法更改 \n添加新账户以使用不同站点';
+
+  @override
+  String get siteInfo => 'The site is where your posts and account live.';
+
+  @override
+  String get signIn => '登录';
+
+  @override
+  String get guest => '访客';
+
+  @override
+  String get removeWarn => '移除账户？';
+
+  @override
+  String get removeWarnInfo => '其所有数据将被永久移除，包括历史与关注等';
 
   @override
   String get anonymous => '匿名';
@@ -175,15 +209,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get userWarn => '您需要填写用户名';
 
   @override
+  String get show => '显示';
+
+  @override
+  String get hide => '隐藏';
+
+  @override
   String get apiKey => 'API 密钥';
 
   @override
-  String apiKeyHelper(String example) {
-    return '例如 $example';
+  String get apiKeyHelper => '哪里可以找到我的 API 密钥？';
+
+  @override
+  String apiKeyRuleWarn(String example) {
+    return 'API 密钥是由 {A..z} 和 {0..9} 组成的 24 或 32 位字符序列  \n例如 $example';
   }
 
   @override
-  String apiKeyWran(String example) {
+  String apiKeyNullWran(String example) {
     return '你需要填写 API 密钥 \n例如 $example';
   }
 
@@ -212,7 +255,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutLC => '关于';
 
   @override
-  String get comission => 'Comission';
+  String get comission => '委托';
 
   @override
   String get info => '信息';
@@ -224,10 +267,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get idLC => 'id';
 
   @override
-  String get joinedLC => 'joined';
+  String get joinedLC => '加入日期';
 
   @override
-  String get rankLC => 'rank';
+  String get rankLC => '级别';
 
   @override
   String get postsLC => '帖子';
@@ -347,7 +390,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tasksError => '加载任务失败';
 
   @override
-  String get tasksClear => '清理所有';
+  String get tasksCancel => '取消全部';
+
+  @override
+  String get tasksCancelLC => '取消全部';
+
+  @override
+  String get tasksClear => '清理已完成';
+
+  @override
+  String get tasksClearLC => '清理已完成';
 
   @override
   String get tasksDownload => '下载';
@@ -375,6 +427,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get tasksUnfavorited => '取消喜爱完成';
+
+  @override
+  String tasksSelected(int num) {
+    return '$num 项已选择';
+  }
 
   @override
   String tasksLabel(String label) {
@@ -405,6 +462,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String tasksTitle(String taskActionLabel, int postId) {
     return '帖子 #$postId $taskActionLabel';
   }
+
+  @override
+  String get settings => '设置';
+
+  @override
+  String get account => '账户';
 
   @override
   String get appearance => '外观';
@@ -526,7 +589,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get logsError => 'A critical error has occured!';
+  String get logsError => '发生严重错误！';
 
   @override
   String get database => '数据库';
@@ -568,6 +631,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cancelUC => '取消';
 
   @override
+  String get remove => '移除';
+
+  @override
+  String get removeUC => '移除';
+
+  @override
   String get restart => '需要重启';
 
   @override
@@ -587,6 +656,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get disabledLC => '禁用';
+
+  @override
+  String get selectAll => '选择全部';
+
+  @override
+  String get dismiss => '消除';
+
+  @override
+  String get edit => '编辑';
+
+  @override
+  String get delete => '删除';
 }
 
 /// The translations for Chinese, as used in China (`zh_CN`).
@@ -663,9 +744,6 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get browse => '浏览器';
 
   @override
-  String get edit => '编辑';
-
-  @override
   String get comment => '评论';
 
   @override
@@ -712,6 +790,25 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get version => '版本';
 
   @override
+  String get versionMessage1 => '检查更新中……';
+
+  @override
+  String get versionMessage2 => '检查更新失败';
+
+  @override
+  String get versionMessage3 => '您处在最新版本';
+
+  @override
+  String versionMessage4(String version) {
+    return '新版本可用: $version';
+  }
+
+  @override
+  String forumThread(int TopicId) {
+    return 'e621 线程 #$TopicId';
+  }
+
+  @override
   String get webSite => '主页';
 
   @override
@@ -730,25 +827,43 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get donorsLite => '没在名单里？联系我们！';
 
   @override
-  String get settings => '设置';
+  String get accounts => '账户';
 
   @override
-  String get identity => '身份';
+  String get accountsHelper => '没有帐户？从这里注册';
 
   @override
-  String get host => '服务器';
+  String get addAccount => '添加账户';
 
   @override
-  String get hostNullWarn => '您需要填写服务器地址';
+  String get editAccount => '编辑账户';
 
   @override
-  String get hostUrlWarn => '无效的服务器地址';
+  String get site => '网站';
 
   @override
-  String get authentication => '认证';
+  String get siteNullWarn => '您需要填写网站地址';
 
   @override
-  String get login => '登录';
+  String get siteUrlWarn => '无效的网站地址';
+
+  @override
+  String get siteChangedWarn => '网站无法更改 \n添加新账户以使用不同站点';
+
+  @override
+  String get siteInfo => 'The site is where your posts and account live.';
+
+  @override
+  String get signIn => '登录';
+
+  @override
+  String get guest => '访客';
+
+  @override
+  String get removeWarn => '移除账户？';
+
+  @override
+  String get removeWarnInfo => '其所有数据将被永久移除，包括历史与关注等';
 
   @override
   String get anonymous => '匿名';
@@ -760,15 +875,24 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get userWarn => '您需要填写用户名';
 
   @override
+  String get show => '显示';
+
+  @override
+  String get hide => '隐藏';
+
+  @override
   String get apiKey => 'API 密钥';
 
   @override
-  String apiKeyHelper(String example) {
-    return '例如 $example';
+  String get apiKeyHelper => '哪里可以找到我的 API 密钥？';
+
+  @override
+  String apiKeyRuleWarn(String example) {
+    return 'API 密钥是由 {A..z} 和 {0..9} 组成的 24 或 32 位字符序列  \n例如 $example';
   }
 
   @override
-  String apiKeyWran(String example) {
+  String apiKeyNullWran(String example) {
     return '你需要填写 API 密钥 \n例如 $example';
   }
 
@@ -797,7 +921,7 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get aboutLC => '关于';
 
   @override
-  String get comission => 'Comission';
+  String get comission => '委托';
 
   @override
   String get info => '信息';
@@ -809,10 +933,10 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get idLC => 'id';
 
   @override
-  String get joinedLC => 'joined';
+  String get joinedLC => '加入日期';
 
   @override
-  String get rankLC => 'rank';
+  String get rankLC => '级别';
 
   @override
   String get postsLC => '帖子';
@@ -926,6 +1050,92 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get tasks => '任务';
 
   @override
+  String get tasksEmpty => '没有任务';
+
+  @override
+  String get tasksError => '加载任务失败';
+
+  @override
+  String get tasksCancel => '取消全部';
+
+  @override
+  String get tasksCancelLC => '取消全部';
+
+  @override
+  String get tasksClear => '清理已完成';
+
+  @override
+  String get tasksClearLC => '清理已完成';
+
+  @override
+  String get tasksDownload => '下载';
+
+  @override
+  String get tasksFavorite => '喜爱';
+
+  @override
+  String get tasksUnfavorite => '取消喜爱';
+
+  @override
+  String get tasksDownloading => '正在下载';
+
+  @override
+  String get tasksFavoriting => '正在喜爱';
+
+  @override
+  String get tasksUnfavoriting => '正在取消喜爱';
+
+  @override
+  String get tasksDownloaded => '下载完成';
+
+  @override
+  String get tasksFavorited => '喜爱完成';
+
+  @override
+  String get tasksUnfavorited => '取消喜爱完成';
+
+  @override
+  String tasksSelected(int num) {
+    return '$num 项已选择';
+  }
+
+  @override
+  String tasksLabel(String label) {
+    String _temp0 = intl.Intl.selectLogic(label, {
+      'active': '进行中',
+      'done': '已完成',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String tasksPending(String present) {
+    return '$present排队';
+  }
+
+  @override
+  String tasksFailed(String present) {
+    return '$present失败';
+  }
+
+  @override
+  String tasksCanceled(String present) {
+    return '取消$present';
+  }
+
+  @override
+  String tasksTitle(String taskActionLabel, int postId) {
+    return '帖子 #$postId $taskActionLabel';
+  }
+
+  @override
+  String get settings => '设置';
+
+  @override
+  String get account => '账户';
+
+  @override
   String get appearance => '外观';
 
   @override
@@ -1045,7 +1255,7 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   }
 
   @override
-  String get logsError => 'A critical error has occured!';
+  String get logsError => '发生严重错误！';
 
   @override
   String get database => '数据库';
@@ -1087,6 +1297,12 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get cancelUC => '取消';
 
   @override
+  String get remove => '移除';
+
+  @override
+  String get removeUC => '移除';
+
+  @override
   String get restart => '需要重启';
 
   @override
@@ -1106,4 +1322,16 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
 
   @override
   String get disabledLC => '禁用';
+
+  @override
+  String get selectAll => '选择全部';
+
+  @override
+  String get dismiss => '消除';
+
+  @override
+  String get edit => '编辑';
+
+  @override
+  String get delete => '删除';
 }

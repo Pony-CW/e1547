@@ -1,4 +1,5 @@
 import 'package:e1547/client/client.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
 import 'package:e1547/traits/traits.dart';
@@ -39,7 +40,7 @@ class DenyListPage extends StatelessWidget {
               List<String> denylist = traits.denylist.toList();
               return AdaptiveScaffold(
                 appBar: DefaultAppBar(
-                  title: const Text('Blacklist'),
+                  title: Text(AppLocalizations.of(context)!.blacklist),
                   actions: [
                     IconButton(
                       icon: const Icon(Icons.edit),
@@ -106,7 +107,8 @@ class DenyListPage extends StatelessWidget {
                                       if (value.isEmpty) {
                                         await client.accounts.push(
                                           traits: traits.copyWith(
-                                            denylist: List.of(denylist)..remove(tag),
+                                            denylist: List.of(denylist)
+                                              ..remove(tag),
                                           ),
                                         );
                                       } else {

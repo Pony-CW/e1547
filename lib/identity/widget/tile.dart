@@ -20,9 +20,7 @@ class IdentityTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       key: ValueKey(identity.id),
-      title: identity.usernameOrAnon != 'Anonymous'
-          ? Text(identity.usernameOrAnon)
-          : Text(AppLocalizations.of(context)!.anonymous),
+      title: Text(identity.usernameOrAnon(AppLocalizations.of(context)!)),
       subtitle: Text(linkToDisplay(identity.host)),
       leading: IdentityAvatar(identity.id),
       trailing: trailing,
@@ -62,16 +60,12 @@ class CurrentIdentityTile extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (identity.usernameOrAnon != 'Anonymous')
-                            Text(
-                              identity.usernameOrAnon,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            )
-                          else
-                            Text(
-                              AppLocalizations.of(context)!.anonymous,
-                              style: Theme.of(context).textTheme.titleLarge,
+                          Text(
+                            identity.usernameOrAnon(
+                              AppLocalizations.of(context)!,
                             ),
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
                           Text(
                             linkToDisplay(identity.host),
                             style: Theme.of(context).textTheme.bodySmall,

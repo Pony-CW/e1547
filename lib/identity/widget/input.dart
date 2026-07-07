@@ -1,3 +1,4 @@
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -71,7 +72,7 @@ class _HostFormFieldState extends State<HostFormField> {
       focusNode: focusNode,
       readOnly: widget.readOnly,
       decoration: InputDecoration(
-        labelText: 'Site',
+        labelText: AppLocalizations.of(context)!.site,
         border: const OutlineInputBorder(),
         prefixIcon: const Icon(Icons.public),
         prefixText: isHttps ? 'https://' : 'http://',
@@ -81,7 +82,7 @@ class _HostFormFieldState extends State<HostFormField> {
       textInputAction: TextInputAction.next,
       validator: (value) {
         if (value!.trim().isEmpty) {
-          return 'You must provide a host URL.';
+          return AppLocalizations.of(context)!.siteNullWarn;
         }
         try {
           if (isHttps) {
@@ -91,7 +92,7 @@ class _HostFormFieldState extends State<HostFormField> {
           }
           Uri.parse(value);
         } on FormatException {
-          return 'Invalid host URL';
+          return AppLocalizations.of(context)!.siteUrlWarn;
         }
         return null;
       },
@@ -103,8 +104,7 @@ class _HostFormFieldState extends State<HostFormField> {
               key: tooltipKey,
               triggerMode: TooltipTriggerMode.manual,
               verticalOffset: 44,
-              message: 'Site can\'t be changed. '
-                  'Add a new account to use a different one.',
+              message: AppLocalizations.of(context)!.siteChangedWarn,
               child: field,
             )
           : field,
@@ -124,17 +124,17 @@ class UsernameFormField extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         autocorrect: false,
-        decoration: const InputDecoration(
-          labelText: 'Username',
-          border: OutlineInputBorder(),
-          prefixIcon: Icon(Icons.person_outline),
+        decoration: InputDecoration(
+          labelText: AppLocalizations.of(context)!.username,
+          border: const OutlineInputBorder(),
+          prefixIcon: const Icon(Icons.person_outline),
         ),
         inputFormatters: [FilteringTextInputFormatter.deny(' ')],
         autofillHints: const [AutofillHints.username],
         textInputAction: TextInputAction.next,
         validator: (value) {
           if (value!.trim().isEmpty) {
-            return 'You must provide a username.';
+            return AppLocalizations.of(context)!.userWarn;
           }
           return null;
         },
@@ -169,7 +169,7 @@ class _ApikeyFormFieldState extends State<ApikeyFormField> {
         autocorrect: false,
         controller: widget.controller,
         decoration: InputDecoration(
-          labelText: 'API key',
+          labelText: AppLocalizations.of(context)!.apiKey,
           border: const OutlineInputBorder(),
           prefixIcon: const Icon(Icons.key),
           suffixIcon: Padding(
@@ -178,7 +178,9 @@ class _ApikeyFormFieldState extends State<ApikeyFormField> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  tooltip: obscurePassword ? 'Show' : 'Hide',
+                  tooltip: obscurePassword
+                      ? AppLocalizations.of(context)!.show
+                      : AppLocalizations.of(context)!.hide,
                   icon: Icon(
                     obscurePassword ? Icons.visibility_off : Icons.visibility,
                   ),
@@ -198,8 +200,7 @@ class _ApikeyFormFieldState extends State<ApikeyFormField> {
         textInputAction: TextInputAction.done,
         validator: (value) {
           if (value!.isEmpty) {
-            return 'You must provide an API key.\n'
-                'e.g. $apiKeyExample';
+            return AppLocalizations.of(context)!.apiKeyNullWran(apiKeyExample);
           }
 
           if (widget.canOmit &&
@@ -208,8 +209,7 @@ class _ApikeyFormFieldState extends State<ApikeyFormField> {
           }
 
           if (!RegExp(r'^[A-z\d]{24,32}$').hasMatch(value)) {
-            return 'API key is a 24 or 32-character sequence of {A..z} and {0..9}\n'
-                'e.g. $apiKeyExample';
+            return AppLocalizations.of(context)!.apiKeyRuleWarn(apiKeyExample);
           }
 
           return null;

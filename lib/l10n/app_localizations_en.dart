@@ -78,9 +78,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get browse => 'Browse';
 
   @override
-  String get edit => 'Edit';
-
-  @override
   String get comment => 'Comment';
 
   @override
@@ -127,6 +124,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get version => 'Version';
 
   @override
+  String get versionMessage1 => 'Fetching updates...';
+
+  @override
+  String get versionMessage2 => 'Failed to check for updates';
+
+  @override
+  String get versionMessage3 => 'You have the newest version';
+
+  @override
+  String versionMessage4(String version) {
+    return 'A newer version is available: $version';
+  }
+
+  @override
+  String forumThread(int TopicId) {
+    return 'e621 thread #$TopicId';
+  }
+
+  @override
   String get webSite => 'Website';
 
   @override
@@ -145,25 +161,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get donorsLite => 'Not on the list? contact us!';
 
   @override
-  String get settings => 'Settings';
+  String get accounts => 'Accounts';
 
   @override
-  String get identity => 'Identity';
+  String get accountsHelper => 'Don\'t have an account? Sign up here';
 
   @override
-  String get host => 'Host';
+  String get addAccount => 'Add account';
 
   @override
-  String get hostNullWarn => 'You must provide a host URL.';
+  String get editAccount => 'Edit account';
 
   @override
-  String get hostUrlWarn => 'Invalid host URL';
+  String get site => 'Site';
 
   @override
-  String get authentication => 'Authentication';
+  String get siteNullWarn => 'You must provide a host URL.';
 
   @override
-  String get login => 'Login';
+  String get siteUrlWarn => 'Invalid host URL';
+
+  @override
+  String get siteChangedWarn =>
+      'Site can\'t be changed. \nAdd a new account to use a different one.';
+
+  @override
+  String get siteInfo => 'The site is where your posts and account live.';
+
+  @override
+  String get signIn => 'Sign in';
+
+  @override
+  String get guest => 'Guest';
+
+  @override
+  String get removeWarn => 'Remove account?';
+
+  @override
+  String get removeWarnInfo =>
+      'All its data will be permanently removed, including history and follows.';
 
   @override
   String get anonymous => 'Anonymous';
@@ -175,15 +211,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get userWarn => 'You must provide a username.';
 
   @override
+  String get show => 'Show';
+
+  @override
+  String get hide => 'Hide';
+
+  @override
   String get apiKey => 'API key';
 
   @override
-  String apiKeyHelper(String example) {
-    return 'e.g. $example';
+  String get apiKeyHelper => 'Where do I find my API key?';
+
+  @override
+  String apiKeyRuleWarn(String example) {
+    return 'API key is a 24 or 32-character sequence of {A..z} and {0..9} \ne.g. $example';
   }
 
   @override
-  String apiKeyWran(String example) {
+  String apiKeyNullWran(String example) {
     return 'You must provide an API key.\ne.g. $example';
   }
 
@@ -348,7 +393,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tasksError => 'Failed to load tasks';
 
   @override
-  String get tasksClear => 'clear all';
+  String get tasksCancel => 'Cancel all';
+
+  @override
+  String get tasksCancelLC => 'cancel all';
+
+  @override
+  String get tasksClear => 'Clear done';
+
+  @override
+  String get tasksClearLC => 'clear done';
 
   @override
   String get tasksDownload => 'download';
@@ -376,6 +430,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tasksUnfavorited => 'unfavorited';
+
+  @override
+  String tasksSelected(int num) {
+    return '$num selected';
+  }
 
   @override
   String tasksLabel(String label) {
@@ -406,6 +465,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String tasksTitle(String taskActionLabel, int postId) {
     return '$taskActionLabel post #$postId';
   }
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get account => 'Account';
 
   @override
   String get appearance => 'Appearance';
@@ -570,6 +635,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancelUC => 'CANCEL';
 
   @override
+  String get remove => 'Remove';
+
+  @override
+  String get removeUC => 'REMOVE';
+
+  @override
   String get restart => 'Restart Required';
 
   @override
@@ -589,4 +660,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get disabledLC => 'disabled';
+
+  @override
+  String get selectAll => 'Select all';
+
+  @override
+  String get dismiss => 'dismiss';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get delete => 'Delete';
 }

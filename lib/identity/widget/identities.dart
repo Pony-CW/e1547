@@ -1,4 +1,5 @@
 import 'package:e1547/identity/identity.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/user/user.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ class IdentitiesPage extends StatelessWidget {
         Expanded(
           child: ListTile(
             leading: IdentityAvatar(identity.id),
-            title: Text(identity.usernameOrAnon),
+            title: Text(identity.usernameOrAnon(AppLocalizations.of(context)!)),
             onTap: () {
               context.read<IdentityClient>().activate(identity.id);
               Navigator.of(context).maybePop();
@@ -32,7 +33,7 @@ class IdentitiesPage extends StatelessWidget {
               onSelected: (value) => value(),
               itemBuilder: (context) => [
                 PopupMenuTile(
-                  title: 'Edit',
+                  title: AppLocalizations.of(context)!.edit,
                   icon: Icons.edit,
                   value: () => Navigator.of(context).push(
                     MaterialPageRoute(
@@ -41,22 +42,22 @@ class IdentitiesPage extends StatelessWidget {
                   ),
                 ),
                 PopupMenuTile(
-                  title: 'Remove',
+                  title: AppLocalizations.of(context)!.remove,
                   icon: Icons.delete,
                   value: () => showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text('Remove account?'),
-                      content: const Text(
-                        'All its data will be permanently removed, including history and follows.',
+                      title: Text(AppLocalizations.of(context)!.removeWarn),
+                      content: Text(
+                        AppLocalizations.of(context)!.removeWarnInfo,
                       ),
                       actions: [
                         TextButton(
                           onPressed: Navigator.of(context).maybePop,
-                          child: const Text('CANCEL'),
+                          child: Text(AppLocalizations.of(context)!.cancelUC),
                         ),
                         ElevatedButton(
-                          child: const Text('REMOVE'),
+                          child: Text(AppLocalizations.of(context)!.removeUC),
                           onPressed: () {
                             Navigator.of(context).maybePop();
                             context.read<IdentityClient>().remove(identity);
@@ -86,7 +87,7 @@ class IdentitiesPage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: Text(
-            'Accounts',
+            AppLocalizations.of(context)!.accounts,
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),

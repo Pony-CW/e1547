@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:e1547/identity/identity.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 
 String encodeBasicAuth(String username, String password) =>
     'Basic ${base64Encode(utf8.encode('$username:$password'))}';
@@ -70,5 +71,7 @@ extension HostedUrlsExtenstion on Identity {
 }
 
 extension IdentityUsernaming on Identity {
-  String get usernameOrAnon => username ?? 'Anonymous';
+  String usernameOrAnon(AppLocalizations l10n) {
+    return username ?? l10n.anonymous;
+  }
 }

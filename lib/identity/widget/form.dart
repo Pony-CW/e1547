@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:e1547/app/app.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/identity/identity.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -95,7 +96,7 @@ class _AccountFormState extends State<AccountForm> {
             alignment: Alignment.centerLeft,
             child: TextButton(
               onPressed: () => launch(apiKeysUrl),
-              child: const Text('Where do I find my API key?'),
+              child: Text(AppLocalizations.of(context)!.apiKeyHelper),
             ),
           );
         }
@@ -104,7 +105,7 @@ class _AccountFormState extends State<AccountForm> {
             alignment: Alignment.centerLeft,
             child: TextButton(
               onPressed: () => launch(registrationUrl),
-              child: const Text('Don\'t have an account? Sign up here'),
+              child: Text(AppLocalizations.of(context)!.accountsHelper),
             ),
           );
         }
@@ -125,7 +126,7 @@ class _AccountFormState extends State<AccountForm> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Text(
-              'The site is where your posts and account live.',
+              AppLocalizations.of(context)!.siteInfo,
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
@@ -276,8 +277,16 @@ class _AuthModeSelector extends StatelessWidget {
       ),
       child: Row(
         children: [
-          segment('Sign in', withAuth == true, () => onChanged(true)),
-          segment('Guest', withAuth == false, () => onChanged(false)),
+          segment(
+            AppLocalizations.of(context)!.signIn,
+            withAuth == true,
+            () => onChanged(true),
+          ),
+          segment(
+            AppLocalizations.of(context)!.guest,
+            withAuth == false,
+            () => onChanged(false),
+          ),
         ],
       ),
     );

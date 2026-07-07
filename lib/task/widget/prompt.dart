@@ -124,7 +124,7 @@ class _GlobalActionsBar extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Text(
-                'Tasks',
+                AppLocalizations.of(context)!.tasks,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
@@ -132,13 +132,13 @@ class _GlobalActionsBar extends StatelessWidget {
             if (hasActive)
               ActionButton(
                 icon: const Icon(Icons.block),
-                label: const Text('Cancel all'),
+                label: Text(AppLocalizations.of(context)!.tasksCancel),
                 onTap: controller.cancelAll,
               ),
             if (hasDone)
               ActionButton(
                 icon: const Icon(Icons.delete_sweep),
-                label: const Text('Clear done'),
+                label: Text(AppLocalizations.of(context)!.tasksClear),
                 onTap: controller.clearDone,
               ),
           ],
@@ -173,12 +173,12 @@ class _SelectionBar extends StatelessWidget {
               onPressed: layoutData.clear,
             ),
             Text(
-              '${selected.length} selected',
+              AppLocalizations.of(context)!.tasksSelected(selected.length),
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const Spacer(),
             IconButton(
-              tooltip: 'select all',
+              tooltip: AppLocalizations.of(context)!.selectAll,
               icon: const Icon(Icons.select_all),
               onPressed: layoutData.selectAll,
             ),

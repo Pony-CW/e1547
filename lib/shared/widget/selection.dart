@@ -1,3 +1,4 @@
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -193,7 +194,7 @@ class SelectionAppBar<T> extends StatelessWidget with AppBarBuilderWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.select_all),
-            tooltip: 'Select all',
+            tooltip: AppLocalizations.of(context)!.selectAll,
             onPressed: layoutData.selectAll,
           ),
           ...actionBuilder(context, layoutData),
