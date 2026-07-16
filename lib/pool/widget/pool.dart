@@ -39,43 +39,48 @@ class _PoolPageState extends State<PoolPage> {
         child: PoolHistoryConnector(
           pool: widget.pool,
           child: PostPageQueryBuilder(
-            builder: (context, state, query) => AdaptiveScaffold(
-              appBar: DefaultAppBar(
-                title: Text(tagToName(widget.pool.name)),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.info_outline),
-                    tooltip: 'Info',
-                    onPressed: () =>
-                        showPoolPrompt(context: context, pool: widget.pool),
+            builder: (context, state, query) => SelectionLayout<Post>(
+              items: state.data?.pages.expand((p) => p).toList(),
+              child: AdaptiveScaffold(
+                appBar: PostSelectionAppBar(
+                  child: DefaultAppBar(
+                    title: Text(tagToName(widget.pool.name)),
+                    actions: [
+                      IconButton(
+                        icon: const Icon(Icons.info_outline),
+                        tooltip: 'Info',
+                        onPressed: () =>
+                            showPoolPrompt(context: context, pool: widget.pool),
+                      ),
+                      const ContextDrawerButton(),
+                    ],
                   ),
-                  const ContextDrawerButton(),
-                ],
-              ),
-              endDrawer: ContextDrawer(
-                title: const Text('Pool'),
-                children: [
-                  PoolReaderSwitch(
-                    readerMode: readerMode,
-                    onChange: (value) => setState(() => readerMode = value),
-                  ),
-                  const PoolOrderSwitch(),
-                  const DrawerDenySwitch(),
-                  DrawerTagCounter(
-                    posts: state.data?.pages.expand((p) => p).toList(),
-                    error: state.error,
-                  ),
-                ],
-              ),
-              body: LimitedWidthLayout(
-                child: ListenableBuilder(
-                  listenable: context.watch<Settings>().tileSize,
-                  builder: (context, child) => TileLayout(
-                    tileSize: context.watch<Settings>().tileSize.value,
-                    child: PostList(
-                      displayType: readerMode
-                          ? PostDisplayType.comic
-                          : PostDisplayType.grid,
+                ),
+                endDrawer: ContextDrawer(
+                  title: const Text('Pool'),
+                  children: [
+                    PoolReaderSwitch(
+                      readerMode: readerMode,
+                      onChange: (value) => setState(() => readerMode = value),
+                    ),
+                    const PoolOrderSwitch(),
+                    const DrawerDenySwitch(),
+                    DrawerTagCounter(
+                      posts: state.data?.pages.expand((p) => p).toList(),
+                      error: state.error,
+                    ),
+                  ],
+                ),
+                body: LimitedWidthLayout(
+                  child: ListenableBuilder(
+                    listenable: context.watch<Settings>().tileSize,
+                    builder: (context, child) => TileLayout(
+                      tileSize: context.watch<Settings>().tileSize.value,
+                      child: PostList(
+                        displayType: readerMode
+                            ? PostDisplayType.comic
+                            : PostDisplayType.grid,
+                      ),
                     ),
                   ),
                 ),
