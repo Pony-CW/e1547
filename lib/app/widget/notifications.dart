@@ -5,8 +5,10 @@ import 'package:e1547/app/app.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/follow/follow.dart';
 import 'package:e1547/logs/logs.dart';
+import 'package:e1547/pool/pool.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
+import 'package:e1547/tag/tag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sub/flutter_sub.dart';
 
@@ -106,11 +108,15 @@ class _NotificationHandlerState extends State<NotificationHandler> {
           (_) => false,
         );
         if (notification.query != null) {
+          final String? tags = notification.query!['tags'];
+          final poolId = tags != null
+              ? poolRegex().firstMatch(tags)?.namedGroup('id')
+              : null;
           widget.navigatorKey.currentState!.push(
             MaterialPageRoute(
-              builder: (context) => PostsPage(
-                params: PostParams(tags: notification!.query!['tags']),
-              ),
+              builder: (context) => poolId != null
+                  ? PoolLoadingPage(int.parse(poolId), orderByOldest: false)
+                  : PostsPage(params: PostParams(tags: tags)),
             ),
           );
         }
