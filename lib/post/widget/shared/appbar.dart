@@ -36,6 +36,7 @@ List<PopupMenuItem<VoidCallback>> postMenuUserActions(
   BuildContext context,
   Post post,
 ) {
+  final cacheSize = context.read<ImageCacheSize?>()?.size;
   return [
     PopupMenuTile(
       title: 'Edit',
@@ -43,7 +44,12 @@ List<PopupMenuItem<VoidCallback>> postMenuUserActions(
       value: () => guardWithLogin(
         context: context,
         callback: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => PostEditPage(post: post)),
+          MaterialPageRoute(
+            builder: (context) => ImageCacheSizeProvider(
+              size: cacheSize,
+              child: PostEditPage(post: post),
+            ),
+          ),
         ),
         error: 'You must be logged in to edit posts!',
       ),
