@@ -50,6 +50,10 @@ class PoolTile extends StatelessWidget {
         builder: (context, state) {
           final post = state.data;
           if (post == null) return const SizedBox.shrink();
+          final filter = context.watch<FilterController<Post>?>();
+          if (filter != null && !filter.filter(post)) {
+            return const SizedBox.shrink();
+          }
           return Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 400),
