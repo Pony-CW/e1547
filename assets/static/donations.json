@@ -11,6 +11,12 @@
       {
         "amount": 3.0,
         "currency": "USD",
+        "date": "2026-07-07T12:04:00",
+        "platform": "ko-fi"
+      },
+      {
+        "amount": 3.0,
+        "currency": "USD",
         "date": "2026-06-07T12:20:00",
         "platform": "ko-fi"
       },
@@ -445,6 +451,12 @@
       {
         "amount": 45.0,
         "currency": "USD",
+        "date": "2026-07-20T18:23:00",
+        "platform": "ko-fi"
+      },
+      {
+        "amount": 45.0,
+        "currency": "USD",
         "date": "2026-06-21T12:27:00",
         "platform": "ko-fi"
       },
@@ -584,6 +596,20 @@
         "amount": 12.0,
         "currency": "USD",
         "date": "2026-07-06T13:15:00",
+        "platform": "ko-fi"
+      }
+    ]
+  },
+  {
+    "name": "Thibaultmol",
+    "handles": {
+      "ko-fi": "Thibaultmol"
+    },
+    "donations": [
+      {
+        "amount": 27.0,
+        "currency": "USD",
+        "date": "2026-07-07T17:44:00",
         "platform": "ko-fi"
       }
     ]
