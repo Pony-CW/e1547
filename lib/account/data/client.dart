@@ -20,7 +20,7 @@ class AccountClient {
   final ValueNotifier<Traits> traits;
   final PostClient postsService;
 
-  Future<void> available() => dio.get('');
+  Future<void> available() => dio.head('/status.json');
 
   Future<void> push({required Traits traits, CancelToken? cancelToken}) async {
     Traits previous = this.traits.value;
