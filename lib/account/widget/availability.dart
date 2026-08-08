@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:e1547/account/account.dart';
 import 'package:e1547/client/client.dart';
+import 'package:e1547/identity/identity.dart';
 import 'package:e1547/logs/logs.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class _AvailabilityCheckState extends State<AvailabilityCheck> {
   Future<void> check(BuildContext context) async {
     bool? offerResolve;
     final client = context.read<Client>();
+    final identities = context.read<IdentityClient>();
     try {
       await client.accounts.available();
       logger.info('Client is available!');
@@ -44,6 +46,7 @@ class _AvailabilityCheckState extends State<AvailabilityCheck> {
         logger.warning(
           'Client is behind a Cloudflare challenge, attempting resolve!',
         );
+        await dropCloudflareCookies(identities);
         offerResolve = true;
       } else {
         int? statusCode = e.response?.statusCode;
