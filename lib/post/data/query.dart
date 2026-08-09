@@ -16,7 +16,7 @@ extension PostQuerying on PostClient {
   Query<Post> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
     key: [queryKey, id],
-    queryFn: () => get(id: id),
+    queryFn: () => get(id: id, force: true),
     config: postCache.getConfig(vendored: vendored),
   );
 
@@ -90,7 +90,7 @@ extension PostQuerying on PostClient {
           final lower = (page - 1) * perPage;
           if (lower >= ids.length) return const [];
           final slice = ids.sublist(lower, min(lower + perPage, ids.length));
-          final fetched = await byIds(ids: slice);
+          final fetched = await byIds(ids: slice, force: true);
           return postCache.savePage(fetched);
         },
       );
@@ -101,13 +101,13 @@ extension PostQuerying on PostClient {
         key: [queryKey, 'by_tags', tags],
         getNextArg: (state) => state.nextPage,
         queryFn: (page) =>
-            byTags(tags: tags, page: page).then(postCache.savePage),
+            byTags(tags: tags, page: page, force: true).then(postCache.savePage),
       );
 
   Query<List<Post>> useByIds({required List<int> ids, int? limit}) => Query(
     cache: queryCache,
     key: [queryKey, 'ids', ids, limit],
-    queryFn: () => byIds(ids: ids, limit: limit).then((fetched) {
+    queryFn: () => byIds(ids: ids, limit: limit, force: true).then((fetched) {
       postCache.savePage(fetched);
       return fetched;
     }),
