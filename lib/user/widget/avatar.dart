@@ -64,7 +64,7 @@ class UserAvatar extends StatelessWidget {
     }
     final client = context.watch<Client>();
     return QueryBuilder(
-      query: client.posts.useGet(id: id, vendored: true),
+      query: client.posts.useGet(id: id),
       builder: (context, state) {
         final post = state.data;
         return Avatar(

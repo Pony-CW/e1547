@@ -27,7 +27,7 @@ class UserHistoryConnector extends StatelessWidget {
         child: child,
       );
     }
-    final query = client.posts.useGet(id: avatarId, vendored: true);
+    final query = client.posts.useGet(id: avatarId);
     return QueryHistoryConnector<QueryStatus<Post>>(
       query: query,
       getEntry: (context, state) {
