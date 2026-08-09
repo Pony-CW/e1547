@@ -34,9 +34,10 @@ class TagListActions extends StatelessWidget {
 
               final bool following =
                   hasFollow &&
-                  const [FollowType.update, FollowType.notify].contains(
-                    follow.type,
-                  );
+                  const [
+                    FollowType.update,
+                    FollowType.notify,
+                  ].contains(follow.type);
 
               final bool notifying =
                   hasFollow && follow.type == FollowType.notify;

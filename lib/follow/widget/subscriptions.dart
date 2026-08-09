@@ -46,60 +46,63 @@ class FollowsSubscriptionsPage extends StatelessWidget {
               return SelectionLayout<Follow>(
                 items: state.data?.pages.expand((p) => p).toList(),
                 child: PromptActions(
-                child: AdaptiveScaffold(
-                  appBar: const FollowSelectionAppBar(
-                    child: DefaultAppBar(
-                      title: Text('Subscriptions'),
-                      actions: [ContextDrawerButton()],
+                  child: AdaptiveScaffold(
+                    appBar: const FollowSelectionAppBar(
+                      child: DefaultAppBar(
+                        title: Text('Subscriptions'),
+                        actions: [ContextDrawerButton()],
+                      ),
                     ),
-                  ),
-                  drawer: const RouterDrawer(),
-                  endDrawer: const ContextDrawer(
-                    title: Text('Subscriptions'),
-                    children: [
-                      FollowEditingTile(),
-                      Divider(),
-                      FollowFilterReadTile(),
-                      FollowMarkReadTile(),
-                      Divider(),
-                      FollowForceSyncTile(),
-                    ],
-                  ),
-                  floatingActionButton: AddTagFloatingActionButton(
-                    title: 'Add to subscriptions',
-                    onSubmit: (value) async {
-                      value = value.trim();
-                      if (value.isEmpty) return;
-                      await context.read<Client>().follows.create(
-                        tags: value,
-                        type: FollowType.update,
-                      );
-                    },
-                  ),
-                  body: TileLayout(
-                    child: Builder(
-                      builder: (context) => PullToRefresh(
-                        onRefresh: query.invalidate,
-                        child: PagedAlignedGridView<int, Follow>.count(
-                          primary: true,
-                          padding: defaultActionListPadding,
-                          state: state.paging,
-                          fetchNextPage: query.getNextPage,
-                          addAutomaticKeepAlives: false,
-                          builderDelegate: defaultPagedChildBuilderDelegate(
-                            onRetry: query.getNextPage,
-                            itemBuilder: (context, item, index) =>
-                                FollowTile(follow: item),
-                            onEmpty: const Text('No subscriptions'),
-                            onError: const Text('Failed to load subscriptions'),
+                    drawer: const RouterDrawer(),
+                    endDrawer: const ContextDrawer(
+                      title: Text('Subscriptions'),
+                      children: [
+                        FollowEditingTile(),
+                        Divider(),
+                        FollowFilterReadTile(),
+                        FollowMarkReadTile(),
+                        Divider(),
+                        FollowForceSyncTile(),
+                      ],
+                    ),
+                    floatingActionButton: AddTagFloatingActionButton(
+                      title: 'Add to subscriptions',
+                      onSubmit: (value) async {
+                        value = value.trim();
+                        if (value.isEmpty) return;
+                        await context.read<Client>().follows.create(
+                          tags: value,
+                          type: FollowType.update,
+                        );
+                      },
+                    ),
+                    body: TileLayout(
+                      child: Builder(
+                        builder: (context) => PullToRefresh(
+                          onRefresh: query.invalidate,
+                          child: PagedAlignedGridView<int, Follow>.count(
+                            primary: true,
+                            padding: defaultActionListPadding,
+                            state: state.paging,
+                            fetchNextPage: query.getNextPage,
+                            addAutomaticKeepAlives: false,
+                            builderDelegate: defaultPagedChildBuilderDelegate(
+                              onRetry: query.getNextPage,
+                              itemBuilder: (context, item, index) =>
+                                  FollowTile(follow: item),
+                              onEmpty: const Text('No subscriptions'),
+                              onError: const Text(
+                                'Failed to load subscriptions',
+                              ),
+                            ),
+                            crossAxisCount: TileLayout.of(
+                              context,
+                            ).crossAxisCount,
                           ),
-                          crossAxisCount:
-                              TileLayout.of(context).crossAxisCount,
                         ),
                       ),
                     ),
                   ),
-                ),
                 ),
               );
             },

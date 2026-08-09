@@ -152,8 +152,7 @@ class HistoryCategoryFilterTile extends StatelessWidget {
                   if (value == null) return;
                   controller.update((p) {
                     final filters =
-                        p.categories?.toSet() ??
-                        HistoryCategory.values.toSet();
+                        p.categories?.toSet() ?? HistoryCategory.values.toSet();
                     if (value) {
                       filters.add(filter);
                     } else {

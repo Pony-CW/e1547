@@ -48,19 +48,19 @@ class LikeDisplay extends StatelessWidget {
                       : null,
                   onDownvote: enabled
                       ? (isLiked) async {
-                          mutate((upvote: false, replace: !isLiked)).catchError((
-                            error,
-                          ) {
-                            messenger.showSnackBar(
-                              SnackBar(
-                                duration: const Duration(seconds: 1),
-                                content: Text(
-                                  'Failed to downvote Post #${post.id}',
+                          mutate((upvote: false, replace: !isLiked)).catchError(
+                            (error) {
+                              messenger.showSnackBar(
+                                SnackBar(
+                                  duration: const Duration(seconds: 1),
+                                  content: Text(
+                                    'Failed to downvote Post #${post.id}',
+                                  ),
                                 ),
-                              ),
-                            );
-                            return error;
-                          });
+                              );
+                              return error;
+                            },
+                          );
                           return !isLiked;
                         }
                       : null,
@@ -123,9 +123,10 @@ class FavoriteButton extends StatelessWidget {
                 await mutate(post.id);
                 if (!isLiked && settings.upvoteFavs.value) {
                   try {
-                    await client.posts
-                        .useVote(id: post.id)
-                        .mutate((upvote: true, replace: true));
+                    await client.posts.useVote(id: post.id).mutate((
+                      upvote: true,
+                      replace: true,
+                    ));
                   } on Exception {
                     // upvote is best-effort once the favorite succeeded
                   }

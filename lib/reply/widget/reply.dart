@@ -84,8 +84,7 @@ class ReplyHeader extends StatelessWidget {
             ),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) =>
-                    UserLoadingPage(reply.creatorId),
+                builder: (context) => UserLoadingPage(reply.creatorId),
               ),
             ),
           ),

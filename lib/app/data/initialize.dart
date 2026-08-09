@@ -116,9 +116,7 @@ Future<AppStorage> initializeAppStorage({bool cache = true}) async {
     httpCache: cache ? DriftCacheStore(databasePath: temporaryFiles) : null,
     queryCache: CachedQuery.asNewInstance()
       ..configFlutter(
-        config: const GlobalQueryConfig(
-          staleDuration: Duration(minutes: 5),
-        ),
+        config: const GlobalQueryConfig(staleDuration: Duration(minutes: 5)),
       ),
     sqlite: AppDatabase(
       driftDatabase(

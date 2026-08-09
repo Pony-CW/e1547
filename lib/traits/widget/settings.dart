@@ -106,7 +106,8 @@ class DenyListPage extends StatelessWidget {
                                       if (value.isEmpty) {
                                         await client.accounts.push(
                                           traits: traits.copyWith(
-                                            denylist: List.of(denylist)..remove(tag),
+                                            denylist: List.of(denylist)
+                                              ..remove(tag),
                                           ),
                                         );
                                       } else {

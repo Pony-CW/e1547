@@ -83,7 +83,10 @@ class _PostEditPageState extends State<PostEditPage> {
 
       final body = editData.toForm();
       if (body != null) {
-        await context.read<Client>().posts.update(id: widget.post.id, data: body);
+        await context.read<Client>().posts.update(
+          id: widget.post.id,
+          data: body,
+        );
 
         if (mounted) {
           messenger.showSnackBar(

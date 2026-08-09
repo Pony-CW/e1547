@@ -95,8 +95,7 @@ class CommentHeader extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) =>
-                    UserLoadingPage(comment.creatorId),
+                builder: (context) => UserLoadingPage(comment.creatorId),
               ),
             ),
             child: TimedText(

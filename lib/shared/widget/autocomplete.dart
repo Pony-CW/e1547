@@ -128,15 +128,16 @@ class AutocompleteCutout extends ShapeBorder {
     double radius = width / 2 + padding;
 
     final rectPath = Path()..addRect(rect);
-    final notchPath = Path()..addOval(
-      Rect.fromCircle(
-        center: Offset(
-          rect.right - radius - edgeDistance + padding,
-          rect.bottom + offset,
+    final notchPath = Path()
+      ..addOval(
+        Rect.fromCircle(
+          center: Offset(
+            rect.right - radius - edgeDistance + padding,
+            rect.bottom + offset,
+          ),
+          radius: radius,
         ),
-        radius: radius,
-      ),
-    );
+      );
 
     return Path.combine(PathOperation.difference, rectPath, notchPath);
   }

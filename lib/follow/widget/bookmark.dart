@@ -60,8 +60,7 @@ class FollowsBookmarkPage extends StatelessWidget {
                             onEmpty: const Text('No bookmarks'),
                             onError: const Text('Failed to load bookmarks'),
                           ),
-                          crossAxisCount:
-                              TileLayout.of(context).crossAxisCount,
+                          crossAxisCount: TileLayout.of(context).crossAxisCount,
                         ),
                       ),
                     ),

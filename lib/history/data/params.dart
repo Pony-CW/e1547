@@ -58,9 +58,7 @@ abstract class HistoryParams with _$HistoryParams {
 Set<E>? _parseEnumSet<E extends Enum>(String? value, List<E> values) {
   if (value == null || value.isEmpty) return null;
   final byName = values.asNameMap();
-  final result = <E>{
-    for (final v in value.split(',')) ?byName[v.trim()],
-  };
+  final result = <E>{for (final v in value.split(',')) ?byName[v.trim()]};
   return result.isEmpty ? null : result;
 }
 

@@ -26,14 +26,14 @@ extension FollowQuerying on FollowClient {
         getNextArg: (state) => state.nextPage,
         queryFn: (pageKey) async {
           try {
-            final result = await page(
-              page: pageKey,
-              query: query,
-              force: true,
-            );
+            final result = await page(page: pageKey, query: query, force: true);
             return followCache.savePage(result);
           } catch (e, st) {
-            _logger.severe('usePage failed (page=$pageKey, query=$query)', e, st);
+            _logger.severe(
+              'usePage failed (page=$pageKey, query=$query)',
+              e,
+              st,
+            );
             rethrow;
           }
         },

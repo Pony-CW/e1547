@@ -100,8 +100,11 @@ extension PostQuerying on PostClient {
         cache: queryCache,
         key: [queryKey, 'by_tags', tags],
         getNextArg: (state) => state.nextPage,
-        queryFn: (page) =>
-            byTags(tags: tags, page: page, force: true).then(postCache.savePage),
+        queryFn: (page) => byTags(
+          tags: tags,
+          page: page,
+          force: true,
+        ).then(postCache.savePage),
       );
 
   Query<List<Post>> useByIds({required List<int> ids, int? limit}) => Query(

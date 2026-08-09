@@ -42,11 +42,7 @@ class FollowsTimelinePage extends StatelessWidget {
               drawer: const RouterDrawer(),
               endDrawer: const ContextDrawer(
                 title: Text('Timeline'),
-                children: [
-                  FollowEditingTile(),
-                  Divider(),
-                  DrawerDenySwitch(),
-                ],
+                children: [FollowEditingTile(), Divider(), DrawerDenySwitch()],
               ),
               body: LimitedWidthLayout(
                 child: ListenableBuilder(
