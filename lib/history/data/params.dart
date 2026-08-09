@@ -19,8 +19,6 @@ abstract class HistoryParams with _$HistoryParams {
 
   const HistoryParams._();
 
-  static final DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
-
   factory HistoryParams.fromQuery(QueryMap? query) {
     if (query == null) return const HistoryParams();
     DateTime? date;
@@ -44,6 +42,8 @@ abstract class HistoryParams with _$HistoryParams {
       types: _parseEnumSet(query['search[type]'], HistoryType.values),
     );
   }
+
+  static final DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
 
   QueryMap toQuery() => <String, Object?>{
     'search[date]': date != null ? _dateFormat.format(date!) : null,

@@ -42,6 +42,23 @@ abstract class TopicParams with _$TopicParams {
 
   const TopicParams._();
 
+  factory TopicParams.fromQuery(QueryMap? query) {
+    if (query == null) return const TopicParams();
+    return TopicParams(
+      title: query['search[title_matches]'],
+      category: TopicCategory.values.firstWhereOrNull(
+        (c) => c.id.toString() == query['search[category_id]'],
+      ),
+      order:
+          TopicOrder.values.firstWhereOrNull(
+            (o) => o.value == query['search[order]'],
+          ) ??
+          TopicOrder.sticky,
+      sticky: _parseBool(query['search[is_sticky]']),
+      locked: _parseBool(query['search[is_locked]']),
+    );
+  }
+
   static const titleFilter = TextFilterTag(
     tag: 'search[title_matches]',
     name: 'Title contains',
@@ -92,23 +109,6 @@ abstract class TopicParams with _$TopicParams {
     description: 'Is locked',
     tristate: true,
   );
-
-  factory TopicParams.fromQuery(QueryMap? query) {
-    if (query == null) return const TopicParams();
-    return TopicParams(
-      title: query['search[title_matches]'],
-      category: TopicCategory.values.firstWhereOrNull(
-        (c) => c.id.toString() == query['search[category_id]'],
-      ),
-      order:
-          TopicOrder.values.firstWhereOrNull(
-            (o) => o.value == query['search[order]'],
-          ) ??
-          TopicOrder.sticky,
-      sticky: _parseBool(query['search[is_sticky]']),
-      locked: _parseBool(query['search[is_locked]']),
-    );
-  }
 
   QueryMap toQuery() => <String, Object?>{
     'search[title_matches]': title,
