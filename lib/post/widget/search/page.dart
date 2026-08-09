@@ -31,7 +31,10 @@ class PostsPage extends StatelessWidget {
                   items: state.data?.pages.expand((p) => p).toList(),
                   child: AdaptiveScaffold(
                     appBar: const PostSelectionAppBar(child: PostPageAppBar()),
-                    floatingActionButton: const PostsPageFab(),
+                    floatingActionButton:
+                        context.watch<PostParamsController>().canSearch
+                        ? const PostsPageFab()
+                        : null,
                     drawer: const RouterDrawer(),
                     endDrawer: ContextDrawer(
                       title: const Text('Posts'),

@@ -158,8 +158,8 @@ class PostParamsController extends ValueNotifier<PostParams> {
   PostParamsController({PostParams? initial, this.canSearch = true})
     : super(initial ?? const PostParams());
 
-  /// Whether tag prompts offer search actions. The mutating methods below
-  /// are not gated by it.
+  /// Whether the owning page offers search affordances, meaning the tag
+  /// actions and the search button. The mutating methods below are not gated.
   final bool canSearch;
 
   void update(PostParams Function(PostParams) updater) =>
