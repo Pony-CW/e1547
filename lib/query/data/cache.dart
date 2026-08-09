@@ -55,11 +55,11 @@ class QueryBridge<T, K> {
     }
   }
 
-  void set(T item) => update(getId(item), (current) => item);
+  void set(T item) => _ensureQuery(getId(item)).setData(item);
 
   List<K> savePage(List<T> items) {
     for (final item in items) {
-      _ensureQuery(getId(item)).setData(item);
+      set(item);
     }
     return items.map(getId).toList();
   }
