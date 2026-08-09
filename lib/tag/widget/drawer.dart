@@ -1,4 +1,3 @@
-import 'package:e1547/client/client.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
@@ -16,30 +15,20 @@ class DrawerTagCounter extends StatelessWidget {
   }
 }
 
-/// Counts tags over the loaded posts of every search in [params].
-/// Reads state without subscribing, so an unvisited search stays unfetched.
 class DrawerMultiTagCounter extends StatelessWidget {
-  const DrawerMultiTagCounter({super.key, required this.params});
+  const DrawerMultiTagCounter({super.key, this.filter});
 
-  final List<PostParams> params;
+  final PostFilter? filter;
 
   @override
   Widget build(BuildContext context) {
-    final client = context.watch<Client>();
-    List<Post>? posts;
-    for (final search in params) {
-      final state = client.posts.usePage(query: search.toQuery()).state;
-      final pages = state.data?.pages;
-      if (pages == null) continue;
-      posts ??= [];
-      posts.addAll(
-        pages
-            .expand((page) => page)
-            .map(client.posts.postCache.get)
-            .whereType<Post>(),
-      );
-    }
-    return DrawerTagCounterBody(posts: posts);
+    final resolved = filter ?? context.watch<PostFilter>();
+    return AnimatedBuilder(
+      animation: resolved,
+      builder: (context, child) => DrawerTagCounterBody(
+        posts: resolved.tracked.where(resolved.filter).toList(),
+      ),
+    );
   }
 }
 

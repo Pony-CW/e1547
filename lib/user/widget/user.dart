@@ -179,12 +179,7 @@ class UserPage extends StatelessWidget {
                   title: const Text('Posts'),
                   children: [
                     DrawerDenySwitch(filter: filter),
-                    DrawerMultiTagCounter(
-                      params: [
-                        PostParams(tags: 'fav:${user.name}'),
-                        PostParams(tags: 'user:${user.name}'),
-                      ],
-                    ),
+                    DrawerMultiTagCounter(filter: filter),
                   ],
                 ),
                 body: body,
