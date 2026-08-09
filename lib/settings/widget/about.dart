@@ -58,6 +58,8 @@ class _AboutPageState extends State<AboutPage> {
                 child: Card(
                   child: Column(
                     children: [
+                      if (PlatformCapabilities.isExperimental)
+                        const AboutExperimental(),
                       AboutVersion(newVersions: versions),
                       const AboutLinks(),
                     ],
@@ -148,6 +150,29 @@ class AboutLogo extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class AboutExperimental extends StatelessWidget {
+  const AboutExperimental({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          leading: FaIcon(
+            FontAwesomeIcons.triangleExclamation,
+            color: Theme.of(context).colorScheme.error,
+          ),
+          title: const Text('Experimental platform'),
+          subtitle: const Text(
+            'This platform is not supported. Expect bugs and missing features.',
+          ),
+        ),
+        const Divider(),
+      ],
     );
   }
 }
