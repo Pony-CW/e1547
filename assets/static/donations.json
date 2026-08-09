@@ -11,6 +11,12 @@
       {
         "amount": 3.0,
         "currency": "USD",
+        "date": "2026-08-07T10:10:00",
+        "platform": "ko-fi"
+      },
+      {
+        "amount": 3.0,
+        "currency": "USD",
         "date": "2026-07-07T12:04:00",
         "platform": "ko-fi"
       },
