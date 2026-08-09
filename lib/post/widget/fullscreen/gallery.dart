@@ -23,35 +23,31 @@ class PostFullscreenGallery extends StatefulWidget {
   State<PostFullscreenGallery> createState() => _PostFullscreenGalleryState();
 }
 
-class _PostFullscreenGalleryState extends State<PostFullscreenGallery> {
+class _PostFullscreenGalleryState extends State<PostFullscreenGallery>
+    with PostSearchRouteAware<PostFullscreenGallery> {
   late int? postId = widget.initialPostId;
 
   @override
-  Widget build(BuildContext context) => RetainedPostPageQueryBuilder(
-    builder: (context, state, query) {
-      final items = state.paging.items;
-      final index = postId == null
-          ? 0
-          : items?.indexWhere((post) => post.id == postId) ?? -1;
+  Widget build(BuildContext context) {
+    closeWhenSearchChanged(context);
+    return PostPageQueryBuilder(
+      builder: (context, state, query) {
+        final items = state.paging.items;
+        final index = postId == null
+            ? 0
+            : items?.indexWhere((post) => post.id == postId) ?? -1;
 
-      if (index < 0) {
-        return GalleryAbsent(
-          settled: items != null,
-          onSettled: () => Navigator.of(context).maybePop(),
-          builder: (context, child) => ScaffoldFrame(child: child),
-        );
-      }
+        if (index < 0) {
+          if (items != null) close();
+          return const ScaffoldFrame(
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
 
-      return SubDefault<PageController>(
-        value: widget.pageController,
-        create: () => PageController(initialPage: index),
-        builder: (context, pageController) => SubEffect(
-          keys: [query],
-          effect: () {
-            jumpGalleryTo(pageController, index);
-            return null;
-          },
-          child: ScaffoldFrame(
+        return SubDefault<PageController>(
+          value: widget.pageController,
+          create: () => PageController(initialPage: index),
+          builder: (context, pageController) => ScaffoldFrame(
             child: GalleryButtons(
               controller: pageController,
               child: PagedPageView<int, Post>(
@@ -79,8 +75,8 @@ class _PostFullscreenGalleryState extends State<PostFullscreenGallery> {
               ),
             ),
           ),
-        ),
-      );
-    },
-  );
+        );
+      },
+    );
+  }
 }

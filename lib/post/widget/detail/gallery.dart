@@ -4,6 +4,27 @@ import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sub/flutter_sub.dart';
 
+/// Pops the enclosing route when the search changes. [close] is latched, so
+/// repeated calls from build pop once.
+mixin PostSearchRouteAware<T extends StatefulWidget> on State<T> {
+  String? _openedWith;
+  bool _closing = false;
+
+  void closeWhenSearchChanged(BuildContext context) {
+    final tags = context.watch<PostParamsController>().value.tags ?? '';
+    _openedWith ??= tags;
+    if (_openedWith != tags) close();
+  }
+
+  void close() {
+    if (_closing) return;
+    _closing = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) Navigator.of(context).maybePop();
+    });
+  }
+}
+
 class PostDetailGallery extends StatefulWidget {
   const PostDetailGallery({
     super.key,
@@ -23,38 +44,32 @@ class PostDetailGallery extends StatefulWidget {
   State<PostDetailGallery> createState() => _PostDetailGalleryState();
 }
 
-class _PostDetailGalleryState extends State<PostDetailGallery> {
+class _PostDetailGalleryState extends State<PostDetailGallery>
+    with PostSearchRouteAware<PostDetailGallery> {
   late int? postId = widget.initialPostId;
 
   @override
-  Widget build(BuildContext context) => RetainedPostPageQueryBuilder(
-    builder: (context, state, query) {
-      final items = state.paging.items;
-      final index = postId == null
-          ? 0
-          : items?.indexWhere((post) => post.id == postId) ?? -1;
+  Widget build(BuildContext context) {
+    closeWhenSearchChanged(context);
+    return PostPageQueryBuilder(
+      builder: (context, state, query) {
+        final items = state.paging.items;
+        final index = postId == null
+            ? 0
+            : items?.indexWhere((post) => post.id == postId) ?? -1;
 
-      if (index < 0) {
-        return GalleryAbsent(
-          settled: items != null,
-          onSettled: () => Navigator.of(context).maybePop(),
-          builder: (context, child) => Scaffold(
-            appBar: const TransparentAppBar(child: DefaultAppBar()),
-            body: child,
-          ),
-        );
-      }
+        if (index < 0) {
+          if (items != null) close();
+          return const Scaffold(
+            appBar: TransparentAppBar(child: DefaultAppBar()),
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
 
-      return SubDefault<PageController>(
-        value: widget.pageController,
-        create: () => PageController(initialPage: index),
-        builder: (context, pageController) => SubEffect(
-          keys: [query],
-          effect: () {
-            jumpGalleryTo(pageController, index);
-            return null;
-          },
-          child: GalleryButtons(
+        return SubDefault<PageController>(
+          value: widget.pageController,
+          create: () => PageController(initialPage: index),
+          builder: (context, pageController) => GalleryButtons(
             controller: pageController,
             child: PagedPageView(
               pageController: pageController,
@@ -95,10 +110,10 @@ class _PostDetailGalleryState extends State<PostDetailGallery> {
               },
             ),
           ),
-        ),
-      );
-    },
-  );
+        );
+      },
+    );
+  }
 
   void _pushFullscreen(
     BuildContext context,
@@ -119,56 +134,4 @@ class _PostDetailGalleryState extends State<PostDetailGallery> {
       ),
     );
   }
-}
-
-/// Moves [controller] onto [page] after the frame that changed its list.
-void jumpGalleryTo(PageController controller, int page) {
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    if (!controller.hasClients) return;
-    if (controller.page?.round() == page) return;
-    controller.jumpToPage(page);
-  });
-}
-
-/// Shown while a gallery cannot place its post in the results.
-/// Calls [onSettled] once [settled] reports the results as final.
-class GalleryAbsent extends StatefulWidget {
-  const GalleryAbsent({
-    super.key,
-    required this.settled,
-    required this.onSettled,
-    required this.builder,
-  });
-
-  final bool settled;
-  final VoidCallback onSettled;
-  final Widget Function(BuildContext context, Widget child) builder;
-
-  @override
-  State<GalleryAbsent> createState() => _GalleryAbsentState();
-}
-
-class _GalleryAbsentState extends State<GalleryAbsent> {
-  @override
-  void initState() {
-    super.initState();
-    _settle();
-  }
-
-  @override
-  void didUpdateWidget(covariant GalleryAbsent oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _settle();
-  }
-
-  void _settle() {
-    if (!widget.settled) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) widget.onSettled();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) =>
-      widget.builder(context, const Center(child: CircularProgressIndicator()));
 }
