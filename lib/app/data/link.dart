@@ -205,14 +205,20 @@ extension LinkOnTapExtension on LinkParser {
         );
       case LinkType.user:
         Object? id = result.id;
+        if (id is int) {
+          return navWrapper((context) => UserLoadingPage(id));
+        }
         if (id != null) {
-          return navWrapper((context) => UserLoadingPage(id.toString()));
+          return navWrapper((context) => UserLoadingPage.name(id.toString()));
         }
         break;
       case LinkType.wiki:
         Object? id = result.id;
+        if (id is int) {
+          return navWrapper((context) => WikiLoadingPage(id));
+        }
         if (id != null) {
-          return navWrapper((context) => WikiLoadingPage(id.toString()));
+          return navWrapper((context) => WikiLoadingPage.title(id.toString()));
         }
         break;
       case LinkType.topic:

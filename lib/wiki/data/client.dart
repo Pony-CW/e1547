@@ -7,17 +7,23 @@ class WikiClient {
 
   final Dio dio;
 
-  Future<Wiki> get({
-    required String id,
+  Future<Wiki> get({required int id, bool? force, CancelToken? cancelToken}) =>
+      _get(id.toString(), force: force, cancelToken: cancelToken);
+
+  Future<Wiki> getByTitle({
+    required String title,
     bool? force,
     CancelToken? cancelToken,
-  }) => dio
-      .get(
-        '/wiki_pages/$id.json',
-        options: forceOptions(force),
-        cancelToken: cancelToken,
-      )
-      .then((response) => E621Wiki.fromJson(response.data));
+  }) => _get(title, force: force, cancelToken: cancelToken);
+
+  Future<Wiki> _get(String lookup, {bool? force, CancelToken? cancelToken}) =>
+      dio
+          .get(
+            '/wiki_pages/$lookup.json',
+            options: forceOptions(force),
+            cancelToken: cancelToken,
+          )
+          .then((response) => E621Wiki.fromJson(response.data));
 
   Future<List<Wiki>> page({
     int? page,

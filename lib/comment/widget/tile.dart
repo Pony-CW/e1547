@@ -96,7 +96,7 @@ class CommentHeader extends StatelessWidget {
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) =>
-                    UserLoadingPage(comment.creatorId.toString()),
+                    UserLoadingPage(comment.creatorId),
               ),
             ),
             child: TimedText(
