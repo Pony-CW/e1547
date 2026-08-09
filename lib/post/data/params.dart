@@ -27,6 +27,22 @@ abstract class PostParams with _$PostParams {
 
   QueryMap toQuery() => <String, Object?>{'tags': tags}.toQuery();
 
+  /// The id of the pool this search lists, when its tags are a pool tag with
+  /// at most an order.
+  int? get poolId {
+    final map = TagMap(tags);
+    final id = int.tryParse(map['pool'] ?? '');
+    if (id == null) return null;
+    if (map.length == 1) return id;
+    if (map.length == 2 && map['order'] != null) return id;
+    return null;
+  }
+
+  bool get poolOldestFirst {
+    final order = TagMap(tags)['order'];
+    return order == null || order == 'pool';
+  }
+
   static final tagsFilter = NestedFilterTag(
     tag: 'tags',
     decode: TagMap.new,
@@ -129,6 +145,13 @@ abstract class PostParams with _$PostParams {
       ),
     ],
   );
+}
+
+enum PostDisplayType { grid, comic, timeline }
+
+class PostDisplayController extends ValueNotifier<PostDisplayType> {
+  PostDisplayController([PostDisplayType? initial])
+    : super(initial ?? PostDisplayType.grid);
 }
 
 class PostParamsController extends ValueNotifier<PostParams> {

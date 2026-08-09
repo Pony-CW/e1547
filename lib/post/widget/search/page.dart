@@ -1,4 +1,5 @@
 import 'package:e1547/client/client.dart';
+import 'package:e1547/pool/pool.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/query/query.dart';
 import 'package:e1547/settings/settings.dart';
@@ -22,32 +23,43 @@ class PostsPage extends StatelessWidget {
         keys: (_) => [client],
         child: ChangeNotifierProvider(
           create: (_) => PostParamsController(params),
-          child: PostPageHistoryConnector(
-            child: PostPageQueryBuilder(
-              builder: (context, state, query) => SelectionLayout<Post>(
-                items: state.data?.pages.expand((p) => p).toList(),
-                child: AdaptiveScaffold(
-                  appBar: const PostSelectionAppBar(child: PostPageAppBar()),
-                  floatingActionButton: const PostsPageFab(),
-                  drawer: const RouterDrawer(),
-                  endDrawer: ContextDrawer(
-                    title: const Text('Posts'),
-                    children: [
-                      ...drawerActions,
-                      if (drawerActions.isNotEmpty) const Divider(),
-                      const DrawerDenySwitch(),
-                      DrawerTagCounter(
-                        posts: state.data?.pages.expand((p) => p).toList(),
-                        error: state.error,
-                      ),
-                    ],
-                  ),
-                  body: LimitedWidthLayout(
-                    child: ListenableBuilder(
-                      listenable: context.watch<Settings>().tileSize,
-                      builder: (context, child) => TileLayout(
-                        tileSize: context.watch<Settings>().tileSize.value,
-                        child: const PostList(),
+          child: ChangeNotifierProvider(
+            create: (_) => PostDisplayController(),
+            child: PostPageHistoryConnector(
+              child: PostPageQueryBuilder(
+                builder: (context, state, query) => SelectionLayout<Post>(
+                  items: state.data?.pages.expand((p) => p).toList(),
+                  child: AdaptiveScaffold(
+                    appBar: const PostSelectionAppBar(child: PostPageAppBar()),
+                    floatingActionButton: const PostsPageFab(),
+                    drawer: const RouterDrawer(),
+                    endDrawer: ContextDrawer(
+                      title: const Text('Posts'),
+                      children: [
+                        ...drawerActions,
+                        if (drawerActions.isNotEmpty) const Divider(),
+                        if (context
+                                .watch<PostParamsController>()
+                                .value
+                                .poolId !=
+                            null) ...[
+                          const PoolReaderSwitch(),
+                          const PoolOrderSwitch(),
+                        ],
+                        const DrawerDenySwitch(),
+                        DrawerTagCounter(
+                          posts: state.data?.pages.expand((p) => p).toList(),
+                          error: state.error,
+                        ),
+                      ],
+                    ),
+                    body: LimitedWidthLayout(
+                      child: ListenableBuilder(
+                        listenable: context.watch<Settings>().tileSize,
+                        builder: (context, child) => TileLayout(
+                          tileSize: context.watch<Settings>().tileSize.value,
+                          child: const PostList(),
+                        ),
                       ),
                     ),
                   ),

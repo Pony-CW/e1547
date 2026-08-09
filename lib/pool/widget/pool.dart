@@ -8,78 +8,67 @@ import 'package:e1547/tag/tag.dart';
 import 'package:e1547/traits/traits.dart';
 import 'package:flutter/material.dart';
 
-class PoolPage extends StatefulWidget {
+class PoolPage extends StatelessWidget {
   const PoolPage({super.key, required this.pool, this.orderByOldest});
 
   final Pool pool;
   final bool? orderByOldest;
 
   @override
-  State<PoolPage> createState() => _PoolPageState();
-}
-
-class _PoolPageState extends State<PoolPage> {
-  bool readerMode = true;
-
-  @override
   Widget build(BuildContext context) {
     final client = context.watch<Client>();
-    final orderByOldest = widget.orderByOldest ?? true;
+    final oldestFirst = orderByOldest ?? true;
     return FilterControllerProvider(
       create: (_) => PostFilter(client),
       keys: (_) => [client],
       child: ChangeNotifierProvider(
         create: (_) => PostParamsController(
           PostParams(
-            tags: orderByOldest
-                ? 'pool:${widget.pool.id} order:pool'
-                : 'pool:${widget.pool.id} order:${PostOrder.newest.value}',
+            tags: oldestFirst
+                ? 'pool:${pool.id} order:pool'
+                : 'pool:${pool.id} order:${PostOrder.newest.value}',
           ),
         ),
-        child: PoolHistoryConnector(
-          pool: widget.pool,
-          child: PostPageQueryBuilder(
-            builder: (context, state, query) => SelectionLayout<Post>(
-              items: state.data?.pages.expand((p) => p).toList(),
-              child: AdaptiveScaffold(
-                appBar: PostSelectionAppBar(
-                  child: DefaultAppBar(
-                    title: Text(tagToName(widget.pool.name)),
-                    actions: [
-                      IconButton(
-                        icon: const Icon(Icons.info_outline),
-                        tooltip: 'Info',
-                        onPressed: () =>
-                            showPoolPrompt(context: context, pool: widget.pool),
+        child: ChangeNotifierProvider(
+          create: (_) => PostDisplayController(PostDisplayType.comic),
+          child: PoolHistoryConnector(
+            pool: pool,
+            child: PostPageQueryBuilder(
+              builder: (context, state, query) => SelectionLayout<Post>(
+                items: state.data?.pages.expand((p) => p).toList(),
+                child: AdaptiveScaffold(
+                  appBar: PostSelectionAppBar(
+                    child: DefaultAppBar(
+                      title: Text(tagToName(pool.name)),
+                      actions: [
+                        IconButton(
+                          icon: const Icon(Icons.info_outline),
+                          tooltip: 'Info',
+                          onPressed: () =>
+                              showPoolPrompt(context: context, pool: pool),
+                        ),
+                        const ContextDrawerButton(),
+                      ],
+                    ),
+                  ),
+                  endDrawer: ContextDrawer(
+                    title: const Text('Pool'),
+                    children: [
+                      const PoolReaderSwitch(),
+                      const PoolOrderSwitch(),
+                      const DrawerDenySwitch(),
+                      DrawerTagCounter(
+                        posts: state.data?.pages.expand((p) => p).toList(),
+                        error: state.error,
                       ),
-                      const ContextDrawerButton(),
                     ],
                   ),
-                ),
-                endDrawer: ContextDrawer(
-                  title: const Text('Pool'),
-                  children: [
-                    PoolReaderSwitch(
-                      readerMode: readerMode,
-                      onChange: (value) => setState(() => readerMode = value),
-                    ),
-                    const PoolOrderSwitch(),
-                    const DrawerDenySwitch(),
-                    DrawerTagCounter(
-                      posts: state.data?.pages.expand((p) => p).toList(),
-                      error: state.error,
-                    ),
-                  ],
-                ),
-                body: LimitedWidthLayout(
-                  child: ListenableBuilder(
-                    listenable: context.watch<Settings>().tileSize,
-                    builder: (context, child) => TileLayout(
-                      tileSize: context.watch<Settings>().tileSize.value,
-                      child: PostList(
-                        displayType: readerMode
-                            ? PostDisplayType.comic
-                            : PostDisplayType.grid,
+                  body: LimitedWidthLayout(
+                    child: ListenableBuilder(
+                      listenable: context.watch<Settings>().tileSize,
+                      builder: (context, child) => TileLayout(
+                        tileSize: context.watch<Settings>().tileSize.value,
+                        child: const PostList(),
                       ),
                     ),
                   ),
@@ -99,8 +88,7 @@ class PoolOrderSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<PostParamsController>();
-    final tags = TagMap(controller.value.tags);
-    final oldestFirst = tags['order'] == 'pool';
+    final oldestFirst = controller.value.poolOldestFirst;
     return SwitchListTile(
       secondary: const Icon(Icons.sort),
       title: const Text('Pool order'),
@@ -120,24 +108,19 @@ class PoolOrderSwitch extends StatelessWidget {
 }
 
 class PoolReaderSwitch extends StatelessWidget {
-  const PoolReaderSwitch({
-    super.key,
-    required this.readerMode,
-    required this.onChange,
-  });
-
-  final bool readerMode;
-  final ValueChanged<bool> onChange;
+  const PoolReaderSwitch({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final display = context.watch<PostDisplayController>();
+    final readerMode = display.value == PostDisplayType.comic;
     return SwitchListTile(
       secondary: const Icon(Icons.auto_stories),
       title: const Text('Pool reader mode'),
       subtitle: Text(readerMode ? 'large images' : 'normal grid'),
       value: readerMode,
       onChanged: (value) {
-        onChange(value);
+        display.value = value ? PostDisplayType.comic : PostDisplayType.grid;
         Scaffold.of(context).closeEndDrawer();
       },
     );

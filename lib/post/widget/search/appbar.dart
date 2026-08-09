@@ -15,20 +15,14 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.watch<PostParamsController>();
-    final tags = controller.value.tags ?? '';
-    final map = TagMap(tags);
+    final map = TagMap(context.watch<PostParamsController>().value.tags);
     final showInfo =
         map.isNotEmpty && map['order'] != 'rank' && map['fav'] == null;
 
     return DefaultAppBar(
-      title: _PostPageTitle(tags: tags),
+      title: const _PostPageTitle(),
       actions: [
-        if (showInfo)
-          IconButton(
-            icon: const Icon(Icons.info_outline),
-            onPressed: () => showTagSearchPrompt(context: context, tag: tags),
-          ),
+        if (showInfo) const _PostPageInfoButton(),
         ...?actions,
         const ContextDrawerButton(),
       ],
@@ -39,14 +33,39 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class _PostPageTitle extends StatelessWidget {
-  const _PostPageTitle({required this.tags});
+class _PostPageInfoButton extends StatelessWidget {
+  const _PostPageInfoButton();
 
-  final String tags;
+  @override
+  Widget build(BuildContext context) {
+    final params = context.watch<PostParamsController>().value;
+    final tags = params.tags ?? '';
+    final poolId = params.poolId;
+
+    Widget button({Pool? pool}) => IconButton(
+      icon: const Icon(Icons.info_outline),
+      onPressed: () => pool != null
+          ? showPoolPrompt(context: context, pool: pool)
+          : showTagSearchPrompt(context: context, tag: tags),
+    );
+
+    if (poolId == null) return button();
+
+    return QueryBuilder(
+      query: context.watch<Client>().pools.useGet(id: poolId, vendored: true),
+      builder: (context, state) => button(pool: state.data),
+    );
+  }
+}
+
+class _PostPageTitle extends StatelessWidget {
+  const _PostPageTitle();
 
   @override
   Widget build(BuildContext context) {
     final client = context.watch<Client>();
+    final params = context.watch<PostParamsController>().value;
+    final tags = params.tags ?? '';
     final map = TagMap(tags);
 
     if (map.isEmpty) return const Text('Search');
@@ -60,10 +79,10 @@ class _PostPageTitle extends StatelessWidget {
 
     final fallback = tagToName(map.toString());
 
-    final poolId = poolRegex().firstMatch(tags)?.namedGroup('id');
+    final poolId = params.poolId;
     if (poolId != null) {
       return QueryBuilder(
-        query: client.pools.useGet(id: int.parse(poolId), vendored: true),
+        query: client.pools.useGet(id: poolId, vendored: true),
         builder: (context, state) =>
             Text(state.data != null ? tagToName(state.data!.name) : fallback),
       );
