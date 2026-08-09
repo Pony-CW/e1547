@@ -209,7 +209,10 @@ void defaultPushPostDetail(BuildContext context, Post post) {
       builder: (context) => ImageCacheSizeProvider(
         size: cacheSize,
         child: params != null
-            ? PostDetailGallery(params: params.value, initialPostId: post.id)
+            ? ChangeNotifierProvider<PostParamsController>.value(
+                value: params,
+                child: PostDetailGallery(initialPostId: post.id),
+              )
             : PostDetail(post: post),
       ),
     ),
@@ -316,19 +319,19 @@ class PostFeedTile extends StatelessWidget {
                       : null,
                   onDownvote: enabled
                       ? (isLiked) async {
-                          mutate((upvote: false, replace: !isLiked)).catchError((
-                            error,
-                          ) {
-                            messenger.showSnackBar(
-                              SnackBar(
-                                duration: const Duration(seconds: 1),
-                                content: Text(
-                                  'Failed to downvote Post #${post.id}',
+                          mutate((upvote: false, replace: !isLiked)).catchError(
+                            (error) {
+                              messenger.showSnackBar(
+                                SnackBar(
+                                  duration: const Duration(seconds: 1),
+                                  content: Text(
+                                    'Failed to downvote Post #${post.id}',
+                                  ),
                                 ),
-                              ),
-                            );
-                            return error;
-                          });
+                              );
+                              return error;
+                            },
+                          );
                           return !isLiked;
                         }
                       : null,
@@ -390,9 +393,11 @@ class PostFeedTile extends StatelessWidget {
                   child: ImageCacheSizeProvider(
                     size: cacheSize,
                     child: params != null
-                        ? PostFullscreenGallery(
-                            params: params.value,
-                            initialPostId: post.id,
+                        ? ChangeNotifierProvider<PostParamsController>.value(
+                            value: params,
+                            child: PostFullscreenGallery(
+                              initialPostId: post.id,
+                            ),
                           )
                         : PostFullscreen(post: post),
                   ),

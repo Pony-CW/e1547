@@ -4,10 +4,9 @@ import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sub/flutter_sub.dart';
 
-class PostDetailGallery extends StatelessWidget {
+class PostDetailGallery extends StatefulWidget {
   const PostDetailGallery({
     super.key,
-    this.params,
     this.initialPostId,
     this.pageController,
     this.onPageChanged,
@@ -16,36 +15,46 @@ class PostDetailGallery extends StatelessWidget {
          'Cannot pass both initialPostId and pageController',
        );
 
-  final PostParams? params;
   final int? initialPostId;
   final PageController? pageController;
   final ValueChanged<int>? onPageChanged;
 
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-    create: (_) => PostParamsController(params),
-    child: PostPageQueryBuilder(
-      builder: (context, state, query) {
-        final items = state.paging.items;
-        final initialPage = initialPostId == null
-            ? 0
-            : items?.indexWhere((p) => p.id == initialPostId) ?? -1;
+  State<PostDetailGallery> createState() => _PostDetailGalleryState();
+}
 
-        if (initialPostId != null && initialPage < 0) {
-          return Scaffold(
+class _PostDetailGalleryState extends State<PostDetailGallery> {
+  late int? postId = widget.initialPostId;
+
+  @override
+  Widget build(BuildContext context) => RetainedPostPageQueryBuilder(
+    builder: (context, state, query) {
+      final items = state.paging.items;
+      final index = postId == null
+          ? 0
+          : items?.indexWhere((post) => post.id == postId) ?? -1;
+
+      if (index < 0) {
+        return GalleryAbsent(
+          settled: items != null,
+          onSettled: () => Navigator.of(context).maybePop(),
+          builder: (context, child) => Scaffold(
             appBar: const TransparentAppBar(child: DefaultAppBar()),
-            body: Center(
-              child: items == null
-                  ? const CircularProgressIndicator()
-                  : const Text('Post not in current results'),
-            ),
-          );
-        }
+            body: child,
+          ),
+        );
+      }
 
-        return SubDefault<PageController>(
-          value: pageController,
-          create: () => PageController(initialPage: initialPage),
-          builder: (context, pageController) => GalleryButtons(
+      return SubDefault<PageController>(
+        value: widget.pageController,
+        create: () => PageController(initialPage: index),
+        builder: (context, pageController) => SubEffect(
+          keys: [query],
+          effect: () {
+            jumpGalleryTo(pageController, index);
+            return null;
+          },
+          child: GalleryButtons(
             controller: pageController,
             child: PagedPageView(
               pageController: pageController,
@@ -65,32 +74,101 @@ class PostDetailGallery extends StatelessWidget {
                         controller: scrollController,
                         child: PostDetail(
                           post: item,
-                          onTapImage: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => PostFullscreenGallery(
-                                params: params,
-                                initialPostId: item.id,
-                                onPageChanged: pageController.jumpToPage,
-                              ),
-                            ),
-                          ),
+                          onTapImage: () =>
+                              _pushFullscreen(context, item, pageController),
                         ),
                       ),
                 ),
               ),
               onPageChanged: (index) {
-                onPageChanged?.call(index);
+                final items = state.paging.items;
+                if (items != null && index < items.length) {
+                  postId = items[index].id;
+                }
+                widget.onPageChanged?.call(index);
                 preloadPostImages(
                   context: context,
                   index: index,
-                  posts: state.paging.items ?? [],
+                  posts: items ?? [],
                   size: PostImageSize.sample,
                 );
               },
             ),
           ),
-        );
-      },
-    ),
+        ),
+      );
+    },
   );
+
+  void _pushFullscreen(
+    BuildContext context,
+    Post post,
+    PageController pageController,
+  ) {
+    final params = context.read<PostParamsController>();
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) =>
+            ChangeNotifierProvider<PostParamsController>.value(
+              value: params,
+              child: PostFullscreenGallery(
+                initialPostId: post.id,
+                onPageChanged: pageController.jumpToPage,
+              ),
+            ),
+      ),
+    );
+  }
+}
+
+/// Moves [controller] onto [page] after the frame that changed its list.
+void jumpGalleryTo(PageController controller, int page) {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (!controller.hasClients) return;
+    if (controller.page?.round() == page) return;
+    controller.jumpToPage(page);
+  });
+}
+
+/// Shown while a gallery cannot place its post in the results.
+/// Calls [onSettled] once [settled] reports the results as final.
+class GalleryAbsent extends StatefulWidget {
+  const GalleryAbsent({
+    super.key,
+    required this.settled,
+    required this.onSettled,
+    required this.builder,
+  });
+
+  final bool settled;
+  final VoidCallback onSettled;
+  final Widget Function(BuildContext context, Widget child) builder;
+
+  @override
+  State<GalleryAbsent> createState() => _GalleryAbsentState();
+}
+
+class _GalleryAbsentState extends State<GalleryAbsent> {
+  @override
+  void initState() {
+    super.initState();
+    _settle();
+  }
+
+  @override
+  void didUpdateWidget(covariant GalleryAbsent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _settle();
+  }
+
+  void _settle() {
+    if (!widget.settled) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) widget.onSettled();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      widget.builder(context, const Center(child: CircularProgressIndicator()));
 }

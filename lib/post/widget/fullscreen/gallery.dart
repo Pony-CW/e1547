@@ -4,10 +4,9 @@ import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sub/flutter_sub.dart';
 
-class PostFullscreenGallery extends StatelessWidget {
+class PostFullscreenGallery extends StatefulWidget {
   const PostFullscreenGallery({
     super.key,
-    this.params,
     this.initialPostId,
     this.pageController,
     this.onPageChanged,
@@ -16,35 +15,43 @@ class PostFullscreenGallery extends StatelessWidget {
          'Cannot pass both initialPostId and pageController',
        );
 
-  final PostParams? params;
   final int? initialPostId;
   final PageController? pageController;
   final ValueChanged<int>? onPageChanged;
 
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-    create: (_) => PostParamsController(params),
-    child: PostPageQueryBuilder(
-      builder: (context, state, query) {
-        final items = state.paging.items;
-        final initialPage = initialPostId == null
-            ? 0
-            : items?.indexWhere((p) => p.id == initialPostId) ?? -1;
+  State<PostFullscreenGallery> createState() => _PostFullscreenGalleryState();
+}
 
-        if (initialPostId != null && initialPage < 0) {
-          return ScaffoldFrame(
-            child: Center(
-              child: items == null
-                  ? const CircularProgressIndicator()
-                  : const Text('Post not in current results'),
-            ),
-          );
-        }
+class _PostFullscreenGalleryState extends State<PostFullscreenGallery> {
+  late int? postId = widget.initialPostId;
 
-        return SubDefault<PageController>(
-          value: pageController,
-          create: () => PageController(initialPage: initialPage),
-          builder: (context, pageController) => ScaffoldFrame(
+  @override
+  Widget build(BuildContext context) => RetainedPostPageQueryBuilder(
+    builder: (context, state, query) {
+      final items = state.paging.items;
+      final index = postId == null
+          ? 0
+          : items?.indexWhere((post) => post.id == postId) ?? -1;
+
+      if (index < 0) {
+        return GalleryAbsent(
+          settled: items != null,
+          onSettled: () => Navigator.of(context).maybePop(),
+          builder: (context, child) => ScaffoldFrame(child: child),
+        );
+      }
+
+      return SubDefault<PageController>(
+        value: widget.pageController,
+        create: () => PageController(initialPage: index),
+        builder: (context, pageController) => SubEffect(
+          keys: [query],
+          effect: () {
+            jumpGalleryTo(pageController, index);
+            return null;
+          },
+          child: ScaffoldFrame(
             child: GalleryButtons(
               controller: pageController,
               child: PagedPageView<int, Post>(
@@ -52,11 +59,15 @@ class PostFullscreenGallery extends StatelessWidget {
                 state: state.paging,
                 fetchNextPage: query.getNextPage,
                 onPageChanged: (index) {
-                  onPageChanged?.call(index);
+                  final items = state.paging.items;
+                  if (items != null && index < items.length) {
+                    postId = items[index].id;
+                  }
+                  widget.onPageChanged?.call(index);
                   preloadPostImages(
                     context: context,
                     index: index,
-                    posts: state.paging.items ?? [],
+                    posts: items ?? [],
                     size: PostImageSize.file,
                   );
                 },
@@ -68,8 +79,8 @@ class PostFullscreenGallery extends StatelessWidget {
               ),
             ),
           ),
-        );
-      },
-    ),
+        ),
+      );
+    },
   );
 }
