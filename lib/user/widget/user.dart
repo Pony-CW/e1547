@@ -4,6 +4,7 @@ import 'package:e1547/markup/markup.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/query/query.dart';
 import 'package:e1547/shared/shared.dart';
+import 'package:e1547/tag/tag.dart';
 import 'package:e1547/ticket/ticket.dart';
 import 'package:e1547/traits/traits.dart';
 import 'package:e1547/user/user.dart';
@@ -176,7 +177,15 @@ class UserPage extends StatelessWidget {
                 drawer: const RouterDrawer(),
                 endDrawer: ContextDrawer(
                   title: const Text('Posts'),
-                  children: [DrawerDenySwitch(filter: filter)],
+                  children: [
+                    DrawerDenySwitch(filter: filter),
+                    DrawerMultiTagCounter(
+                      params: [
+                        PostParams(tags: 'fav:${user.name}'),
+                        PostParams(tags: 'user:${user.name}'),
+                      ],
+                    ),
+                  ],
                 ),
                 body: body,
               ),
