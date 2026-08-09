@@ -22,7 +22,7 @@ class FavPage extends StatelessWidget {
                 title: Text('Favorites are unavailable for anonymous users'),
               ),
             )
-          : FilterControllerProvider(
+          : FilterControllerProvider<PostFilter, Post>(
               create: (_) => FavoritePostFilter(client),
               keys: (_) => [client],
               child: ChangeNotifierProvider(
