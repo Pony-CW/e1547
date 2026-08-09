@@ -20,7 +20,7 @@ class HomePage extends StatelessWidget {
         keys: (_) => [client],
         child: ChangeNotifierProvider(
           create: (_) => PostParamsController(
-            PostParams(tags: client.traits.value.homeTags),
+            initial: PostParams(tags: client.traits.value.homeTags),
           ),
           builder: (context, _) => SubValueListener(
             listenable: context.watch<PostParamsController>(),

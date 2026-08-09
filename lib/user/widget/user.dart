@@ -199,7 +199,7 @@ class _UserPostsTab extends StatelessWidget {
     return FilterControllerProvider<PostFilter, Post>.value(
       value: filter,
       child: ChangeNotifierProvider(
-        create: (_) => PostParamsController(params),
+        create: (_) => PostParamsController(initial: params, canSearch: false),
         child: SliverMainAxisGroup(
           slivers: [
             SliverPadding(

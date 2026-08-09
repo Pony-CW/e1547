@@ -40,7 +40,7 @@ class TagSearchSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasParams = context.read<PostParamsController?>() != null;
+    final canSearch = context.read<PostParamsController?>()?.canSearch ?? false;
     return DefaultSheetBody(
       title: Padding(
         padding: const EdgeInsets.all(8),
@@ -75,7 +75,7 @@ class TagSearchSheet extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (hasParams) TagSearchActions(tag: tag),
+                  if (canSearch) TagSearchActions(tag: tag),
                   TagListActions(tag: tag),
                 ],
               ),
@@ -127,7 +127,7 @@ class TagSearchInfoChild extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasParams = context.read<PostParamsController?>() != null;
+    final canSearch = context.read<PostParamsController?>()?.canSearch ?? false;
     Widget actions(String tag, bool alignRight) {
       return SingleChildScrollView(
         reverse: alignRight,
@@ -138,7 +138,7 @@ class TagSearchInfoChild extends StatelessWidget {
               : MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (hasParams) TagSearchActions(tag: tag),
+            if (canSearch) TagSearchActions(tag: tag),
             TagListActions(tag: tag),
           ],
         ),
@@ -307,10 +307,7 @@ class _ProvideParams extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (controller == null) return child;
-    return ChangeNotifierProvider.value(
-      value: controller!,
-      child: child,
-    );
+    return ChangeNotifierProvider.value(value: controller!, child: child);
   }
 }
 
@@ -321,7 +318,7 @@ class TagSearchDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasParams = context.read<PostParamsController?>() != null;
+    final canSearch = context.read<PostParamsController?>()?.canSearch ?? false;
     return AlertDialog(
       content: AnimatedSize(
         duration: const Duration(milliseconds: 200),
@@ -344,7 +341,7 @@ class TagSearchDialog extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (hasParams) TagSearchActions(tag: tag),
+                      if (canSearch) TagSearchActions(tag: tag),
                       TagListActions(tag: tag),
                     ],
                   ),

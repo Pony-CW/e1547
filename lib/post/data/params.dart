@@ -155,8 +155,12 @@ class PostDisplayController extends ValueNotifier<PostDisplayType> {
 }
 
 class PostParamsController extends ValueNotifier<PostParams> {
-  PostParamsController([PostParams? initial])
+  PostParamsController({PostParams? initial, this.canSearch = true})
     : super(initial ?? const PostParams());
+
+  /// Whether tag prompts offer search actions. The mutating methods below
+  /// are not gated by it.
+  final bool canSearch;
 
   void update(PostParams Function(PostParams) updater) =>
       value = updater(value);

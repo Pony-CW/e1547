@@ -22,7 +22,7 @@ class PostsPage extends StatelessWidget {
         create: (_) => PostFilter(client),
         keys: (_) => [client],
         child: ChangeNotifierProvider(
-          create: (_) => PostParamsController(params),
+          create: (_) => PostParamsController(initial: params),
           child: ChangeNotifierProvider(
             create: (_) => PostDisplayController(),
             child: PostPageHistoryConnector(

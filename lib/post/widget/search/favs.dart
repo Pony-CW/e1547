@@ -27,7 +27,7 @@ class FavPage extends StatelessWidget {
               keys: (_) => [client],
               child: ChangeNotifierProvider(
                 create: (_) => PostParamsController(
-                  PostParams(tags: 'fav:${client.identity.username}'),
+                  initial: PostParams(tags: 'fav:${client.identity.username}'),
                 ),
                 child: PostPageHistoryConnector(
                   child: PostPageQueryBuilder(

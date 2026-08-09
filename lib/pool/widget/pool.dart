@@ -23,11 +23,12 @@ class PoolPage extends StatelessWidget {
       keys: (_) => [client],
       child: ChangeNotifierProvider(
         create: (_) => PostParamsController(
-          PostParams(
+          initial: PostParams(
             tags: oldestFirst
                 ? 'pool:${pool.id} order:pool'
                 : 'pool:${pool.id} order:${PostOrder.newest.value}',
           ),
+          canSearch: false,
         ),
         child: ChangeNotifierProvider(
           create: (_) => PostDisplayController(PostDisplayType.comic),
