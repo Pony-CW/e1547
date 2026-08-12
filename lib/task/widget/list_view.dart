@@ -47,13 +47,13 @@ class SliverTasksList extends StatelessWidget {
     );
     return PagedSliverGroupedListView<int, Task, String>(
       state: controller.state,
-      fetchNextPage: controller.getNextPage,
+      fetchNextPage: () {},
       groupBy: _groupOf,
       groupComparator: _groupComparator,
       itemComparator: _itemComparator,
       groupSeparatorBuilder: (value) => TasksSectionHeader(value),
       builderDelegate: defaultPagedChildBuilderDelegate<Task>(
-        onRetry: controller.getNextPage,
+        onRetry: () {},
         onEmpty: const Text('No tasks'),
         onError: const Text('Failed to load tasks'),
         itemBuilder: (context, task, index) => TaskTile(
