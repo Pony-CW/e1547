@@ -5,7 +5,6 @@ import 'package:e1547/client/client.dart';
 import 'package:e1547/history/history.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sub/flutter_sub.dart';
 
 typedef HistoryConnector<T> =
     HistoryRequest Function(BuildContext context, T data);
@@ -48,46 +47,6 @@ class _ItemHistoryConnectorState<T> extends State<ItemHistoryConnector<T>> {
 
   @override
   Widget build(BuildContext context) => widget.child;
-}
-
-class ControllerHistoryConnector<T extends DataController?>
-    extends StatefulWidget {
-  const ControllerHistoryConnector({
-    super.key,
-    required this.getEntry,
-    required this.controller,
-    required this.child,
-  });
-
-  final T controller;
-  final HistoryConnector<T> getEntry;
-  final Widget child;
-
-  @override
-  State<ControllerHistoryConnector<T>> createState() =>
-      _ControllerHistoryConnectorState<T>();
-}
-
-class _ControllerHistoryConnectorState<T extends DataController?>
-    extends State<ControllerHistoryConnector<T>> {
-  @override
-  Widget build(BuildContext context) {
-    return SubListener(
-      initialize: true,
-      listenable: Listenable.merge([widget.controller]),
-      listener: () async {
-        T? controller = widget.controller;
-        if (controller == null) return;
-        await controller.waitForNextPage();
-        if (controller.error != null) return;
-        if (!context.mounted) return;
-        final client = context.read<Client>();
-        final request = widget.getEntry(context, controller);
-        client.histories.useAdd().mutate(request);
-      },
-      builder: (context) => widget.child,
-    );
-  }
 }
 
 class QueryHistoryConnector<S> extends StatefulWidget {

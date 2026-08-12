@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:grouped_list/sliver_grouped_list.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
+export 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+
 class PagedGroupedListView<PageKeyType, ItemType, SortType>
     extends BoxScrollView {
   const PagedGroupedListView({
