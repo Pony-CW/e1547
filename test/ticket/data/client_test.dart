@@ -39,11 +39,7 @@ void main() {
   );
 
   test('sends the ticket type and item', () async {
-    await client.create(
-      type: TicketType.forum,
-      item: 123,
-      reason: 'spam',
-    );
+    await client.create(type: TicketType.forum, item: 123, reason: 'spam');
 
     expect(sent(), {
       'ticket[qtype]': 'forum',

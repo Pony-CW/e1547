@@ -99,6 +99,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  # test/_support/fake_e621.dart
+  shelf: ^1.4.2
+  shelf_router: ^1.1.4
   # flutter pub run build_runner build
   # do not upgrade to 2.13. infinite loop: dart-lang/sdk#62593
   build_runner: 2.12.2
