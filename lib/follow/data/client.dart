@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:e1547/follow/follow.dart';
 import 'package:e1547/identity/identity.dart';
+import 'package:e1547/query/query.dart';
 import 'package:e1547/shared/shared.dart';
 
 class FollowClient {
@@ -124,10 +125,7 @@ class FollowClient {
   Future<int> count() => repository.length(identity: identity.id);
 
   void _invalidateAll() {
-    dio.queryCache?.invalidateCache(
-      filterFn: (key, _) =>
-          key is List && key.isNotEmpty && key.first == 'follows',
-    );
+    dio.queryCache?.invalidateKey(FollowQuerying.queryKey);
   }
 }
 

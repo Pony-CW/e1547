@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cached_query_flutter/cached_query_flutter.dart';
+import 'package:e1547/shared/shared.dart';
 export 'package:cached_query_flutter/cached_query_flutter.dart';
 
 /// Cache normalisation intermediary
@@ -110,4 +111,18 @@ extension QueryCacheBridging on CachedQuery {
 
   QueryBridge<T, K> bridge<T, K>(String key, {K Function(T)? getId}) =>
       QueryBridge(cache: this, baseKey: key, getId: getId ?? _dynamicGetId);
+
+  Future<void> invalidateKey(
+    String key, {
+    bool Function(QueryMap params)? where,
+  }) => invalidateCache(
+    filterFn: (unencoded, _) {
+      if (unencoded is! List || unencoded.isEmpty) return false;
+      if (unencoded.first != key) return false;
+      if (where == null) return true;
+      final params = unencoded.elementAtOrNull(1);
+      if (params is! QueryMap) return false;
+      return where(params);
+    },
+  );
 }

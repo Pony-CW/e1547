@@ -32,14 +32,9 @@ extension CommentQuerying on CommentClient {
   Mutation<void, String> useCreate({required int postId}) => Mutation(
     mutationFn: (content) => create(postId: postId, content: content),
     onSuccess: (data, content) {
-      queryCache.invalidateCache(
-        filterFn: (key, _) {
-          if (key is! List || key.length < 2) return false;
-          if (key.first != queryKey) return false;
-          final params = key[1];
-          if (params is! Map) return false;
-          return params['search[post_id]'] == postId.toString();
-        },
+      queryCache.invalidateKey(
+        queryKey,
+        where: (params) => params['search[post_id]'] == postId.toString(),
       );
       queryCache
           .bridge<Post, int>(PostQuerying.queryKey)

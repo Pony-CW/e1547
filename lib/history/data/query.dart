@@ -39,22 +39,16 @@ extension HistoryQuerying on HistoryClient {
 
   Mutation<void, HistoryRequest> useAdd() => Mutation(
     mutationFn: (request) => add(request),
-    onSuccess: (_, __) => queryCache.invalidateCache(
-      filterFn: (key, _) => key is List && key.first == queryKey,
-    ),
+    onSuccess: (_, __) => queryCache.invalidateKey(queryKey),
   );
 
   Mutation<void, List<int>> useRemove() => Mutation(
     mutationFn: (ids) => removeAll(ids),
-    onSuccess: (_, __) => queryCache.invalidateCache(
-      filterFn: (key, _) => key is List && key.first == queryKey,
-    ),
+    onSuccess: (_, __) => queryCache.invalidateKey(queryKey),
   );
 
   Mutation<void, void> useClear() => Mutation(
     mutationFn: (_) => removeAll(null),
-    onSuccess: (_, __) => queryCache.invalidateCache(
-      filterFn: (key, _) => key is List && key.first == queryKey,
-    ),
+    onSuccess: (_, __) => queryCache.invalidateKey(queryKey),
   );
 }
