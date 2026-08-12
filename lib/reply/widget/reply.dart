@@ -3,14 +3,16 @@ import 'package:e1547/comment/comment.dart';
 import 'package:e1547/markup/markup.dart';
 import 'package:e1547/reply/reply.dart';
 import 'package:e1547/shared/shared.dart';
+import 'package:e1547/ticket/ticket.dart';
 import 'package:e1547/user/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class ReplyTile extends StatelessWidget {
-  const ReplyTile({super.key, required this.reply});
+  const ReplyTile({super.key, required this.reply, this.hasActions = true});
 
   final Reply reply;
+  final bool hasActions;
 
   @override
   Widget build(BuildContext context) {
@@ -44,14 +46,32 @@ class ReplyTile extends StatelessWidget {
                 ],
               ),
             ),
+            flightShuttleBuilder:
+                (
+                  flightContext,
+                  animation,
+                  flightDirection,
+                  fromHeroContext,
+                  toHeroContext,
+                ) => Material(
+                  type: MaterialType.transparency,
+                  child: SingleChildScrollView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    child: switch (flightDirection) {
+                      HeroFlightDirection.push => fromHeroContext.widget,
+                      HeroFlightDirection.pop => toHeroContext.widget,
+                    },
+                  ),
+                ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [ReplyMenu(reply: reply)],
+          if (hasActions)
+            Padding(
+              padding: const EdgeInsets.only(left: 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [ReplyMenu(reply: reply)],
+              ),
             ),
-          ),
           ReplyWarning(reply: reply),
           const SizedBox(height: 8),
           const Divider(),
@@ -167,6 +187,19 @@ class ReplyMenu extends StatelessWidget {
               ),
             );
           },
+        ),
+        PopupMenuTile(
+          title: 'Report',
+          icon: Icons.report,
+          value: () => guardWithLogin(
+            context: context,
+            callback: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ReplyReportScreen(reply: reply),
+              ),
+            ),
+            error: 'You must be logged in to report replies!',
+          ),
         ),
       ],
     );
