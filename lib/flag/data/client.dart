@@ -7,7 +7,7 @@ class FlagClient {
 
   final Dio dio;
 
-  Future<List<PostFlag>> list({
+  Future<List<PostFlag>> page({
     int? page,
     int? limit,
     QueryMap? query,

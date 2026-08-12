@@ -16,7 +16,7 @@ class DeletionDisplay extends StatelessWidget {
     if (!post.isDeleted) return const SizedBox.shrink();
     return SubFuture<PostFlag>(
       create: () async {
-        List<PostFlag> flags = await context.read<Client>().flags.list(
+        List<PostFlag> flags = await context.read<Client>().flags.page(
           limit: 1,
           query: {
             'search[type]': 'deletion',
