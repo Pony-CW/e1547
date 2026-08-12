@@ -35,4 +35,18 @@ class ReplyClient {
             .map<Reply>((e) => E621Reply.fromJson(e))
             .toList(),
       );
+
+  Future<void> create({required int topicId, required String content}) =>
+      dio.post(
+        '/forum_posts.json',
+        data: FormData.fromMap({
+          'forum_post[body]': content,
+          'forum_post[topic_id]': topicId,
+        }),
+      );
+
+  Future<void> update({required int id, required String content}) => dio.patch(
+    '/forum_posts/$id.json',
+    data: FormData.fromMap({'forum_post[body]': content}),
+  );
 }

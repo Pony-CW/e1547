@@ -43,6 +43,9 @@ class TopicRepliesPage extends StatelessWidget {
             ),
             drawer: const RouterDrawer(),
             endDrawer: const ReplyListDrawer(),
+            floatingActionButton: client.hasLogin && !topic.locked
+                ? ReplyCreateFab(topicId: topic.id)
+                : null,
             body: const ReplyList(),
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:e1547/query/query.dart';
 import 'package:e1547/reply/reply.dart';
 import 'package:e1547/shared/shared.dart';
+import 'package:e1547/topic/topic.dart';
 
 extension ReplyQuerying on ReplyClient {
   static const queryKey = 'replies';
@@ -27,4 +28,28 @@ extension ReplyQuerying on ReplyClient {
           force: true,
         ).then(replyCache.savePage),
       );
+
+  Mutation<void, String> useCreate({required int topicId}) => Mutation(
+    mutationFn: (content) => create(topicId: topicId, content: content),
+    onSuccess: (data, content) {
+      queryCache.invalidateKey(
+        queryKey,
+        where: (params) => params['search[topic_id]'] == topicId.toString(),
+      );
+      queryCache
+          .bridge<Topic, int>(TopicQuerying.queryKey)
+          .update(
+            topicId,
+            (topic) => topic.copyWith(responseCount: topic.responseCount + 1),
+          );
+    },
+  );
+
+  Mutation<void, String> useUpdate({required int id}) => Mutation(
+    mutationFn: (content) => replyCache.optimistic(
+      id,
+      (reply) => reply.copyWith(body: content, updatedAt: DateTime.now()),
+      () => update(id: id, content: content),
+    ),
+  );
 }
