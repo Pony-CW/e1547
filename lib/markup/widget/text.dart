@@ -116,7 +116,19 @@ class DTextBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTextStyle.merge(
       style: style,
-      child: Expandables(child: _renderNode(context, content)),
+      child: Expandables(
+        child: Builder(
+          builder: (context) {
+            final Widget child = Builder(
+              builder: (context) => _renderNode(context, content),
+            );
+            // Nested bodies share the outermost registry, so an anchor in a
+            // quote and a link outside it still find each other.
+            if (DTextAnchors.of(context) != null) return child;
+            return DTextAnchors(child: child);
+          },
+        ),
+      ),
     );
   }
 
@@ -284,7 +296,10 @@ class DTextBody extends StatelessWidget {
       ),
       DTextInternalAnchor() => WidgetSpan(
         alignment: PlaceholderAlignment.middle,
-        child: SizedBox.shrink(key: GlobalObjectKey(node)),
+        child: DTextAnchorTarget(
+          key: GlobalObjectKey(node),
+          name: normalizeAnchor(node.name),
+        ),
       ),
       DTextLink() => _buildLinkSpan(context, node),
     };
@@ -337,6 +352,10 @@ class DTextBody extends StatelessWidget {
   }) {
     final href = node.href;
     if (!local) return () => launch(href);
+    if (href.startsWith('#')) {
+      final anchor = node.anchor ?? href.substring(1);
+      return () => DTextAnchors.of(context)?.reveal(normalizeAnchor(anchor));
+    }
     final action = const E621LinkParser().parseOnTap(context, href);
     if (action != null) return action;
     return () => launch(context.read<Client>().withHost(href));
