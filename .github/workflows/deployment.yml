@@ -194,7 +194,7 @@ jobs:
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.1"
+          ruby-version: "3.3"
           bundler-cache: true
 
       - name: install InnoSetup
@@ -248,7 +248,7 @@ jobs:
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.1"
+          ruby-version: "3.3"
           bundler-cache: true
 
       - name: build bundle
@@ -299,7 +299,7 @@ jobs:
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.1"
+          ruby-version: "3.3"
           bundler-cache: true
 
       - name: parse flutter version
