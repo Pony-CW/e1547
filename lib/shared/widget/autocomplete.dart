@@ -25,6 +25,7 @@ class AutocompleteTextField<T> extends StatelessWidget {
     this.textInputAction,
     this.focusNode,
     this.inputFormatters,
+    this.style,
     this.maxLines = 1,
     this.cutoutForFab = true,
   });
@@ -38,6 +39,7 @@ class AutocompleteTextField<T> extends StatelessWidget {
   final TextInputAction? textInputAction;
   final FocusNode? focusNode;
   final List<TextInputFormatter>? inputFormatters;
+  final TextStyle? style;
   final int? maxLines;
   final ValueSetter<T> onSelected;
   final Widget Function(BuildContext context, T value) itemBuilder;
@@ -51,6 +53,7 @@ class AutocompleteTextField<T> extends StatelessWidget {
     bool hasFab = Scaffold.maybeOf(context)?.hasFloatingActionButton ?? false;
     return TypeAheadField<T>(
       controller: controller,
+      focusNode: focusNode,
       direction: direction,
       hideOnEmpty: true,
       hideOnSelect: false,
@@ -59,6 +62,7 @@ class AutocompleteTextField<T> extends StatelessWidget {
         autofocus: autofocus,
         focusNode: focusNode,
         inputFormatters: inputFormatters,
+        style: style,
         decoration:
             decoration?.copyWith(labelText: labelText) ??
             InputDecoration(labelText: labelText),
