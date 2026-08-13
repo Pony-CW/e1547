@@ -2,7 +2,6 @@ import 'package:e1547/app/app.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
-import 'package:e1547/tag/tag.dart';
 import 'package:flutter/material.dart';
 
 extension PostTagging on Post {
@@ -29,7 +28,7 @@ extension PostTagging on Post {
           if (range == null) return false;
           return range.has(height);
         case 'filesize':
-          NumberRange? range = NumberRange.tryParse(value);
+          NumberRange? range = NumberRange.tryParse(_sizeToBytes(value));
           if (range == null) return false;
           return range.has(size);
         case 'score':
@@ -42,15 +41,23 @@ extension PostTagging on Post {
           return range.has(favCount);
         case 'fav':
           return isFavorited;
+        case 'status':
+          return switch (value) {
+            'deleted' => isDeleted,
+            _ => false,
+          };
         case 'uploader':
         case 'user':
+          if (value.startsWith('!')) {
+            return uploaderId == int.tryParse(value.substring(1));
+          }
+          return uploaderName?.toLowerCase() == value;
         case 'userid':
           NumberRange? range = NumberRange.tryParse(value);
           if (range == null) return false;
           return range.has(uploaderId);
         case 'username':
-          // This cannot be implemented, as it requires a user lookup
-          return false;
+          return uploaderName?.toLowerCase() == value;
         case 'pool':
           return pools?.contains(int.tryParse(value)) ?? false;
         case 'tagcount':
@@ -65,9 +72,34 @@ extension PostTagging on Post {
       }
     }
 
+    if (tag.contains('*')) {
+      final RegExp pattern = RegExp(
+        '^${RegExp.escape(tag.toLowerCase()).replaceAll(r'\*', '.*')}\$',
+      );
+      return tags.values.any((category) => category.any(pattern.hasMatch));
+    }
+
     return tags.values.any((category) => category.contains(tag.toLowerCase()));
   }
 }
+
+final RegExp _sizeUnit = RegExp(
+  r'(\d+(?:\.\d+)?)\s*(kb|mb|b)',
+  caseSensitive: false,
+);
+
+/// Rewrites the units in a filesize expression into plain byte counts.
+String _sizeToBytes(String value) => value.replaceAllMapped(_sizeUnit, (match) {
+  final double number = double.parse(match.group(1)!);
+  final int factor = switch (match.group(2)!.toLowerCase()) {
+    'kb' => 1024,
+    'mb' => 1048576,
+    _ => 1,
+  };
+  return (number * factor).truncate().toString();
+});
+
+final RegExp _tagPrefix = RegExp(r'^[~-]+');
 
 extension PostDenying on Post {
   bool isDeniedBy(List<String> denylist) =>
@@ -75,34 +107,30 @@ extension PostDenying on Post {
 
   Iterable<String> getDeniers(List<String> denylist) sync* {
     for (String line in denylist) {
-      line = line.trim();
-      if (line.isEmpty) continue;
+      line = line.trim().toLowerCase();
+      if (line.isEmpty || line.startsWith('#')) continue;
 
-      int hash = line.indexOf('#');
-      if (hash != -1) {
-        line = line.substring(0, hash).trim();
-        if (line.isEmpty) continue;
-      }
+      line = line.replaceFirst(RegExp(r' #.*$'), '').trim();
+      if (line.isEmpty) continue;
 
       bool pass = true;
       bool isOptional = false;
       bool hasOptional = false;
 
       for (String tag in line.split(' ')) {
-        if (tagToRaw(tag).isEmpty) continue;
+        if (tag.isEmpty) continue;
 
         bool optional = false;
         bool inverted = false;
 
-        if (tag[0] == '~') {
-          optional = true;
-          tag = tag.substring(1);
+        final String? prefix = _tagPrefix.stringMatch(tag);
+        if (prefix != null) {
+          optional = prefix.contains('~');
+          inverted = prefix.contains('-');
+          tag = tag.substring(prefix.length);
         }
 
-        if (tag[0] == '-') {
-          inverted = true;
-          tag = tag.substring(1);
-        }
+        if (tag.isEmpty) continue;
 
         bool matches = hasTag(tag);
 
