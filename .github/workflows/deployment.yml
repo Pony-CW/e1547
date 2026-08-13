@@ -436,7 +436,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' && github.event.inputs.skip_forum != 'true' && github.event.inputs.dry_run != 'true' }}
     runs-on: ubuntu-latest
     env:
-      DMARK_VERSION: '0.0.6'
+      DMARK_VERSION: '2.0.0'
     steps:
       - name: setup actions
         uses: actions/checkout@v7
@@ -489,18 +489,17 @@ jobs:
       - name: download dmark
         run: |
           curl -fsSL \
-            "https://libs.cdn.clynamic.net/dmark/${DMARK_VERSION}/dmark.js" \
+            "https://libs.cdn.clynamic.net/dmark/${DMARK_VERSION}/dmark.md.js" \
             -o dmark.mjs
 
       - name: convert markdown to dtext
         run: |
           cat > convert.mjs <<'EOF'
-          import { parseMarkdown, formatDText } from './dmark.mjs';
+          import { convertMarkdownToDText } from './dmark.mjs';
           import { readFileSync, writeFileSync } from 'node:fs';
           const md = readFileSync('version_changelog.md', 'utf8');
-          const parsed = parseMarkdown(md);
-          const out = formatDText(parsed.document);
-          writeFileSync('version_changelog.dtext', out.output);
+          const { output } = convertMarkdownToDText(md);
+          writeFileSync('version_changelog.dtext', output);
           EOF
           node convert.mjs
 
