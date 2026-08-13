@@ -499,7 +499,7 @@ jobs:
           import { readFileSync, writeFileSync } from 'node:fs';
           const md = readFileSync('version_changelog.md', 'utf8');
           const { output } = convertMarkdownToDText(md);
-          writeFileSync('version_changelog.dtext', output);
+          writeFileSync('version_changelog.dtext', `${output}\n`);
           EOF
           node convert.mjs
 
