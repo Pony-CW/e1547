@@ -54,6 +54,35 @@ void main() {
       expect(find.textContaining('x := 1'), findsOneWidget);
     });
 
+    testWidgets('code block drops the line break it closes on', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const DTextBody(
+            content: DTextDocument([DTextCodeBlock('x := 1\ny := 2\n')]),
+          ),
+        ),
+      );
+      final SelectableText text = tester.widget(
+        find.descendant(
+          of: find.byType(CodeWrap),
+          matching: find.byType(SelectableText),
+        ),
+      );
+      expect(text.data, 'x := 1\ny := 2');
+    });
+
+    testWidgets('raw block drops the line break it closes on', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const DTextBody(
+            content: DTextDocument([DTextRawBlockText('plain text\n')]),
+          ),
+        ),
+      );
+      final SelectableText text = tester.widget(find.byType(SelectableText));
+      expect(text.data, 'plain text');
+    });
+
     testWidgets('quote wraps in QuoteWrap', (tester) async {
       await tester.pumpWidget(
         _wrap(

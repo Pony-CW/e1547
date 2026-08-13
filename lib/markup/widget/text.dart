@@ -149,6 +149,19 @@ class DTextBody extends StatelessWidget {
     };
   }
 
+  /// Drops the line break a verbatim block ends on. The parser keeps it
+  /// because e621ng does, where a browser draws no line for it inside a
+  /// `<pre>`.
+  String _withoutClosingBreak(String content) {
+    if (content.endsWith('\r\n')) {
+      return content.substring(0, content.length - 2);
+    }
+    if (content.endsWith('\n')) {
+      return content.substring(0, content.length - 1);
+    }
+    return content;
+  }
+
   Widget _renderBlocks(BuildContext context, List<DTextBlock> blocks) {
     if (blocks.isEmpty) return const SizedBox.shrink();
     if (blocks.length == 1) return _renderBlock(context, blocks.first);
@@ -201,13 +214,16 @@ class DTextBody extends StatelessWidget {
         child: DTextBody(content: DTextDocument(block.children), style: style),
       ),
       DTextCodeBlock() => CodeWrap(
-        child: SelectableText(block.content, textAlign: textAlign),
+        child: SelectableText(
+          _withoutClosingBreak(block.content),
+          textAlign: textAlign,
+        ),
       ),
       DTextTable() => DTextTableWidget(children: block.children),
       DTextLTable() => DTextTableWidget(children: block.children),
       DTextList() => _renderList(context, block),
       DTextRawBlockText() => SelectableText(
-        block.content,
+        _withoutClosingBreak(block.content),
         textAlign: textAlign,
       ),
       DTextLiteralHtml() => Text.rich(
