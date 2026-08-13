@@ -1,6 +1,7 @@
 import 'package:e1547/app/app.dart';
 import 'package:e1547/follow/follow.dart';
 import 'package:e1547/logs/logs.dart';
+import 'package:e1547/settings/settings.dart';
 import 'package:workmanager/workmanager.dart';
 
 /// Handles all background tasks that the app registered.
@@ -8,19 +9,24 @@ import 'package:workmanager/workmanager.dart';
 void executeBackgroundTasks() =>
     Workmanager().executeTask((task, inputData) async {
       await initializeAppInfo();
-      await initializeLogger(postfix: 'background');
+      final logs = await initializeLogger(postfix: 'background');
 
-      final logger = Logger('BackgroundTasks');
-      logger.info('Executing Task $task');
+      final logger = Logger('BackgroundTasks', {'task': task});
+      logger.info('Running {task}');
 
       AppStorage? storage;
 
       try {
         storage = await initializeAppStorage(cache: false);
+        setLogLevel(
+          verboseLogLevel(
+            verbose: Settings(storage.preferences).verboseLogs.value,
+          ),
+        );
 
         final cancelToken = createBackgroundCancelToken(task);
         cancelToken.whenCancel.then((e) {
-          logger.info('Task $task was cancelled: ${e.error}');
+          logger.info('Cancelled {task}: {reason}', {'reason': '${e.error}'});
         });
 
         FlutterLocalNotificationsPlugin notifications =
@@ -39,10 +45,11 @@ void executeBackgroundTasks() =>
 
         return true;
       } on Object catch (e, stack) {
-        logger.severe('Failed executing Task $task', e, stack);
+        logger.error('Task {task} failed', null, e, stack);
         rethrow;
       } finally {
         await storage?.close();
-        logger.info('Task $task completed');
+        logger.info('Finished {task}');
+        await logs.close();
       }
     });

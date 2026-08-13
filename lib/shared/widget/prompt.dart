@@ -390,3 +390,45 @@ class SheetHandle extends StatelessWidget {
     );
   }
 }
+
+Future<T?> showSliverPrompt<T>(
+  BuildContext context, {
+  required WidgetBuilder header,
+  required Widget sliver,
+  Widget Function(BuildContext context, Widget child)? parentBuilder,
+  BoxConstraints? dialogConstraints,
+}) {
+  if (Theme.of(context).isDesktop) {
+    Widget content = CustomScrollView(slivers: [sliver]);
+    if (dialogConstraints != null) {
+      content = ConstrainedBox(constraints: dialogConstraints, child: content);
+    }
+    return showDialog<T>(
+      context: context,
+      builder: (context) {
+        final Widget dialog = AlertDialog(
+          titlePadding: EdgeInsets.zero,
+          contentPadding: EdgeInsets.zero,
+          title: SizedBox(width: 600, child: Builder(builder: header)),
+          content: SizedBox(width: 600, child: content),
+        );
+        return parentBuilder?.call(context, dialog) ?? dialog;
+      },
+    );
+  }
+  return showDefaultSlidingBottomSheet<T>(
+    context,
+    null,
+    parentBuilder: parentBuilder,
+    headerBuilder: (context, state) => Material(
+      color: Colors.transparent,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [const SheetHandle(), Builder(builder: header)],
+      ),
+    ),
+    customBuilder: (context, controller, state) => Material(
+      child: CustomScrollView(controller: controller, slivers: [sliver]),
+    ),
+  );
+}

@@ -38,7 +38,7 @@ class _DTextState extends State<DText> {
       _content = DTextGrammar().parse(widget.value);
       _error = null;
     } on Object catch (e, s) {
-      _logger.severe('Failed to parse DText', e, s);
+      _logger.error('Failed to parse DText', null, e, s);
       _error = e;
     }
   }

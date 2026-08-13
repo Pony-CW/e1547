@@ -34,18 +34,17 @@ class _AvailabilityCheckState extends State<AvailabilityCheck> {
     bool? offerResolve;
     final client = context.read<Client>();
     final identities = context.read<IdentityClient>();
+    final Logger scope = logger.child({'host': client.host});
     try {
       await client.accounts.available();
-      logger.info('Client is available!');
+      scope.info('Client is available');
     } on ClientException catch (e, stacktrace) {
       if (CancelToken.isCancel(e)) {
-        logger.fine('Client availability check cancelled!');
+        scope.debug('Availability check cancelled');
         return;
       }
       if (isCloudflareChallenge(e.response)) {
-        logger.warning(
-          'Client is behind a Cloudflare challenge, attempting resolve!',
-        );
+        scope.warn('Behind a Cloudflare challenge, resolving');
         await dropCloudflareCookies(identities);
         offerResolve = true;
       } else {
@@ -53,17 +52,22 @@ class _AvailabilityCheckState extends State<AvailabilityCheck> {
         if (statusCode == null) return;
         switch (statusCode) {
           case HttpStatus.forbidden:
-            logger.warning('Client has denied access! Failing silently...');
+            scope.warn('Client denied access ({status}), failing silently', {'status': statusCode});
             // This could potentially logout the user.
             // However, it might be returned during Cloudflare API blockages.
             // Logout the user, and if theyre already logged out, trigger Resolver?
             break;
           case >= 500 && < 600:
-            logger.warning('Client is unavailable, resolve not possible!');
+            scope.warn('Client unavailable ({status}), cannot resolve', {'status': statusCode});
             offerResolve = false;
             break;
           default:
-            logger.severe('Availability Check failed!', e, stacktrace);
+            scope.warn(
+              'Availability check failed ({status})',
+              {'status': statusCode},
+              e,
+              stacktrace,
+            );
         }
       }
     }

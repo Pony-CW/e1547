@@ -45,7 +45,7 @@ class VideoService extends ChangeNotifier {
     _muteVideos = value;
     _videos.values.forEach((e) => e.setVolume(muteVideos ? 0 : 100));
     notifyListeners();
-    _logger.fine('${_muteVideos ? 'Muted' : 'Unmuted'} all controllers');
+    _logger.debug('Videos muted: {muted}', {'muted': _muteVideos});
   }
 
   VideoPlayer getVideo(String key) {
@@ -53,7 +53,10 @@ class VideoService extends ChangeNotifier {
       Map<String, VideoPlayer> loaded = Map.of(_videos);
       loaded.remove(key);
       if (loaded.length < maxLoaded) break;
-      _logger.fine('Too many (${loaded.length}) videos loaded!');
+      _logger.debug('Evicting, {loaded} of {max} videos loaded', {
+        'loaded': loaded.length,
+        'max': maxLoaded,
+      });
       disposeVideo(loaded.keys.first);
     }
     return _videos.putIfAbsent(key, () {
@@ -73,7 +76,7 @@ class VideoService extends ChangeNotifier {
       await controller.pause();
       await controller.dispose();
       notifyListeners();
-      _logger.fine('Unloaded $key');
+      _logger.debug('Unloaded {video}', {'video': key});
     }
   }
 }

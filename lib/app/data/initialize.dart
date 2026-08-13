@@ -6,6 +6,7 @@ import 'package:e1547/client/client.dart';
 import 'package:e1547/identity/identity.dart';
 import 'package:e1547/logs/logs.dart';
 import 'package:e1547/query/query.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http_cache_drift_store/http_cache_drift_store.dart';
@@ -13,7 +14,7 @@ import 'package:notified_preferences/notified_preferences.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-export 'package:e1547/logs/logs.dart' show Logs;
+export 'package:e1547/logs/logs.dart' show LogErrors, Logs;
 export 'package:e1547/settings/settings.dart' show AppInfo;
 export 'package:window_manager/window_manager.dart' show WindowManager;
 
@@ -40,30 +41,39 @@ Future<Logs> initializeLogger({
   String? path,
   String? postfix,
   List<LogPrinter>? printers,
+  LogLevel? level,
 }) async {
-  Logger.root.level = Level.ALL;
+  setLogLevel(level ?? verboseLogLevel(verbose: false));
   path ??= await getTemporaryAppDirectory();
 
   final logFile = createLogFile(path, postfix);
-  final logs = Logs([
-    ...?printers,
-    FileLogPrinter(logFile),
-    ConsoleLogPrinter(),
-  ]);
+  final logs = Logs(
+    printers: [
+      ...?printers,
+      JsonLogPrinter(logFile),
+      const ConsoleLogPrinter(),
+    ],
+  );
 
-  logs.connect(Logger.root.onRecord);
+  logs.connect();
 
   registerFlutterErrorHandler(
-    (error, trace) => Logger('Flutter').log(Level.SHOUT, error, error, trace),
+    (error, trace) =>
+        Logger('Flutter').error('Uncaught framework error', null, error, trace),
   );
   return logs;
+}
+
+LogLevel verboseLogLevel({required bool verbose}) {
+  if (verbose) return LogLevel.trace;
+  return kDebugMode ? LogLevel.debug : LogLevel.info;
 }
 
 File createLogFile(String directoryPath, String? postfix) {
   File logFile = File(
     join(
       directoryPath,
-      '${logFileDateFormat.format(DateTime.now())}${postfix != null ? '.$postfix' : ''}.log',
+      '${logFileDateFormat.format(DateTime.now())}${postfix != null ? '.$postfix' : ''}$logFileExtension',
     ),
   );
 
@@ -71,22 +81,25 @@ File createLogFile(String directoryPath, String? postfix) {
   if (!dir.existsSync()) {
     dir.createSync(recursive: true);
   }
-  List<File> logFiles = dir
-      .listSync()
-      .whereType<File>()
-      .where((entity) => entity.path.endsWith('.log'))
-      .toList();
-
-  DateTime getFileDate(String fileName) {
-    var name = basenameWithoutExtension(fileName);
-    return logFileDateFormat.parse(name);
+  List<({File file, DateTime date})> logFiles = [];
+  for (final entity in dir.listSync().whereType<File>()) {
+    if (!entity.path.endsWith(logFileExtension)) continue;
+    try {
+      logFiles.add((file: entity, date: LogFileInfo.parse(entity.path).date));
+    } on FormatException {
+      continue;
+    }
   }
 
-  logFiles.sort((a, b) => getFileDate(b.path).compareTo(getFileDate(a.path)));
+  logFiles.sort((a, b) => b.date.compareTo(a.date));
 
   if (logFiles.length > 50) {
-    for (final oldFile in logFiles.sublist(10)) {
-      oldFile.deleteSync();
+    for (final old in logFiles.sublist(10)) {
+      try {
+        old.file.deleteSync();
+      } on FileSystemException {
+        continue;
+      }
     }
   }
 

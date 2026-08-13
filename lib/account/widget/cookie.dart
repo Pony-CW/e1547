@@ -19,7 +19,9 @@ class CookieCapturePage extends StatefulWidget {
 }
 
 class _CookieCapturePageState extends State<CookieCapturePage> {
-  final Logger logger = Logger('CookieCapture');
+  late final Logger logger = Logger('CookieCapture', {
+    'host': context.read<Client>().host,
+  });
 
   late final WebViewController controller = WebViewController()
     ..setUserAgent(AppInfo.instance.userAgent)
@@ -74,7 +76,7 @@ class _CookieCapturePageState extends State<CookieCapturePage> {
           try {
             await setCookies(context);
           } on Exception catch (e, stacktrace) {
-            logger.severe('Failed to capture cookies!', e, stacktrace);
+            logger.error('Failed to capture cookies', null, e, stacktrace);
           }
           await navigator.maybePop();
         },

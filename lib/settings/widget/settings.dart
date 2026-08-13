@@ -359,22 +359,15 @@ class SettingsPage extends StatelessWidget {
                 },
               ),
               if (context.watch<Logs?>() != null) ...[
-                Consumer<Logs>(
-                  builder: (context, logs, child) => SubStream<List<LogRecord>>(
-                    create: () => logs.stream(
-                      filter: (level, type) => level >= Level.SEVERE,
-                    ),
-                    builder: (context, snapshot) => ListTile(
-                      leading: const Icon(Icons.format_list_numbered),
-                      title: const Text('Logs'),
-                      subtitle: (snapshot.data?.isNotEmpty ?? false)
-                          ? Text('${snapshot.data!.length} errors logged')
-                          : null,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const LogsPage(),
-                        ),
-                      ),
+                Consumer<LogErrors>(
+                  builder: (context, errors, child) => ListTile(
+                    leading: const Icon(Icons.format_list_numbered),
+                    title: const Text('Logs'),
+                    subtitle: errors.isEmpty
+                        ? null
+                        : Text('${errors.length} errors logged'),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const LogsPage()),
                     ),
                   ),
                 ),

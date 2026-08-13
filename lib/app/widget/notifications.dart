@@ -30,7 +30,7 @@ class _NotificationHandlerState extends State<NotificationHandler> {
   late Future<FlutterLocalNotificationsPlugin> notifications =
       initializeNotifications(onDidReceiveNotificationResponse: handle);
   List<Follow>? previousFollows;
-  Logger logger = Logger('Notifications');
+  Logger logger = Logger('NotificationRouter');
 
   @override
   void initState() {
@@ -97,7 +97,7 @@ class _NotificationHandlerState extends State<NotificationHandler> {
     try {
       notification = NotificationPayload.fromJson(json.decode(payload));
     } on FormatException catch (e, s) {
-      logger.severe('Failed to parse notification payload', e, s);
+      logger.error('Failed to parse notification payload', null, e, s);
       return;
     }
 
@@ -129,7 +129,7 @@ class _NotificationHandlerState extends State<NotificationHandler> {
         }
         break;
       default:
-        logger.warning('Unknown notification type: ${notification.type}');
+        logger.warn('Unknown notification type {type}', {'type': notification.type});
         return;
     }
   }
