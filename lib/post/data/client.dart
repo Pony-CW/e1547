@@ -63,32 +63,33 @@ class PostClient {
 
   Future<List<Post>> byIds({
     required List<int> ids,
-    int? limit,
     bool? force,
     CancelToken? cancelToken,
   }) async {
-    limit = max(0, min(limit ?? 75, 100));
+    if (ids.isEmpty) return [];
+
+    // Server-side maximum id and page request size.
+    const int chunkSize = 320;
 
     List<List<int>> chunks = [];
-    for (int i = 0; i < ids.length; i += limit) {
-      chunks.add(ids.sublist(i, min(i + limit, ids.length)));
+    for (int i = 0; i < ids.length; i += chunkSize) {
+      chunks.add(ids.sublist(i, min(i + chunkSize, ids.length)));
     }
 
     List<Post> result = [];
     for (final chunk in chunks) {
-      if (chunk.isEmpty) continue;
       String filter = 'id:${chunk.join(',')}';
       List<Post> part = await page(
         query: {'tags': filter},
-        limit: limit,
+        limit: chunk.length,
         force: force,
         cancelToken: cancelToken,
       );
       Map<int, Post> table = {for (Post e in part) e.id: e};
-      part =
-          (chunk.map((e) => table[e]).toList()..removeWhere((e) => e == null))
-              .cast<Post>();
-      result.addAll(part);
+      result.addAll(
+        (chunk.map((e) => table[e]).toList()..removeWhere((e) => e == null))
+            .cast<Post>(),
+      );
     }
     return result;
   }

@@ -107,10 +107,10 @@ extension PostQuerying on PostClient {
         ).then(postCache.savePage),
       );
 
-  Query<List<Post>> useByIds({required List<int> ids, int? limit}) => Query(
+  Query<List<Post>> useByIds({required List<int> ids}) => Query(
     cache: queryCache,
-    key: [queryKey, 'ids', ids, limit],
-    queryFn: () => byIds(ids: ids, limit: limit, force: true).then((fetched) {
+    key: [queryKey, 'ids', ids],
+    queryFn: () => byIds(ids: ids, force: true).then((fetched) {
       postCache.savePage(fetched);
       return fetched;
     }),
