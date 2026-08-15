@@ -26,6 +26,7 @@ export 'prompt.dart';
 export 'range.dart';
 export 'refreshing.dart';
 export 'scaffold.dart';
+export 'scroll.dart';
 export 'selection.dart';
 export 'snackbar.dart';
 export 'text_editor.dart';

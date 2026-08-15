@@ -4,6 +4,10 @@ import 'package:cached_query_flutter/cached_query_flutter.dart';
 import 'package:e1547/shared/shared.dart';
 export 'package:cached_query_flutter/cached_query_flutter.dart';
 
+bool _liveFetch(Object key, Object? data, DateTime createdAt) => true;
+
+bool _vendoredFetch(Object key, Object? data, DateTime createdAt) => false;
+
 /// Cache normalisation intermediary
 class QueryBridge<T, K> {
   QueryBridge({
@@ -18,8 +22,10 @@ class QueryBridge<T, K> {
 
   Query<T>? _getQuery(K id) => cache.getQuery<Query<T>>([baseKey, id]);
 
+  /// Identical for equal [vendored], so that a rebuild reuses the query facade
+  /// instead of replacing it, which resets its state to [QueryInitial].
   static ShouldFetch<T> vendorFetch<T>(bool? vendored) =>
-      (key, data, createdAt) => !(vendored ?? false);
+      (vendored ?? false) ? _vendoredFetch : _liveFetch;
 
   QueryConfig<T> getConfig({bool? vendored}) =>
       QueryConfig(shouldFetch: vendorFetch<T>(vendored));

@@ -5,6 +5,14 @@ import 'package:e1547/post/post.dart';
 Post samplePost({
   int id = 1,
   Map<String, List<String>> tags = const {},
+  String? file,
+  String? preview,
+  Relationships relationships = const Relationships(
+    parentId: null,
+    hasChildren: false,
+    hasActiveChildren: null,
+    children: [],
+  ),
   int score = 0,
   int favCount = 0,
   bool isFavorited = false,
@@ -19,9 +27,9 @@ Post samplePost({
   bool isDeleted = false,
 }) => Post(
   id: id,
-  file: null,
+  file: file,
   sample: null,
-  preview: null,
+  preview: preview,
   width: width,
   height: height,
   ext: ext,
@@ -42,10 +50,5 @@ Post samplePost({
   description: '',
   sources: const [],
   pools: pools,
-  relationships: const Relationships(
-    parentId: null,
-    hasChildren: false,
-    hasActiveChildren: null,
-    children: [],
-  ),
+  relationships: relationships,
 );
