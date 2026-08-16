@@ -129,7 +129,10 @@ class _PagedQueryBuilderState<T, Arg> extends State<PagedQueryBuilder<T, Arg>> {
       InfiniteQuerySuccess() => InfiniteQueryStatus<List<T>, Arg>.success(
         timeCreated: state.timeCreated,
         data: data!,
+        // ignore: deprecated_member_use
         hasReachedMax: state.hasReachedMax,
+        hasNextPage: state.hasNextPage,
+        hasPreviousPage: state.hasPreviousPage,
       ),
       InfiniteQueryError() => InfiniteQueryStatus<List<T>, Arg>.error(
         timeCreated: state.timeCreated,
