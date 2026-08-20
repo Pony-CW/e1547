@@ -22,15 +22,16 @@ void main() {
 
     test('caps long traces and says how much it dropped', () {
       final List<String> result = compactor.compact([
-        for (int i = 0; i < 60; i++)
-          '#$i      f$i (package:e1547/a.dart:$i:1)',
+        for (int i = 0; i < 60; i++) '#$i      f$i (package:e1547/a.dart:$i:1)',
       ]);
       expect(result.length, compactor.limit + 1);
       expect(result.last, '+45 more');
     });
 
     test('survives traces it cannot parse', () {
-      final List<String> result = compactor.compact(['not a stack trace at all']);
+      final List<String> result = compactor.compact([
+        'not a stack trace at all',
+      ]);
       expect(result, isNotEmpty);
     });
 

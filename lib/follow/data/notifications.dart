@@ -166,7 +166,10 @@ Future<void> updateFollowNotifications({
       }
     }
 
-    logger.info('Notified: {title} {body}', {'title': title, 'body': description});
+    logger.info('Notified: {title} {body}', {
+      'title': title,
+      'body': description,
+    });
   }
 
   for (final follow in seen) {

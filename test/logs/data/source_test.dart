@@ -25,9 +25,9 @@ void main() {
 
   tearDown(() => dir.delete(recursive: true));
 
-  Future<void> write(int count) => file.writeAsString([
-    for (int i = 0; i < count; i++) '${lineFor(i)}\n',
-  ].join());
+  Future<void> write(int count) => file.writeAsString(
+    [for (int i = 0; i < count; i++) '${lineFor(i)}\n'].join(),
+  );
 
   int nOf(LogEntry entry) => entry.attributes['n']! as int;
 
@@ -107,7 +107,9 @@ void main() {
     });
 
     test('stops loading even when the file is missing', () async {
-      final source = LogFileSource(File('${dir.path}/missing$logFileExtension'));
+      final source = LogFileSource(
+        File('${dir.path}/missing$logFileExtension'),
+      );
       await source.load();
 
       expect(source.loading, isFalse);

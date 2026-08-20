@@ -22,7 +22,9 @@ class LogSelectionAppBar extends StatelessWidget with AppBarBuilderWidget {
           icon: const Icon(Icons.copy),
           onPressed: () {
             Clipboard.setData(
-              ClipboardData(text: data.selections.map(formatLogEntry).join('\n')),
+              ClipboardData(
+                text: data.selections.map(formatLogEntry).join('\n'),
+              ),
             );
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(

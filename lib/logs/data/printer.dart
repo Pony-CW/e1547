@@ -86,7 +86,9 @@ class JsonLogPrinter extends LogPrinter {
   Future<void> _write() async {
     final IOSink sink = file.openWrite(mode: FileMode.append);
     await for (final List<LogEntry> batch
-        in _stream.stream.bufferTime(flushInterval).where((e) => e.isNotEmpty)) {
+        in _stream.stream
+            .bufferTime(flushInterval)
+            .where((e) => e.isNotEmpty)) {
       try {
         for (final LogEntry entry in batch) {
           sink.writeln(jsonEncode(entry.toJson()));

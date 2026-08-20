@@ -129,7 +129,9 @@ class _NotificationHandlerState extends State<NotificationHandler> {
         }
         break;
       default:
-        logger.warn('Unknown notification type {type}', {'type': notification.type});
+        logger.warn('Unknown notification type {type}', {
+          'type': notification.type,
+        });
         return;
     }
   }

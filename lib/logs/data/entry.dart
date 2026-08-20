@@ -68,11 +68,9 @@ class LogEntry {
       error: record.error != null ? LogError.from(record.error!) : null,
       stackTrace: record.stackTrace == null
           ? null
-          : FlutterError.demangleStackTrace(record.stackTrace!)
-                .toString()
-                .split('\n')
-                .where((e) => e.trim().isNotEmpty)
-                .toList(),
+          : FlutterError.demangleStackTrace(
+              record.stackTrace!,
+            ).toString().split('\n').where((e) => e.trim().isNotEmpty).toList(),
     );
   }
 

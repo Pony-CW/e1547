@@ -52,13 +52,17 @@ class _AvailabilityCheckState extends State<AvailabilityCheck> {
         if (statusCode == null) return;
         switch (statusCode) {
           case HttpStatus.forbidden:
-            scope.warn('Client denied access ({status}), failing silently', {'status': statusCode});
+            scope.warn('Client denied access ({status}), failing silently', {
+              'status': statusCode,
+            });
             // This could potentially logout the user.
             // However, it might be returned during Cloudflare API blockages.
             // Logout the user, and if theyre already logged out, trigger Resolver?
             break;
           case >= 500 && < 600:
-            scope.warn('Client unavailable ({status}), cannot resolve', {'status': statusCode});
+            scope.warn('Client unavailable ({status}), cannot resolve', {
+              'status': statusCode,
+            });
             offerResolve = false;
             break;
           default:

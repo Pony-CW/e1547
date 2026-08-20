@@ -29,9 +29,7 @@ class TasksController extends ChangeNotifier {
   final Settings settings;
   final int identity;
 
-  late final Logger _logger = Logger('TasksController', {
-    'identity': identity,
-  });
+  late final Logger _logger = Logger('TasksController', {'identity': identity});
 
   List<Task> _active = const [];
   List<Task> get active => _active;
@@ -231,10 +229,12 @@ class TasksController extends ChangeNotifier {
         await repository.markCompleted(task.id);
       }
     } on Object catch (e, s) {
-      _logger.warn('Task {task} ({action}) failed', {
-        'task': task.id,
-        'action': task.action.name,
-      }, e, s);
+      _logger.warn(
+        'Task {task} ({action}) failed',
+        {'task': task.id, 'action': task.action.name},
+        e,
+        s,
+      );
       final TaskStatus? current = await repository.readStatus(task.id);
       if (current == TaskStatus.running) {
         await repository.markFailed(task.id, e.toString());
@@ -263,7 +263,12 @@ class TasksController extends ChangeNotifier {
             );
           } on Object catch (e, s) {
             // upvote is best-effort once the favorite succeeded
-            _logger.warn('Upvote after favorite failed for post {post}', {'post': task.postId}, e, s);
+            _logger.warn(
+              'Upvote after favorite failed for post {post}',
+              {'post': task.postId},
+              e,
+              s,
+            );
           }
         }
       case TaskAction.unfavorite:

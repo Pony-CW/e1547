@@ -8,7 +8,10 @@ class RouteLoggerObserver extends NavigatorObserver {
     if (route == null) return;
     final String? name = route.settings.name;
     if (name == null) return;
-    logger.debug('Route {route} was {action}', {'route': name, 'action': action});
+    logger.debug('Route {route} was {action}', {
+      'route': name,
+      'action': action,
+    });
   }
 
   @override

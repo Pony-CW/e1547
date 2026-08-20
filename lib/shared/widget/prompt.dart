@@ -424,7 +424,10 @@ Future<T?> showSliverPrompt<T>(
       color: Colors.transparent,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [const SheetHandle(), Builder(builder: header)],
+        children: [
+          const SheetHandle(),
+          Builder(builder: header),
+        ],
       ),
     ),
     customBuilder: (context, controller, state) => Material(

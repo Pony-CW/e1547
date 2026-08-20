@@ -32,7 +32,10 @@ class LogRedactor {
   );
 
   bool isSecret(String key) {
-    final String normalized = key.toLowerCase().replaceAll(RegExp(r'[-_\s]'), '');
+    final String normalized = key.toLowerCase().replaceAll(
+      RegExp(r'[-_\s]'),
+      '',
+    );
     return secrets.any(normalized.contains);
   }
 

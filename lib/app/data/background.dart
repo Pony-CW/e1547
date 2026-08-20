@@ -6,50 +6,50 @@ import 'package:workmanager/workmanager.dart';
 
 /// Handles all background tasks that the app registered.
 @pragma('vm:entry-point')
-void executeBackgroundTasks() =>
-    Workmanager().executeTask((task, inputData) async {
-      await initializeAppInfo();
-      final logs = await initializeLogger(postfix: 'background');
+void executeBackgroundTasks() => Workmanager().executeTask((
+  task,
+  inputData,
+) async {
+  await initializeAppInfo();
+  final logs = await initializeLogger(postfix: 'background');
 
-      final logger = Logger('BackgroundTasks', {'task': task});
-      logger.info('Running {task}');
+  final logger = Logger('BackgroundTasks', {'task': task});
+  logger.info('Running {task}');
 
-      AppStorage? storage;
+  AppStorage? storage;
 
-      try {
-        storage = await initializeAppStorage(cache: false);
-        setLogLevel(
-          verboseLogLevel(
-            verbose: Settings(storage.preferences).verboseLogs.value,
-          ),
-        );
+  try {
+    storage = await initializeAppStorage(cache: false);
+    setLogLevel(
+      verboseLogLevel(verbose: Settings(storage.preferences).verboseLogs.value),
+    );
 
-        final cancelToken = createBackgroundCancelToken(task);
-        cancelToken.whenCancel.then((e) {
-          logger.info('Cancelled {task}: {reason}', {'reason': '${e.error}'});
-        });
-
-        FlutterLocalNotificationsPlugin notifications =
-            await initializeNotifications();
-
-        switch (task) {
-          case followsBackgroundTaskKey:
-            await runFollowUpdates(
-              storage: storage,
-              notifications: notifications,
-              cancelToken: cancelToken,
-            );
-          default:
-            throw StateError('Task $task is unknown!');
-        }
-
-        return true;
-      } on Object catch (e, stack) {
-        logger.error('Task {task} failed', null, e, stack);
-        rethrow;
-      } finally {
-        await storage?.close();
-        logger.info('Finished {task}');
-        await logs.close();
-      }
+    final cancelToken = createBackgroundCancelToken(task);
+    cancelToken.whenCancel.then((e) {
+      logger.info('Cancelled {task}: {reason}', {'reason': '${e.error}'});
     });
+
+    FlutterLocalNotificationsPlugin notifications =
+        await initializeNotifications();
+
+    switch (task) {
+      case followsBackgroundTaskKey:
+        await runFollowUpdates(
+          storage: storage,
+          notifications: notifications,
+          cancelToken: cancelToken,
+        );
+      default:
+        throw StateError('Task $task is unknown!');
+    }
+
+    return true;
+  } on Object catch (e, stack) {
+    logger.error('Task {task} failed', null, e, stack);
+    rethrow;
+  } finally {
+    await storage?.close();
+    logger.info('Finished {task}');
+    await logs.close();
+  }
+});

@@ -114,7 +114,9 @@ void main() {
     });
 
     test('leaves strings that are not urls alone', () {
-      final LogEntry result = redactor.apply(entryWith({'note': 'no url here'}));
+      final LogEntry result = redactor.apply(
+        entryWith({'note': 'no url here'}),
+      );
       expect(result.attributes['note'], 'no url here');
     });
   });
