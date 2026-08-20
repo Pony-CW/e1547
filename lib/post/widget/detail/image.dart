@@ -26,26 +26,29 @@ class PostDetailVideo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    VideoPlayer player = post.getVideo(context)!;
+    VideoPlayer? player = post.getVideo(context);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => player.state.playing ? player.pause() : player.play(),
+      onTap: player != null
+          ? () => player.state.playing ? player.pause() : player.play()
+          : null,
       child: Stack(
         alignment: Alignment.center,
         fit: StackFit.passthrough,
         children: [
           PostVideoWidget(post: post),
-          Positioned.fill(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 8,
+          if (player != null)
+            Positioned.fill(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 8,
+                  ),
+                  child: VideoButton(player: player),
                 ),
-                child: VideoButton(player: player),
               ),
             ),
-          ),
         ],
       ),
     );

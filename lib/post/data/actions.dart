@@ -182,20 +182,14 @@ extension PostTyping on Post {
 }
 
 extension PostVideoPlaying on Post {
-  VideoPlayer? getVideo(BuildContext context, {bool? listen}) {
+  VideoPlayer? getVideo(BuildContext context) {
     if (type == PostType.video && file != null) {
-      VideoService service;
-      if (listen ?? true) {
-        service = context.watch<VideoService>();
-      } else {
-        service = context.read<VideoService>();
-      }
-      Settings settings;
-      if (listen ?? true) {
-        settings = context.watch<Settings>();
-      } else {
-        settings = context.read<Settings>();
-      }
+      // An inactive subtree holds no player, so that a stack of post routes
+      // cannot pin one video each.
+      if (!TickerMode.valuesOf(context).enabled) return null;
+
+      VideoService service = context.watch<VideoService>();
+      Settings settings = context.watch<Settings>();
 
       VideoResolution target = settings.videoResolution.value;
       String closestUrl = file!;
