@@ -28,10 +28,7 @@ class PostFilter extends FilterController<Post>
   Object idOf(Post post) => post.id;
 
   @override
-  bool filter(Post post) {
-    if (!denying) return true;
-    return !denies(post);
-  }
+  bool filter(Post post) => !denies(post);
 
   @override
   PostFilterValue get value => _value;
@@ -131,6 +128,7 @@ class PostFilter extends FilterController<Post>
   }
 
   bool denies(Post post) {
+    if (!denying) return false;
     if (allowedPosts.contains(post.id)) return false;
     final activeEntries = entriesFor(
       post,

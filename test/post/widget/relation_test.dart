@@ -34,15 +34,6 @@ Pool samplePool({
   active: true,
 );
 
-/// Query builders schedule their cache entry for deletion as they unmount, and
-/// that timer has to run out while the test still owns the clock.
-void displayTest(String description, WidgetTesterCallback body) =>
-    testWidgets(description, (tester) async {
-      await body(tester);
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pump(const Duration(seconds: 1));
-    });
-
 void main() {
   late FakeE621 fake;
   late Client client;

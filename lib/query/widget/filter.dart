@@ -27,6 +27,7 @@ class FilterControllerProvider<C extends FilterController<T>, T>
     TransitionBuilder? builder,
   }) : super(
          create: (_) => value,
+         keys: (_) => [value],
          builder: (context, child) =>
              ListenableProvider<FilterController<T>>.value(
                value: context.read<C>(),

@@ -4,8 +4,8 @@ import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sub/flutter_sub.dart';
 
-/// Pops the enclosing route when the search changes. [close] is latched, so
-/// repeated calls from build pop once.
+/// Closes the enclosing route once its list stops holding what it shows.
+/// [close] is latched, so repeated calls from build close once.
 mixin PostSearchRouteAware<T extends StatefulWidget> on State<T> {
   String? _openedWith;
   bool _closing = false;
@@ -20,7 +20,14 @@ mixin PostSearchRouteAware<T extends StatefulWidget> on State<T> {
     if (_closing) return;
     _closing = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) Navigator.of(context).maybePop();
+      if (!mounted) return;
+      final route = ModalRoute.of(context);
+      if (route == null) return;
+      if (route.isCurrent) {
+        Navigator.of(context).maybePop();
+      } else {
+        Navigator.of(context).removeRoute(route);
+      }
     });
   }
 }
@@ -121,16 +128,17 @@ class _PostDetailGalleryState extends State<PostDetailGallery>
     PageController pageController,
   ) {
     final params = context.read<PostParamsController>();
+    final filter = context.read<PostFilter?>();
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) =>
-            ChangeNotifierProvider<PostParamsController>.value(
-              value: params,
-              child: PostFullscreenGallery(
-                initialPostId: post.id,
-                onPageChanged: pageController.jumpToPage,
-              ),
-            ),
+        builder: (context) => PostRouteScope(
+          params: params,
+          filter: filter,
+          child: PostFullscreenGallery(
+            initialPostId: post.id,
+            onPageChanged: pageController.jumpToPage,
+          ),
+        ),
       ),
     );
   }

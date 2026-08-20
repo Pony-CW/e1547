@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:e1547/settings/settings.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -27,3 +28,12 @@ Future<void> initializeTestApp() async {
     forumTopicId: null,
   );
 }
+
+/// Query builders schedule their cache entry for deletion as they unmount, and
+/// that timer has to run out while the test still owns the clock.
+void displayTest(String description, WidgetTesterCallback body) =>
+    testWidgets(description, (tester) async {
+      await body(tester);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(const Duration(seconds: 1));
+    });

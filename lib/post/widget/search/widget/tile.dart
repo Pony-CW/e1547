@@ -204,16 +204,18 @@ class PostInfoBar extends StatelessWidget {
 void defaultPushPostDetail(BuildContext context, Post post) {
   int? cacheSize = context.read<ImageCacheSize>().size;
   final params = context.read<PostParamsController?>();
+  final filter = context.read<PostFilter?>();
   Navigator.of(context).push(
     MaterialPageRoute(
       builder: (context) => ImageCacheSizeProvider(
         size: cacheSize,
-        child: params != null
-            ? ChangeNotifierProvider<PostParamsController>.value(
-                value: params,
-                child: PostDetailGallery(initialPostId: post.id),
-              )
-            : PostDetail(post: post),
+        child: PostRouteScope(
+          params: params,
+          filter: filter,
+          child: params != null
+              ? PostDetailGallery(initialPostId: post.id)
+              : PostDetail(post: post),
+        ),
       ),
     ),
   );
@@ -380,6 +382,7 @@ class PostFeedTile extends StatelessWidget {
 
     Widget image() {
       final params = context.read<PostParamsController?>();
+      final filter = context.read<PostFilter?>();
       return ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 400),
         child: AspectRatio(
@@ -392,14 +395,13 @@ class PostFeedTile extends StatelessWidget {
                   post: post,
                   child: ImageCacheSizeProvider(
                     size: cacheSize,
-                    child: params != null
-                        ? ChangeNotifierProvider<PostParamsController>.value(
-                            value: params,
-                            child: PostFullscreenGallery(
-                              initialPostId: post.id,
-                            ),
-                          )
-                        : PostFullscreen(post: post),
+                    child: PostRouteScope(
+                      params: params,
+                      filter: filter,
+                      child: params != null
+                          ? PostFullscreenGallery(initialPostId: post.id)
+                          : PostFullscreen(post: post),
+                    ),
                   ),
                 ),
               ),
