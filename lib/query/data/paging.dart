@@ -9,7 +9,7 @@ extension QueryPagingState<T, Arg> on InfiniteQueryStatus<List<T>, Arg> {
       error: error,
       isLoading: isLoading,
       hasNextPage: switch (this) {
-        InfiniteQuerySuccess e => !e.hasReachedMax,
+        InfiniteQuerySuccess e => e.hasNextPage,
         _ => true,
       },
     );
