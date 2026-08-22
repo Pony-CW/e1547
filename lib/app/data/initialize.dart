@@ -134,11 +134,9 @@ Future<AppStorage> initializeAppStorage() async {
   return AppStorage(
     preferences: await SharedPreferences.getInstance(),
     temporaryFiles: temporaryFiles,
+    // TODO: query storage is disabled because a page of writes costs a frame
     queryCache: CachedQuery.asNewInstance()
       ..configFlutter(
-        storage: DriftQueryStorage(
-          repository: QueryStorageRepository(database: sqlite),
-        ),
         config: const GlobalQueryConfig(
           staleDuration: Duration(minutes: 5),
           refetchOnResume: false,
