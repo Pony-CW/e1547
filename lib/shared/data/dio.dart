@@ -51,4 +51,18 @@ extension QueryCacheDioExtension on Dio {
   set queryCache(CachedQuery? value) {
     options.extra['@query_cache@'] = value;
   }
+
+  int? get queryIdentity => options.extra['@query_identity@'] as int?;
+
+  set queryIdentity(int? value) {
+    options.extra['@query_identity@'] = value;
+  }
+
+  /// Keys are scoped, so that user-specific fields
+  /// like votes and favorites cannot leak between accounts.
+  List<Object> identityQueryKey(String domain) => [
+    'ident',
+    queryIdentity!,
+    domain,
+  ];
 }

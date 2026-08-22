@@ -28,5 +28,6 @@ Dio createDefaultDio(Identity identity, {CachedQuery? queryCache}) {
   if (queryCache != null) {
     dio.queryCache = queryCache;
   }
+  dio.queryIdentity = identity.id;
   return dio;
 }

@@ -6,7 +6,9 @@ import 'package:e1547/shared/shared.dart';
 final Logger _logger = Logger('FollowQuery');
 
 extension FollowQuerying on FollowClient {
-  static const queryKey = 'follows';
+  static const queryDomain = 'follows';
+
+  List<Object> get queryKey => dio.identityQueryKey(queryDomain);
 
   CachedQuery get queryCache => dio.queryCache!;
 
@@ -14,7 +16,7 @@ extension FollowQuerying on FollowClient {
 
   Query<Follow> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
-    key: [queryKey, id],
+    key: [...queryKey, id],
     queryFn: () => get(id: id),
     config: followCache.getConfig(vendored: vendored),
   );
@@ -22,7 +24,7 @@ extension FollowQuerying on FollowClient {
   InfiniteQuery<List<int>, int> usePage({QueryMap? query}) =>
       InfiniteQuery<List<int>, int>(
         cache: queryCache,
-        key: [queryKey, 'page', query],
+        key: [...queryKey, 'page', query],
         getNextArg: (state) => state.nextPage,
         queryFn: (pageKey) async {
           try {
@@ -42,13 +44,13 @@ extension FollowQuerying on FollowClient {
 
   Query<List<Follow>> useAll({QueryMap? query}) => Query(
     cache: queryCache,
-    key: [queryKey, 'all', query],
+    key: [...queryKey, 'all', query],
     queryFn: () => all(query: query),
   );
 
   Query<Map<FollowType, List<String>>> useTimelineTags() => Query(
     cache: queryCache,
-    key: [queryKey, 'timeline_tags'],
+    key: [...queryKey, 'timeline_tags'],
     queryFn: () async {
       final follows = await all(
         query: FollowsQuery(types: [FollowType.update, FollowType.notify]),

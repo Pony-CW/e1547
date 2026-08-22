@@ -17,10 +17,10 @@ class QueryBridge<T, K> {
   });
 
   final CachedQuery cache;
-  final String baseKey;
+  final List<Object> baseKey;
   final K Function(T) getId;
 
-  Query<T>? _getQuery(K id) => cache.getQuery<Query<T>>([baseKey, id]);
+  Query<T>? _getQuery(K id) => cache.getQuery<Query<T>>([...baseKey, id]);
 
   /// Identical for equal [vendored], so that a rebuild reuses the query facade
   /// instead of replacing it, which resets its state to [QueryInitial].
@@ -49,7 +49,7 @@ class QueryBridge<T, K> {
   }
 
   void set(T item) =>
-      cache.setQueryData<T>(key: [baseKey, getId(item)], data: item);
+      cache.setQueryData<T>(key: [...baseKey, getId(item)], data: item);
 
   List<K> savePage(List<T> items) {
     for (final item in items) {
@@ -102,18 +102,20 @@ extension QueryCacheBridging on CachedQuery {
     }
   }
 
-  QueryBridge<T, K> bridge<T, K>(String key, {K Function(T)? getId}) =>
+  QueryBridge<T, K> bridge<T, K>(List<Object> key, {K Function(T)? getId}) =>
       QueryBridge(cache: this, baseKey: key, getId: getId ?? _dynamicGetId);
 
   Future<void> invalidateKey(
-    String key, {
+    List<Object> key, {
     bool Function(QueryMap params)? where,
   }) => invalidateCache(
     filterFn: (unencoded, _) {
-      if (unencoded is! List || unencoded.isEmpty) return false;
-      if (unencoded.first != key) return false;
+      if (unencoded is! List || unencoded.length < key.length) return false;
+      for (int i = 0; i < key.length; i++) {
+        if (unencoded[i] != key[i]) return false;
+      }
       if (where == null) return true;
-      final params = unencoded.elementAtOrNull(1);
+      final params = unencoded.elementAtOrNull(key.length);
       if (params is! QueryMap) return false;
       return where(params);
     },

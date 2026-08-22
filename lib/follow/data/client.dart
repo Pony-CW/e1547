@@ -114,7 +114,7 @@ class FollowClient {
   Future<int> count() => repository.length(identity: identity.id);
 
   void _invalidateAll() {
-    dio.queryCache?.invalidateKey(FollowQuerying.queryKey);
+    dio.queryCache?.invalidateKey(queryKey);
   }
 }
 

@@ -3,7 +3,9 @@ import 'package:e1547/query/query.dart';
 import 'package:e1547/shared/shared.dart';
 
 extension HistoryQuerying on HistoryClient {
-  static const queryKey = 'histories';
+  static const queryDomain = 'histories';
+
+  List<Object> get queryKey => dio.identityQueryKey(queryDomain);
 
   CachedQuery get queryCache => dio.queryCache!;
 
@@ -11,7 +13,7 @@ extension HistoryQuerying on HistoryClient {
 
   Query<History> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
-    key: [queryKey, id],
+    key: [...queryKey, id],
     queryFn: () => get(id: id),
     config: historyCache.getConfig(vendored: vendored),
   );
@@ -19,7 +21,7 @@ extension HistoryQuerying on HistoryClient {
   InfiniteQuery<List<int>, int> usePage({required QueryMap? query}) =>
       InfiniteQuery<List<int>, int>(
         cache: queryCache,
-        key: [queryKey, query],
+        key: [...queryKey, query],
         getNextArg: (state) => state.nextPage,
         queryFn: (key) =>
             page(page: key, query: query).then(historyCache.savePage),
@@ -27,12 +29,15 @@ extension HistoryQuerying on HistoryClient {
 
   Query<int> useCount() => Query(
     cache: queryCache,
-    key: [queryKey, 'count'],
+    key: [...queryKey, 'count'],
     queryFn: () => count(),
   );
 
-  Query<List<DateTime>> useDays() =>
-      Query(cache: queryCache, key: [queryKey, 'days'], queryFn: () => days());
+  Query<List<DateTime>> useDays() => Query(
+    cache: queryCache,
+    key: [...queryKey, 'days'],
+    queryFn: () => days(),
+  );
 
   Mutation<void, HistoryRequest> useAdd() => Mutation(
     mutationFn: (request) => add(request),

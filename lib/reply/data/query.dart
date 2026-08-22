@@ -4,7 +4,9 @@ import 'package:e1547/shared/shared.dart';
 import 'package:e1547/topic/topic.dart';
 
 extension ReplyQuerying on ReplyClient {
-  static const queryKey = 'replies';
+  static const queryDomain = 'replies';
+
+  List<Object> get queryKey => dio.identityQueryKey(queryDomain);
 
   CachedQuery get queryCache => dio.queryCache!;
 
@@ -12,7 +14,7 @@ extension ReplyQuerying on ReplyClient {
 
   Query<Reply> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
-    key: [queryKey, id],
+    key: [...queryKey, id],
     queryFn: () => get(id: id),
     config: replyCache.getConfig(vendored: vendored),
   );
@@ -20,7 +22,7 @@ extension ReplyQuerying on ReplyClient {
   InfiniteQuery<List<int>, int> usePage({required QueryMap? query}) =>
       InfiniteQuery<List<int>, int>(
         cache: queryCache,
-        key: [queryKey, query],
+        key: [...queryKey, query],
         getNextArg: (state) => state.nextPage,
         queryFn: (key) =>
             page(page: key, query: query).then(replyCache.savePage),
@@ -34,7 +36,7 @@ extension ReplyQuerying on ReplyClient {
         where: (params) => params['search[topic_id]'] == topicId.toString(),
       );
       queryCache
-          .bridge<Topic, int>(TopicQuerying.queryKey)
+          .bridge<Topic, int>(dio.identityQueryKey(TopicQuerying.queryDomain))
           .update(
             topicId,
             (topic) => topic.copyWith(responseCount: topic.responseCount + 1),

@@ -3,7 +3,9 @@ import 'package:e1547/shared/shared.dart';
 import 'package:e1547/user/user.dart';
 
 extension UserQuerying on UserClient {
-  static const queryKey = 'users';
+  static const queryDomain = 'users';
+
+  List<Object> get queryKey => dio.identityQueryKey(queryDomain);
 
   CachedQuery get queryCache => dio.queryCache!;
 
@@ -11,14 +13,14 @@ extension UserQuerying on UserClient {
 
   Query<User> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
-    key: [queryKey, id],
+    key: [...queryKey, id],
     queryFn: () => get(id: id),
     config: userCache.getConfig(vendored: vendored),
   );
 
   Query<User> useGetByName({required String name, bool? vendored}) => Query(
     cache: queryCache,
-    key: [queryKey, 'name', name],
+    key: [...queryKey, 'name', name],
     queryFn: () async {
       final user = await getByName(name: name);
       userCache.set(user);

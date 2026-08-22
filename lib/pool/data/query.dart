@@ -3,7 +3,9 @@ import 'package:e1547/query/query.dart';
 import 'package:e1547/shared/shared.dart';
 
 extension PoolQuerying on PoolClient {
-  static const queryKey = 'pools';
+  static const queryDomain = 'pools';
+
+  List<Object> get queryKey => dio.identityQueryKey(queryDomain);
 
   CachedQuery get queryCache => dio.queryCache!;
 
@@ -11,7 +13,7 @@ extension PoolQuerying on PoolClient {
 
   Query<Pool> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
-    key: [queryKey, id],
+    key: [...queryKey, id],
     queryFn: () => get(id: id),
     config: poolCache.getConfig(vendored: vendored),
   );
@@ -19,7 +21,7 @@ extension PoolQuerying on PoolClient {
   InfiniteQuery<List<int>, int> usePage({required QueryMap? query}) =>
       InfiniteQuery<List<int>, int>(
         cache: queryCache,
-        key: [queryKey, query],
+        key: [...queryKey, query],
         getNextArg: (state) => state.nextPage,
         queryFn: (key) =>
             page(page: key, query: query).then(poolCache.savePage),

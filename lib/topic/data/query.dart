@@ -3,7 +3,9 @@ import 'package:e1547/shared/shared.dart';
 import 'package:e1547/topic/topic.dart';
 
 extension TopicQuerying on TopicClient {
-  static const queryKey = 'topics';
+  static const queryDomain = 'topics';
+
+  List<Object> get queryKey => dio.identityQueryKey(queryDomain);
 
   CachedQuery get queryCache => dio.queryCache!;
 
@@ -11,7 +13,7 @@ extension TopicQuerying on TopicClient {
 
   Query<Topic> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
-    key: [queryKey, id],
+    key: [...queryKey, id],
     queryFn: () => get(id: id),
     config: topicCache.getConfig(vendored: vendored),
   );
@@ -19,7 +21,7 @@ extension TopicQuerying on TopicClient {
   InfiniteQuery<List<int>, int> usePage({required QueryMap? query}) =>
       InfiniteQuery<List<int>, int>(
         cache: queryCache,
-        key: [queryKey, query],
+        key: [...queryKey, query],
         getNextArg: (state) => state.nextPage,
         queryFn: (key) =>
             page(page: key, query: query).then(topicCache.savePage),

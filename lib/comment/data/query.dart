@@ -4,7 +4,9 @@ import 'package:e1547/query/query.dart';
 import 'package:e1547/shared/shared.dart';
 
 extension CommentQuerying on CommentClient {
-  static const queryKey = 'comments';
+  static const queryDomain = 'comments';
+
+  List<Object> get queryKey => dio.identityQueryKey(queryDomain);
 
   CachedQuery get queryCache => dio.queryCache!;
 
@@ -12,7 +14,7 @@ extension CommentQuerying on CommentClient {
 
   Query<Comment> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
-    key: [queryKey, id],
+    key: [...queryKey, id],
     queryFn: () => get(id: id),
     config: commentCache.getConfig(vendored: vendored),
   );
@@ -20,7 +22,7 @@ extension CommentQuerying on CommentClient {
   InfiniteQuery<List<int>, int> usePage({required QueryMap? query}) =>
       InfiniteQuery<List<int>, int>(
         cache: queryCache,
-        key: [queryKey, query],
+        key: [...queryKey, query],
         getNextArg: (state) => state.nextPage,
         queryFn: (key) =>
             page(page: key, query: query).then(commentCache.savePage),
@@ -34,7 +36,7 @@ extension CommentQuerying on CommentClient {
         where: (params) => params['search[post_id]'] == postId.toString(),
       );
       queryCache
-          .bridge<Post, int>(PostQuerying.queryKey)
+          .bridge<Post, int>(dio.identityQueryKey(PostQuerying.queryDomain))
           .update(
             postId,
             (post) => post.copyWith(commentCount: post.commentCount + 1),

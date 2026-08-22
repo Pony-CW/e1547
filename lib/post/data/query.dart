@@ -7,7 +7,9 @@ import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
 
 extension PostQuerying on PostClient {
-  static const queryKey = 'posts';
+  static const queryDomain = 'posts';
+
+  List<Object> get queryKey => dio.identityQueryKey(queryDomain);
 
   CachedQuery get queryCache => dio.queryCache!;
 
@@ -15,7 +17,7 @@ extension PostQuerying on PostClient {
 
   Query<Post> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
-    key: [queryKey, id],
+    key: [...queryKey, id],
     queryFn: () => get(id: id),
     config: postCache.getConfig(vendored: vendored),
   );
@@ -60,7 +62,7 @@ extension PostQuerying on PostClient {
   InfiniteQuery<List<int>, int> _usePage({required QueryMap? query}) =>
       InfiniteQuery<List<int>, int>(
         cache: queryCache,
-        key: [queryKey, query],
+        key: [...queryKey, query],
         getNextArg: (state) => state.nextPage,
         queryFn: (page) =>
             this.page(page: page, query: query).then(postCache.savePage),
@@ -68,7 +70,7 @@ extension PostQuerying on PostClient {
 
   InfiniteQuery<List<int>, int> useFavorites() => InfiniteQuery<List<int>, int>(
     cache: queryCache,
-    key: [queryKey, 'favorites'],
+    key: [...queryKey, 'favorites'],
     getNextArg: (state) => state.nextPage,
     queryFn: (page) => favorites(page: page).then(postCache.savePage),
   );
@@ -76,7 +78,7 @@ extension PostQuerying on PostClient {
   InfiniteQuery<List<int>, int> useByPool({required int id}) =>
       InfiniteQuery<List<int>, int>(
         cache: queryCache,
-        key: [queryKey, 'by_pool', id],
+        key: [...queryKey, 'by_pool', id],
         getNextArg: (state) => state.nextPage,
         queryFn: (page) async {
           final poolQuery = pools.useGet(id: id);
@@ -96,7 +98,7 @@ extension PostQuerying on PostClient {
   InfiniteQuery<List<int>, int> useByTags({required List<String> tags}) =>
       InfiniteQuery<List<int>, int>(
         cache: queryCache,
-        key: [queryKey, 'by_tags', tags],
+        key: [...queryKey, 'by_tags', tags],
         getNextArg: (state) => state.nextPage,
         queryFn: (page) =>
             byTags(tags: tags, page: page).then(postCache.savePage),
@@ -104,7 +106,7 @@ extension PostQuerying on PostClient {
 
   Query<List<Post>> useByIds({required List<int> ids}) => Query(
     cache: queryCache,
-    key: [queryKey, 'ids', ids],
+    key: [...queryKey, 'ids', ids],
     queryFn: () => byIds(ids: ids).then((fetched) {
       postCache.savePage(fetched);
       return fetched;
