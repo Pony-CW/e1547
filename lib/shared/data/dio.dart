@@ -45,6 +45,8 @@ Future<T> rateLimit<T>(Future<T> call, [Duration? duration]) => Future.wait([
   Future.delayed(duration ?? const Duration(milliseconds: 500)),
 ]).then((value) => value[0]);
 
+const String identityKeyTag = 'ident';
+
 extension QueryCacheDioExtension on Dio {
   CachedQuery? get queryCache => options.extra['@query_cache@'] as CachedQuery?;
 
@@ -61,7 +63,7 @@ extension QueryCacheDioExtension on Dio {
   /// Keys are scoped, so that user-specific fields
   /// like votes and favorites cannot leak between accounts.
   List<Object> identityQueryKey(String domain) => [
-    'ident',
+    identityKeyTag,
     queryIdentity!,
     domain,
   ];

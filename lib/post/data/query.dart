@@ -13,7 +13,8 @@ extension PostQuerying on PostClient {
 
   CachedQuery get queryCache => dio.queryCache!;
 
-  QueryBridge<Post, int> get postCache => queryCache.bridge(queryKey);
+  QueryBridge<Post, int> get postCache =>
+      queryCache.bridge(queryKey, fromJson: Post.fromJson);
 
   Query<Post> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
@@ -64,6 +65,7 @@ extension PostQuerying on PostClient {
         cache: queryCache,
         key: [...queryKey, query],
         getNextArg: (state) => state.nextPage,
+        config: pagedIdConfig(),
         queryFn: (page) =>
             this.page(page: page, query: query).then(postCache.savePage),
       );
@@ -72,6 +74,7 @@ extension PostQuerying on PostClient {
     cache: queryCache,
     key: [...queryKey, 'favorites'],
     getNextArg: (state) => state.nextPage,
+    config: pagedIdConfig(),
     queryFn: (page) => favorites(page: page).then(postCache.savePage),
   );
 
@@ -80,6 +83,7 @@ extension PostQuerying on PostClient {
         cache: queryCache,
         key: [...queryKey, 'by_pool', id],
         getNextArg: (state) => state.nextPage,
+        config: pagedIdConfig(),
         queryFn: (page) async {
           final poolQuery = pools.useGet(id: id);
           await poolQuery.fetch();
@@ -100,6 +104,7 @@ extension PostQuerying on PostClient {
         cache: queryCache,
         key: [...queryKey, 'by_tags', tags],
         getNextArg: (state) => state.nextPage,
+        config: pagedIdConfig(),
         queryFn: (page) =>
             byTags(tags: tags, page: page).then(postCache.savePage),
       );

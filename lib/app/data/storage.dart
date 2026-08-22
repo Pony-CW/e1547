@@ -20,13 +20,14 @@ import 'storage.drift.dart';
     FollowsIdentitiesTable,
     TasksTable,
     TasksIdentitiesTable,
+    QueryStorageTable,
   ],
 )
 class AppDatabase extends $AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -95,6 +96,9 @@ class AppDatabase extends $AppDatabase {
       }
       if (from >= 6 && from < 7) {
         await m.addColumn(tasksTable, tasksTable.metadata);
+      }
+      if (from < 8) {
+        await m.createTable(queryStorageTable);
       }
     },
     beforeOpen: (details) => customStatement('PRAGMA foreign_keys = ON'),

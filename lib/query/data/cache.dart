@@ -8,17 +8,37 @@ bool _liveFetch(Object key, Object? data, DateTime createdAt) => true;
 
 bool _vendoredFetch(Object key, Object? data, DateTime createdAt) => false;
 
+const Duration queryStorageDuration = Duration(days: 1);
+
+InfiniteQueryData<List<int>, int> pagedIdsFromJson(dynamic json) =>
+    InfiniteQueryData<List<int>, int>.fromJson(
+      json,
+      pagesConverter: (pages) =>
+          pages.map((page) => (page as List).cast<int>()).toList(),
+      argsConverter: (args) => args.cast<int>(),
+    );
+
+QueryConfig<InfiniteQueryData<List<int>, int>> pagedIdConfig() =>
+    const QueryConfig(
+      storeQuery: true,
+      storageDuration: queryStorageDuration,
+      storageDeserializer: pagedIdsFromJson,
+    );
+
 /// Cache normalisation intermediary
 class QueryBridge<T, K> {
   QueryBridge({
     required this.cache,
     required this.baseKey,
     required this.getId,
+    this.fromJson,
   });
 
   final CachedQuery cache;
   final List<Object> baseKey;
   final K Function(T) getId;
+
+  final Deserializer<T>? fromJson;
 
   Query<T>? _getQuery(K id) => cache.getQuery<Query<T>>([...baseKey, id]);
 
@@ -27,8 +47,12 @@ class QueryBridge<T, K> {
   static ShouldFetch<T> vendorFetch<T>(bool? vendored) =>
       (vendored ?? false) ? _vendoredFetch : _liveFetch;
 
-  QueryConfig<T> getConfig({bool? vendored}) =>
-      QueryConfig(shouldFetch: vendorFetch<T>(vendored));
+  QueryConfig<T> getConfig({bool? vendored}) => QueryConfig(
+    shouldFetch: vendorFetch<T>(vendored),
+    storeQuery: fromJson != null,
+    storageDuration: fromJson != null ? queryStorageDuration : null,
+    storageDeserializer: fromJson,
+  );
 
   T? get(K id) {
     final itemQuery = _getQuery(id);
@@ -102,8 +126,16 @@ extension QueryCacheBridging on CachedQuery {
     }
   }
 
-  QueryBridge<T, K> bridge<T, K>(List<Object> key, {K Function(T)? getId}) =>
-      QueryBridge(cache: this, baseKey: key, getId: getId ?? _dynamicGetId);
+  QueryBridge<T, K> bridge<T, K>(
+    List<Object> key, {
+    K Function(T)? getId,
+    Deserializer<T>? fromJson,
+  }) => QueryBridge(
+    cache: this,
+    baseKey: key,
+    getId: getId ?? _dynamicGetId,
+    fromJson: fromJson,
+  );
 
   Future<void> invalidateKey(
     List<Object> key, {

@@ -9,7 +9,8 @@ extension TopicQuerying on TopicClient {
 
   CachedQuery get queryCache => dio.queryCache!;
 
-  QueryBridge<Topic, int> get topicCache => queryCache.bridge(queryKey);
+  QueryBridge<Topic, int> get topicCache =>
+      queryCache.bridge(queryKey, fromJson: Topic.fromJson);
 
   Query<Topic> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
@@ -23,6 +24,7 @@ extension TopicQuerying on TopicClient {
         cache: queryCache,
         key: [...queryKey, query],
         getNextArg: (state) => state.nextPage,
+        config: pagedIdConfig(),
         queryFn: (key) =>
             page(page: key, query: query).then(topicCache.savePage),
       );

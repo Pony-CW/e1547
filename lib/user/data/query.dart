@@ -9,7 +9,8 @@ extension UserQuerying on UserClient {
 
   CachedQuery get queryCache => dio.queryCache!;
 
-  QueryBridge<User, int> get userCache => queryCache.bridge(queryKey);
+  QueryBridge<User, int> get userCache =>
+      queryCache.bridge(queryKey, fromJson: User.fromJson);
 
   Query<User> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,

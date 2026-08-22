@@ -10,7 +10,8 @@ extension CommentQuerying on CommentClient {
 
   CachedQuery get queryCache => dio.queryCache!;
 
-  QueryBridge<Comment, int> get commentCache => queryCache.bridge(queryKey);
+  QueryBridge<Comment, int> get commentCache =>
+      queryCache.bridge(queryKey, fromJson: Comment.fromJson);
 
   Query<Comment> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
@@ -24,6 +25,7 @@ extension CommentQuerying on CommentClient {
         cache: queryCache,
         key: [...queryKey, query],
         getNextArg: (state) => state.nextPage,
+        config: pagedIdConfig(),
         queryFn: (key) =>
             page(page: key, query: query).then(commentCache.savePage),
       );
@@ -36,7 +38,10 @@ extension CommentQuerying on CommentClient {
         where: (params) => params['search[post_id]'] == postId.toString(),
       );
       queryCache
-          .bridge<Post, int>(dio.identityQueryKey(PostQuerying.queryDomain))
+          .bridge<Post, int>(
+            dio.identityQueryKey(PostQuerying.queryDomain),
+            fromJson: Post.fromJson,
+          )
           .update(
             postId,
             (post) => post.copyWith(commentCount: post.commentCount + 1),

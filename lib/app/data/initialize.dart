@@ -122,26 +122,30 @@ Future<AppStorage> initializeAppStorage() async {
   final String temporaryFiles = await getTemporaryAppDirectory();
   cleanupImageCache();
   await completeDbImport();
+  final AppDatabase sqlite = AppDatabase(
+    driftDatabase(
+      name: 'app',
+      native: const DriftNativeOptions(
+        shareAcrossIsolates: true,
+        databasePath: getAppDatabasePath,
+      ),
+    ),
+  );
   return AppStorage(
     preferences: await SharedPreferences.getInstance(),
     temporaryFiles: temporaryFiles,
     queryCache: CachedQuery.asNewInstance()
       ..configFlutter(
+        storage: DriftQueryStorage(
+          repository: QueryStorageRepository(database: sqlite),
+        ),
         config: const GlobalQueryConfig(
           staleDuration: Duration(minutes: 5),
           refetchOnResume: false,
           refetchOnConnection: false,
         ),
       ),
-    sqlite: AppDatabase(
-      driftDatabase(
-        name: 'app',
-        native: const DriftNativeOptions(
-          shareAcrossIsolates: true,
-          databasePath: getAppDatabasePath,
-        ),
-      ),
-    ),
+    sqlite: sqlite,
   );
 }
 

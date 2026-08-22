@@ -9,7 +9,8 @@ extension WikiQuerying on WikiClient {
 
   CachedQuery get queryCache => dio.queryCache!;
 
-  QueryBridge<Wiki, int> get wikiCache => queryCache.bridge(queryKey);
+  QueryBridge<Wiki, int> get wikiCache =>
+      queryCache.bridge(queryKey, fromJson: Wiki.fromJson);
 
   Query<Wiki> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
@@ -34,6 +35,7 @@ extension WikiQuerying on WikiClient {
         cache: queryCache,
         key: [...queryKey, query],
         getNextArg: (state) => state.nextPage,
+        config: pagedIdConfig(),
         queryFn: (key) =>
             page(page: key, query: query).then(wikiCache.savePage),
       );

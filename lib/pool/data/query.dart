@@ -9,7 +9,8 @@ extension PoolQuerying on PoolClient {
 
   CachedQuery get queryCache => dio.queryCache!;
 
-  QueryBridge<Pool, int> get poolCache => queryCache.bridge(queryKey);
+  QueryBridge<Pool, int> get poolCache =>
+      queryCache.bridge(queryKey, fromJson: Pool.fromJson);
 
   Query<Pool> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
@@ -23,6 +24,7 @@ extension PoolQuerying on PoolClient {
         cache: queryCache,
         key: [...queryKey, query],
         getNextArg: (state) => state.nextPage,
+        config: pagedIdConfig(),
         queryFn: (key) =>
             page(page: key, query: query).then(poolCache.savePage),
       );

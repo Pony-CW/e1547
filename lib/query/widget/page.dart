@@ -114,6 +114,21 @@ class _PagedQueryBuilderState<T, Arg> extends State<PagedQueryBuilder<T, Arg>> {
           )
         : null;
 
+    if (state is! InfiniteQueryError &&
+        pages.any((page) => page.isNotEmpty) &&
+        resolvedPages.every((page) => page.isEmpty)) {
+      final pending = InfiniteQueryStatus<List<T>, Arg>.loading(
+        timeCreated: state.timeCreated,
+        data: null,
+        isRefetching: false,
+        isFetchingNextPage: false,
+        isInitialFetch: true,
+      );
+      lastState = state;
+      cachedState = pending;
+      return pending;
+    }
+
     final resolved = switch (state) {
       InfiniteQueryInitial() => InfiniteQueryStatus<List<T>, Arg>.initial(
         timeCreated: state.timeCreated,
