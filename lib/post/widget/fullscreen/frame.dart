@@ -105,7 +105,12 @@ class _SuppressBubbleWhileFrameHiddenState
 
   @override
   void dispose() {
-    _tasks?.suppressBubble.value = false;
+    final TasksController? tasks = _tasks;
+    if (tasks != null && tasks.suppressBubble.value) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => tasks.suppressBubble.value = false,
+      );
+    }
     super.dispose();
   }
 
