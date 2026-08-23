@@ -8,9 +8,10 @@ class CodeWrap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IndentedCard(
+    return ColoredCard(
       backgroundColor: Theme.of(context).canvasColor,
       color: dimTextColor(context),
+      padding: const EdgeInsets.only(left: ColoredCard.stripeWidth),
       child: DefaultTextStyle(
         style: DefaultTextStyle.of(
           context,
