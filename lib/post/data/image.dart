@@ -35,7 +35,7 @@ Future<void> preloadPostImages({
 }) async {
   for (int i = -(reach + 1); i < reach; i++) {
     int target = index + 1 + i;
-    if (0 < target && target < posts.length) {
+    if (0 <= target && target < posts.length) {
       Post post = posts[target];
       if (post.type == PostType.image && post.file != null) {
         if (!context.mounted) return;
