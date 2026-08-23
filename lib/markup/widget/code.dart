@@ -17,15 +17,10 @@ class CodeWrap extends StatelessWidget {
         ).style.copyWith(fontFamily: 'JetBrains Mono'),
         child: Padding(
           padding: const EdgeInsets.all(8),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [child],
-                ),
-              ),
-            ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [child],
           ),
         ),
       ),
