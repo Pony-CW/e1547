@@ -39,7 +39,10 @@ class LogsDrawer extends StatelessWidget {
       children: [
         const Padding(
           padding: EdgeInsets.only(left: 12),
-          child: ListTileHeader(title: 'Levels'),
+          child: SectionHeader(
+            indent: SectionHeader.listTileIndent,
+            title: 'Levels',
+          ),
         ),
         for (final LogLevel level in LogLevel.values)
           if (recording == null || level.isAtLeast(recording))
@@ -58,7 +61,10 @@ class LogsDrawer extends StatelessWidget {
         if (recording != null && onVerbose != null) ...[
           const Padding(
             padding: EdgeInsets.only(left: 12),
-            child: ListTileHeader(title: 'Recording'),
+            child: SectionHeader(
+              indent: SectionHeader.listTileIndent,
+              title: 'Recording',
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 16),

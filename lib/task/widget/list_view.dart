@@ -51,7 +51,10 @@ class SliverTasksList extends StatelessWidget {
       groupBy: _groupOf,
       groupComparator: _groupComparator,
       itemComparator: _itemComparator,
-      groupSeparatorBuilder: (value) => TasksSectionHeader(value),
+      groupSeparatorBuilder: (value) => Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: SectionHeader(title: value),
+      ),
       builderDelegate: defaultPagedChildBuilderDelegate<Task>(
         onRetry: () {},
         onEmpty: const Text('No tasks'),
@@ -61,26 +64,6 @@ class SliverTasksList extends StatelessWidget {
           controller: context.read<TasksController>(),
           layoutData: layoutData,
         ),
-      ),
-    );
-  }
-}
-
-class TasksSectionHeader extends StatelessWidget {
-  const TasksSectionHeader(this.label, {super.key});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final ColorScheme scheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 6),
-      child: Text(
-        label,
-        style: Theme.of(
-          context,
-        ).textTheme.titleSmall?.copyWith(color: scheme.primary),
       ),
     );
   }

@@ -38,8 +38,10 @@ class SliverHistoryList extends StatelessWidget {
         fetchNextPage: query.getNextPage,
         order: GroupedListOrder.DESC,
         groupBy: (element) => DateUtils.dateOnly(element.visitedAt),
-        groupHeaderBuilder: (element) =>
-            ListTileHeader(title: DateFormatting.named(element.visitedAt)),
+        groupHeaderBuilder: (element) => SectionHeader(
+          indent: SectionHeader.listTileIndent,
+          title: DateFormatting.named(element.visitedAt),
+        ),
         itemComparator: (a, b) => a.visitedAt.compareTo(b.visitedAt),
         builderDelegate: defaultPagedChildBuilderDelegate<History>(
           onRetry: query.getNextPage,

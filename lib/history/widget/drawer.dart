@@ -139,7 +139,10 @@ class HistoryCategoryFilterTile extends StatelessWidget {
         children: [
           const Padding(
             padding: EdgeInsets.only(left: 12),
-            child: ListTileHeader(title: 'Entries'),
+            child: SectionHeader(
+              indent: SectionHeader.listTileIndent,
+              title: 'Entries',
+            ),
           ),
           for (final filter in HistoryCategory.values)
             Padding(
@@ -180,7 +183,10 @@ class HistoryTypeFilterTile extends StatelessWidget {
         children: [
           const Padding(
             padding: EdgeInsets.only(left: 12),
-            child: ListTileHeader(title: 'Type'),
+            child: SectionHeader(
+              indent: SectionHeader.listTileIndent,
+              title: 'Type',
+            ),
           ),
           for (final filter in HistoryType.values)
             Padding(
