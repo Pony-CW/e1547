@@ -5,43 +5,33 @@ import 'package:e1547/shared/shared.dart';
 import 'package:e1547/topic/topic.dart';
 import 'package:flutter/material.dart';
 
-class TopicLoadingPage extends StatefulWidget {
+class TopicLoadingPage extends StatelessWidget {
   const TopicLoadingPage(this.id, {super.key, this.orderByOldest});
 
   final int id;
   final bool? orderByOldest;
 
   @override
-  State<TopicLoadingPage> createState() => _TopicLoadingPageState();
-}
-
-class _TopicLoadingPageState extends State<TopicLoadingPage> {
-  @override
   Widget build(BuildContext context) {
     final client = context.watch<Client>();
-    final query = client.topics.useGet(id: widget.id);
-
     return QueryBuilder(
-      query: query,
-      builder: (context, state) {
-        if (state.data != null) {
-          return TopicRepliesPage(
-            topic: state.data!,
-            orderByOldest: widget.orderByOldest,
-          );
-        }
-
-        return Scaffold(
-          appBar: AppBar(title: Text('Topic #${widget.id}')),
-          body: Center(
-            child: state.isLoading
-                ? const CircularProgressIndicator()
-                : state.error != null
-                ? const Text('Failed to load topic')
-                : const Text('Topic not found'),
+      query: client.topics.useGet(id: id),
+      builder: (context, state) => LoadingPage(
+        isLoading: state.isLoading,
+        isError: state.isError,
+        isEmpty: state.data == null,
+        loadingBuilder: (context, child) => Scaffold(
+          appBar: AppBar(
+            leading: const CloseButton(),
+            title: Text('Topic #$id'),
           ),
-        );
-      },
+          body: child(context),
+        ),
+        onError: const Text('Failed to load topic'),
+        onEmpty: const Text('Topic not found'),
+        child: (context) =>
+            TopicRepliesPage(topic: state.data!, orderByOldest: orderByOldest),
+      ),
     );
   }
 }
