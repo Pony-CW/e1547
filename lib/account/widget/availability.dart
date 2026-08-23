@@ -79,7 +79,7 @@ class _AvailabilityCheckState extends State<AvailabilityCheck> {
     if (offerResolve case final bool offerResolve) {
       widget.navigatorKey.currentState?.push(
         MaterialPageRoute(
-          builder: (context) => HostUnvailablePage(offerResolve: offerResolve),
+          builder: (context) => HostUnavailablePage(offerResolve: offerResolve),
         ),
       );
     }
