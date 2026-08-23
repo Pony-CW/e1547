@@ -134,6 +134,15 @@ class DTextBody extends StatelessWidget {
     );
   }
 
+  DTextBody _nested(List<DTextBlock> children) => DTextBody(
+    content: DTextDocument(children),
+    style: style,
+    maxLines: maxLines,
+    overflow: overflow,
+    textAlign: textAlign,
+    softWrap: softWrap,
+  );
+
   Widget _renderNode(BuildContext context, DTextNode node) {
     return switch (node) {
       DTextDocument() => _renderBlocks(context, node.children),
@@ -203,17 +212,13 @@ class DTextBody extends StatelessWidget {
         textAlign: textAlign,
         softWrap: softWrap,
       ),
-      DTextQuote() => QuoteWrap(
-        child: DTextBody(content: DTextDocument(block.children), style: style),
-      ),
-      DTextSpoilerBlock() => SpoilerBlockWrap(
-        child: DTextBody(content: DTextDocument(block.children), style: style),
-      ),
+      DTextQuote() => QuoteWrap(child: _nested(block.children)),
+      DTextSpoilerBlock() => SpoilerBlockWrap(child: _nested(block.children)),
       DTextSection() => SectionWrap(
         key: ObjectKey(block),
         title: block.title,
         expanded: block.expanded ?? false,
-        child: DTextBody(content: DTextDocument(block.children), style: style),
+        child: _nested(block.children),
       ),
       DTextCodeBlock() => CodeWrap(
         child: SelectableText(
