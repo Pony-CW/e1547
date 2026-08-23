@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +17,13 @@ Future<void> preloadPostImage({
     PostImageSize.file => post.file,
   };
   if (post.type != PostType.image) return;
-  if (url != null) {
-    context.read<BaseCacheManager>().downloadFile(url);
-  }
+  if (url == null) return;
+  final manager = context.read<BaseCacheManager>();
+  await precacheImage(
+    CachedNetworkImageProvider(url, cacheManager: manager),
+    context,
+    onError: (error, stack) {},
+  );
 }
 
 Future<void> preloadPostImages({
