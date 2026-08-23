@@ -6,6 +6,8 @@ import 'package:e1547/shared/shared.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+final DTextGrammar _grammar = DTextGrammar();
+
 class DText extends StatefulWidget {
   const DText(
     this.value, {
@@ -35,7 +37,7 @@ class _DTextState extends State<DText> {
 
   void _runParse() {
     try {
-      _content = DTextGrammar().parse(widget.value);
+      _content = _grammar.parse(widget.value);
       _error = null;
     } on Object catch (e, s) {
       _logger.error('Failed to parse DText', null, e, s);
