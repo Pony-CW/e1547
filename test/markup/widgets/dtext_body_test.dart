@@ -410,5 +410,39 @@ void main() {
       );
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('wide table scrolls horizontally', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          SizedBox(
+            width: 300,
+            child: DTextBody(
+              content: DTextDocument([
+                DTextTable([
+                  DTextTableBody([
+                    DTextTableRow([
+                      for (var i = 0; i < 8; i++)
+                        DTextTableCell(
+                          cellType: DTextTableCellType.td,
+                          children: [DTextText('column $i')],
+                        ),
+                    ]),
+                  ]),
+                ]),
+              ]),
+            ),
+          ),
+        ),
+      );
+
+      final Scrollable scrollable = tester.widget(
+        find.descendant(
+          of: find.byType(DTextTableWidget),
+          matching: find.byType(Scrollable),
+        ),
+      );
+      expect(scrollable.axisDirection, AxisDirection.right);
+      expect(tester.getSize(find.byType(Table)).width, greaterThan(300));
+    });
   });
 }
