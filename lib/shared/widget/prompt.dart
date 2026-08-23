@@ -391,15 +391,30 @@ class SheetHandle extends StatelessWidget {
   }
 }
 
+/// Shows [sliver] under [header], as a dialog on desktop and a sheet
+/// elsewhere.
+///
+/// Both sides scroll the content themselves, so the caller passes plain
+/// slivers.
+///
+/// [pinnedHeader] holds the header while the content scrolls under it, and the
+/// sheet's grab handle stays pinned either way.
 Future<T?> showSliverPrompt<T>(
   BuildContext context, {
   required WidgetBuilder header,
   required Widget sliver,
+  bool pinnedHeader = true,
+  double dialogWidth = 600,
   Widget Function(BuildContext context, Widget child)? parentBuilder,
   BoxConstraints? dialogConstraints,
 }) {
+  final Widget headerSliver = SliverToBoxAdapter(
+    child: Builder(builder: header),
+  );
+  final List<Widget> slivers = [if (!pinnedHeader) headerSliver, sliver];
+
   if (Theme.of(context).isDesktop) {
-    Widget content = CustomScrollView(slivers: [sliver]);
+    Widget content = CustomScrollView(shrinkWrap: true, slivers: slivers);
     if (dialogConstraints != null) {
       content = ConstrainedBox(constraints: dialogConstraints, child: content);
     }
@@ -409,8 +424,13 @@ Future<T?> showSliverPrompt<T>(
         final Widget dialog = AlertDialog(
           titlePadding: EdgeInsets.zero,
           contentPadding: EdgeInsets.zero,
-          title: SizedBox(width: 600, child: Builder(builder: header)),
-          content: SizedBox(width: 600, child: content),
+          title: pinnedHeader
+              ? SizedBox(
+                  width: dialogWidth,
+                  child: Builder(builder: header),
+                )
+              : null,
+          content: SizedBox(width: dialogWidth, child: content),
         );
         return parentBuilder?.call(context, dialog) ?? dialog;
       },
@@ -426,12 +446,32 @@ Future<T?> showSliverPrompt<T>(
         mainAxisSize: MainAxisSize.min,
         children: [
           const SheetHandle(),
-          Builder(builder: header),
+          if (pinnedHeader) Builder(builder: header),
         ],
       ),
     ),
     customBuilder: (context, controller, state) => Material(
-      child: CustomScrollView(controller: controller, slivers: [sliver]),
+      child: CustomScrollView(controller: controller, slivers: slivers),
     ),
   );
 }
+
+/// Shows a box [body] under [header], as a dialog on desktop and a sheet
+/// elsewhere.
+Future<T?> showPrompt<T>(
+  BuildContext context, {
+  required WidgetBuilder header,
+  required Widget body,
+  bool pinnedHeader = false,
+  double dialogWidth = 600,
+  Widget Function(BuildContext context, Widget child)? parentBuilder,
+  BoxConstraints? dialogConstraints,
+}) => showSliverPrompt<T>(
+  context,
+  header: header,
+  sliver: SliverToBoxAdapter(child: body),
+  pinnedHeader: pinnedHeader,
+  dialogWidth: dialogWidth,
+  parentBuilder: parentBuilder,
+  dialogConstraints: dialogConstraints,
+);
