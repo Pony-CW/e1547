@@ -25,7 +25,12 @@ class LogErrorsSliver extends StatelessWidget {
     builder: (context, _) {
       final List<LogEntry> items = errors.errors;
       if (items.isEmpty) {
-        return const SliverToBoxAdapter(child: LogErrorsEmpty());
+        return const SliverToBoxAdapter(
+          child: IconMessage(
+            icon: Icon(Icons.check),
+            title: Text('No errors logged'),
+          ),
+        );
       }
       return SliverPadding(
         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -86,16 +91,6 @@ class LogErrorsHeader extends StatelessWidget {
       ),
     );
   }
-}
-
-class LogErrorsEmpty extends StatelessWidget {
-  const LogErrorsEmpty({super.key});
-
-  @override
-  Widget build(BuildContext context) => const Padding(
-    padding: EdgeInsets.all(24),
-    child: Center(child: Text('Nothing left to look at.')),
-  );
 }
 
 String logErrorsTitle(int count) => count == 1 ? '1 error' : '$count errors';
