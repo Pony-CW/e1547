@@ -127,7 +127,7 @@ class _HistoryTileDropdown extends StatelessWidget {
           PopupMenuTile(
             title: 'Description',
             icon: Icons.description,
-            value: () => historySheet(context: context, entry: entry),
+            value: () => showHistoryPrompt(context: context, entry: entry),
           ),
         PopupMenuTile(
           title: 'Share',
