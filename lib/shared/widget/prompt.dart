@@ -335,40 +335,6 @@ SlidingSheetDialog defaultSlidingSheetDialog(
   );
 }
 
-class DefaultSheetBody extends StatelessWidget {
-  const DefaultSheetBody({super.key, this.title, required this.body});
-
-  final Widget? title;
-  final Widget body;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (title != null)
-            Padding(
-              padding: const EdgeInsets.all(4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: DefaultTextStyle(
-                      style: Theme.of(context).textTheme.titleLarge!,
-                      child: title!,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          body,
-        ],
-      ),
-    );
-  }
-}
-
 class SheetHandle extends StatelessWidget {
   const SheetHandle({super.key});
 
