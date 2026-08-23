@@ -9,7 +9,6 @@ class ColoredCard extends StatefulWidget {
     this.onTap,
     this.onLongPress,
     this.onSecondaryTap,
-    this.leading,
     this.trailing,
   });
 
@@ -19,7 +18,6 @@ class ColoredCard extends StatefulWidget {
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
   final VoidCallback? onSecondaryTap;
-  final Widget? leading;
   final Widget? trailing;
 
   @override
@@ -92,7 +90,7 @@ class _ColoredCardState extends State<ColoredCard> {
                       bottomLeft: Radius.circular(4),
                     ),
                   ),
-                  child: widget.leading ?? const SizedBox(width: 5),
+                  child: const SizedBox(width: 5),
                 ),
               Flexible(
                 child: Padding(
