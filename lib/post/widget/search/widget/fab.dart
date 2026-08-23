@@ -9,7 +9,7 @@ class PostsPageFab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<PostParamsController>();
-    return SearchPromptFloatingActionButton(
+    return SearchPromptFab(
       tags: controller.value.toQuery(),
       onSubmit: (value) =>
           controller.update((p) => p.copyWith(tags: value['tags'])),

@@ -231,8 +231,8 @@ class ActionIndicators extends StatelessWidget {
   }
 }
 
-class PromptFloatingActionButton extends StatelessWidget {
-  const PromptFloatingActionButton({
+class PromptFab extends StatelessWidget {
+  const PromptFab({
     super.key,
     this.controller,
     required this.builder,

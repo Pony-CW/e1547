@@ -83,7 +83,7 @@ class PostDetail extends StatelessWidget {
           extendBodyBehindAppBar: true,
           appBar: PostDetailAppBar(post: post),
           floatingActionButton: context.read<Client>().hasLogin
-              ? PostDetailFloatingActionButton(post: post)
+              ? PostDetailFab(post: post)
               : null,
           body: MediaQuery.removeViewInsets(
             context: context,

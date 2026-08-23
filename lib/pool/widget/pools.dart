@@ -42,7 +42,7 @@ class _PoolsPageState extends State<PoolsPage> with RouterDrawerEntryWidget {
                   title: Text('Pools'),
                   actions: [ContextDrawerButton()],
                 ),
-                floatingActionButton: const PoolsPageFloatingActionButton(),
+                floatingActionButton: const PoolsPageFab(),
                 drawer: const RouterDrawer(),
                 endDrawer: ContextDrawer(
                   title: const Text('Pools'),

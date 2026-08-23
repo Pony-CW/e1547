@@ -65,7 +65,7 @@ class FollowsSubscriptionsPage extends StatelessWidget {
                         FollowForceSyncTile(),
                       ],
                     ),
-                    floatingActionButton: AddTagFloatingActionButton(
+                    floatingActionButton: AddTagFab(
                       title: 'Add to subscriptions',
                       onSubmit: (value) async {
                         value = value.trim();

@@ -32,7 +32,7 @@ class FollowsBookmarkPage extends StatelessWidget {
                     child: DefaultAppBar(title: Text('Bookmarks')),
                   ),
                   drawer: const RouterDrawer(),
-                  floatingActionButton: AddTagFloatingActionButton(
+                  floatingActionButton: AddTagFab(
                     title: 'Add to bookmarks',
                     onSubmit: (value) async {
                       value = value.trim();

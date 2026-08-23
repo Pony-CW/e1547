@@ -51,7 +51,7 @@ class DenyListPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                floatingActionButton: PromptFloatingActionButton(
+                floatingActionButton: PromptFab(
                   builder: (context) => buildEditTextField(
                     context,
                     title: 'Add tag',

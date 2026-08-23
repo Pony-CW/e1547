@@ -9,7 +9,7 @@ class TopicSearchFab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<TopicParamsController>();
-    return SearchPromptFloatingActionButton(
+    return SearchPromptFab(
       tags: controller.value.toQuery(),
       onSubmit: (value) => controller.value = TopicParams.fromQuery(value),
       filters: [

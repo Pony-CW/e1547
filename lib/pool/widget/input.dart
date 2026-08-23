@@ -9,13 +9,13 @@ import 'package:e1547/tag/tag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-class PoolsPageFloatingActionButton extends StatelessWidget {
-  const PoolsPageFloatingActionButton({super.key});
+class PoolsPageFab extends StatelessWidget {
+  const PoolsPageFab({super.key});
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<PoolParamsController>();
-    return SearchPromptFloatingActionButton(
+    return SearchPromptFab(
       tags: controller.value.toQuery(),
       onSubmit: (value) => controller.value = PoolParams.fromQuery(value),
       filters: [
