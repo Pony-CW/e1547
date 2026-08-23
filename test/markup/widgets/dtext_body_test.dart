@@ -122,6 +122,25 @@ void main() {
       expect(find.textContaining('inside'), findsOneWidget);
     });
 
+    testWidgets('section title collapses whitespace', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const DTextBody(
+            content: DTextDocument([
+              DTextSection(
+                title: '   Ember pre-rust (2024)\n - by tester  ',
+                expanded: true,
+                children: [
+                  DTextParagraph([DTextText('inside')]),
+                ],
+              ),
+            ]),
+          ),
+        ),
+      );
+      expect(find.text('Ember pre-rust (2024) - by tester'), findsOneWidget);
+    });
+
     testWidgets('list renders each item with bullet', (tester) async {
       await tester.pumpWidget(
         _wrap(

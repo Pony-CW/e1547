@@ -24,7 +24,7 @@ class SectionWrap extends StatelessWidget {
         header: Padding(
           padding: const EdgeInsets.all(8),
           child: Text(
-            title?.replaceAll('\n', ' ') ?? '',
+            title?.replaceAll(RegExp(r'\s+'), ' ').trim() ?? '',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontSize: 16),
