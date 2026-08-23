@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/identity/identity.dart';
 
@@ -14,5 +13,4 @@ Dio dioFor(FakeE621 fake, {Credentials? credentials}) => createDefaultDio(
         ? null
         : {'authorization': credentials.basicAuth},
   ),
-  cache: MemCacheStore(),
 );

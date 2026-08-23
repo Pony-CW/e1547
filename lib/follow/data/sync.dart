@@ -179,7 +179,7 @@ class FollowSync {
 
     int limit = follows.length * refreshAmount;
     List<Post> allPosts = await rateLimit(
-      postsClient.byTags(tags: tags, page: 1, limit: limit, force: force),
+      postsClient.byTags(tags: tags, page: 1, limit: limit),
     );
 
     Map<Follow, List<Post>> assign(List<Follow> follows, List<Post> posts) {
@@ -247,11 +247,7 @@ class FollowSync {
     _assertNoDuplicates([follow.tags]);
 
     List<Post> posts = await rateLimit(
-      postsClient.page(
-        query: {'tags': follow.tags},
-        limit: refreshAmount,
-        force: force,
-      ),
+      postsClient.page(query: {'tags': follow.tags}, limit: refreshAmount),
     );
     posts.removeWhere((e) => e.isDeniedBy(traits.value.denylist));
     follow = follow.withUnseen(posts);
@@ -260,10 +256,7 @@ class FollowSync {
       if (follow.title == null && match != null) {
         try {
           follow = follow.withPool(
-            await poolsClient!.get(
-              id: int.parse(match.namedGroup('id')!),
-              force: force,
-            ),
+            await poolsClient!.get(id: int.parse(match.namedGroup('id')!)),
           );
         } on ClientException catch (e) {
           if (e.response?.statusCode == HttpStatus.notFound) {

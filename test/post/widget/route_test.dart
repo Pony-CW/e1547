@@ -48,7 +48,6 @@ void main() {
       storage: AppStorage(
         preferences: await SharedPreferences.getInstance(),
         temporaryFiles: '.',
-        httpCache: MemCacheStore(),
         queryCache: CachedQuery.asNewInstance()
           ..config(
             config: const GlobalQueryConfig(

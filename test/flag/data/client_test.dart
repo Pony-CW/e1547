@@ -22,7 +22,7 @@ void main() {
   test('maps a recorded flag onto the model', () async {
     final recorded = loadFixtureList('flags.json').first;
 
-    final flag = (await client.page(force: true)).first;
+    final flag = (await client.page()).first;
 
     expect(flag.id, recorded['id']);
     expect(flag.postId, recorded['post_id']);
@@ -33,11 +33,8 @@ void main() {
   });
 
   test('the type filter is read from the search namespace', () async {
-    final unfiltered = await client.page(force: true);
-    final flagged = await client.page(
-      query: {'search[type]': 'flag'},
-      force: true,
-    );
+    final unfiltered = await client.page();
+    final flagged = await client.page(query: {'search[type]': 'flag'});
 
     expect(unfiltered, isNotEmpty);
     expect(flagged, isEmpty);

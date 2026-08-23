@@ -22,7 +22,7 @@ void main() {
   test('maps a recorded tag onto the model', () async {
     final recorded = loadFixtureList('tags.json').first;
 
-    final tag = (await client.page(force: true)).first;
+    final tag = (await client.page()).first;
 
     expect(tag.id, recorded['id']);
     expect(tag.name, recorded['name']);
@@ -39,7 +39,6 @@ void main() {
       query: {
         'search[antecedent_name]': recorded['antecedent_name']! as String,
       },
-      force: true,
     );
 
     expect(alias, recorded['consequent_name']);

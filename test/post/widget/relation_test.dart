@@ -1,4 +1,3 @@
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:drift/native.dart';
 import 'package:e1547/app/app.dart';
 import 'package:e1547/client/client.dart';
@@ -66,7 +65,6 @@ void main() {
       storage: AppStorage(
         preferences: await SharedPreferences.getInstance(),
         temporaryFiles: '.',
-        httpCache: MemCacheStore(),
         queryCache: CachedQuery.asNewInstance()
           ..config(
             config: const GlobalQueryConfig(

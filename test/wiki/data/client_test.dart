@@ -22,7 +22,7 @@ void main() {
   test('maps a recorded wiki page onto the model', () async {
     final recorded = loadFixtureList('wiki_pages.json').first;
 
-    final wiki = (await client.page(force: true)).first;
+    final wiki = (await client.page()).first;
 
     expect(wiki.id, recorded['id']);
     expect(wiki.title, recorded['title']);
@@ -32,10 +32,7 @@ void main() {
   test('reads a wiki page by title', () async {
     final recorded = loadFixtureList('wiki_pages.json').first;
 
-    final wiki = await client.getByTitle(
-      title: recorded['title']! as String,
-      force: true,
-    );
+    final wiki = await client.getByTitle(title: recorded['title']! as String);
 
     expect(wiki.id, recorded['id']);
   });

@@ -19,7 +19,7 @@ void executeBackgroundTasks() => Workmanager().executeTask((
   AppStorage? storage;
 
   try {
-    storage = await initializeAppStorage(cache: false);
+    storage = await initializeAppStorage();
     setLogLevel(
       verboseLogLevel(verbose: Settings(storage.preferences).verboseLogs.value),
     );

@@ -17,23 +17,16 @@ class FollowClient {
 
   final FollowRepository repository;
 
-  Future<Follow> get({
-    required int id,
-    bool? force,
-    CancelToken? cancelToken,
-  }) => repository.get(id);
+  Future<Follow> get({required int id, CancelToken? cancelToken}) =>
+      repository.get(id);
 
-  Future<Follow?> getByTags({
-    required String tags,
-    bool? force,
-    CancelToken? cancelToken,
-  }) => repository.getByTags(tags, identity.id);
+  Future<Follow?> getByTags({required String tags, CancelToken? cancelToken}) =>
+      repository.getByTags(tags, identity.id);
 
   Future<List<Follow>> page({
     int? page,
     int? limit,
     QueryMap? query,
-    bool? force,
     CancelToken? cancelToken,
   }) {
     final search = FollowsQuery.from(query);
@@ -48,11 +41,7 @@ class FollowClient {
     );
   }
 
-  Future<List<Follow>> all({
-    QueryMap? query,
-    bool? force,
-    CancelToken? cancelToken,
-  }) {
+  Future<List<Follow>> all({QueryMap? query, CancelToken? cancelToken}) {
     final search = FollowsQuery.from(query);
     return repository.all(
       identity: identity.id,

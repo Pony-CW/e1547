@@ -22,7 +22,7 @@ void main() {
   test('maps a recorded pool onto the model', () async {
     final recorded = loadFixtureList('pools.json').first;
 
-    final pool = (await client.page(force: true)).first;
+    final pool = (await client.page()).first;
 
     expect(pool.id, recorded['id']);
     expect(pool.name, recorded['name']);
@@ -35,7 +35,7 @@ void main() {
   test('reads a pool by id', () async {
     final recorded = loadFixtureList('pools.json').first;
 
-    final pool = await client.get(id: recorded['id']! as int, force: true);
+    final pool = await client.get(id: recorded['id']! as int);
 
     expect(pool.name, recorded['name']);
   });

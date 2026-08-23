@@ -23,17 +23,13 @@ class HistoryServer with Disposable {
   static const int trimAmount = 5000;
   static const Duration trimAge = Duration(days: 30 * 3);
 
-  Future<History> get({
-    required int id,
-    bool? force,
-    CancelToken? cancelToken,
-  }) => repository.get(id);
+  Future<History> get({required int id, CancelToken? cancelToken}) =>
+      repository.get(id);
 
   Future<List<History>> page({
     int? page,
     int? limit,
     QueryMap? query,
-    bool? force,
     CancelToken? cancelToken,
   }) {
     final search = HistoryParams.fromQuery(query);

@@ -75,7 +75,7 @@ class DenyListPage extends StatelessWidget {
                 ),
                 body: PullToRefresh(
                   onRefresh: () async {
-                    await client.accounts.pull(force: true);
+                    await client.accounts.pull();
                   },
                   child: denylist.isEmpty
                       ? const Center(

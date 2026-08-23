@@ -22,7 +22,7 @@ void main() {
   test('maps a recorded user onto the model', () async {
     final recorded = loadFixtureList('users.json').first;
 
-    final user = await client.get(id: recorded['id']! as int, force: true);
+    final user = await client.get(id: recorded['id']! as int);
 
     expect(user.id, recorded['id']);
     expect(user.name, recorded['name']);
@@ -32,10 +32,7 @@ void main() {
   test('reads a user by name', () async {
     final recorded = loadFixtureList('users.json').first;
 
-    final user = await client.getByName(
-      name: recorded['name']! as String,
-      force: true,
-    );
+    final user = await client.getByName(name: recorded['name']! as String);
 
     expect(user.id, recorded['id']);
   });

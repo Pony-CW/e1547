@@ -12,7 +12,7 @@ extension HistoryQuerying on HistoryClient {
   Query<History> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
     key: [queryKey, id],
-    queryFn: () => get(id: id, force: true),
+    queryFn: () => get(id: id),
     config: historyCache.getConfig(vendored: vendored),
   );
 
@@ -21,11 +21,8 @@ extension HistoryQuerying on HistoryClient {
         cache: queryCache,
         key: [queryKey, query],
         getNextArg: (state) => state.nextPage,
-        queryFn: (key) => page(
-          page: key,
-          query: query,
-          force: true,
-        ).then(historyCache.savePage),
+        queryFn: (key) =>
+            page(page: key, query: query).then(historyCache.savePage),
       );
 
   Query<int> useCount() => Query(

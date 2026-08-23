@@ -23,7 +23,7 @@ void main() {
   test('maps a recorded comment onto the model', () async {
     final recorded = loadFixtureList('comments.json').first;
 
-    final comment = (await client.page(force: true)).first;
+    final comment = (await client.page()).first;
 
     expect(comment.id, recorded['id']);
     expect(comment.body, recorded['body']);
@@ -50,7 +50,7 @@ void main() {
 
     await client.update(id: id, postId: 0, content: 'edited');
 
-    expect((await client.get(id: id, force: true)).body, 'edited');
+    expect((await client.get(id: id)).body, 'edited');
   });
 
   test('the server rejects params it does not permit', () async {

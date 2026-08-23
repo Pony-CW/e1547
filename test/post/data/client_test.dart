@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/identity/identity.dart';
 import 'package:e1547/pool/pool.dart';
@@ -28,7 +27,7 @@ void main() {
       username: 'tester',
       headers: null,
     );
-    final dio = createDefaultDio(identity, cache: MemCacheStore());
+    final dio = createDefaultDio(identity);
     client = PostClient(
       dio: dio,
       pools: PoolClient(dio: dio),
@@ -54,7 +53,7 @@ void main() {
     final recorded = loadFixtureList('posts.json').first;
     final file = recorded['file']! as Map<String, Object?>;
 
-    final post = (await client.page(force: true)).first;
+    final post = (await client.page()).first;
 
     expect(post.id, recorded['id']);
     expect(post.ext, file['ext']);
@@ -76,7 +75,7 @@ void main() {
   });
 
   test('folds sample alternates into variants', () async {
-    final posts = await client.page(force: true);
+    final posts = await client.page();
     final video = posts.firstWhere((e) => e.ext == 'webm');
 
     expect(video.variants, isNotNull);
@@ -90,7 +89,7 @@ void main() {
     );
     final children = (recorded['relationships']! as Map)['children']! as List;
 
-    final posts = await client.page(force: true);
+    final posts = await client.page();
     final parent = posts.firstWhere((e) => e.id == recorded['id']);
 
     expect(parent.relationships.children, children);
@@ -102,7 +101,7 @@ void main() {
       'posts.json',
     ).map((e) => e['id']! as int).toList().reversed.toList();
 
-    await client.byIds(ids: ids, force: true);
+    await client.byIds(ids: ids);
 
     expect(fake.requests.last.query['tags'], 'id:${ids.join(',')}');
   });
@@ -110,7 +109,7 @@ void main() {
   test('splits ids into chunks of 320', () async {
     final ids = List.generate(321, (index) => index + 1);
 
-    await client.byIds(ids: ids, force: true);
+    await client.byIds(ids: ids);
 
     final posts = fake.requests.where((e) => e.path == '/posts.json').toList();
     expect(posts.length, 2);
@@ -125,7 +124,7 @@ void main() {
       'posts.json',
     ).map((e) => e['id']! as int).toList().reversed.toList();
 
-    final posts = await client.byIds(ids: ids, force: true);
+    final posts = await client.byIds(ids: ids);
 
     expect(posts.map((e) => e.id), ids);
   });
@@ -140,13 +139,13 @@ void main() {
       },
     });
 
-    final posts = await client.page(force: true);
+    final posts = await client.page();
 
     expect(posts.map((e) => e.id), isNot(contains(999)));
   });
 
   test('serves recorded asset urls from itself', () async {
-    final post = (await client.page(force: true)).first;
+    final post = (await client.page()).first;
 
     expect(post.file, startsWith(fake.url));
 
@@ -161,7 +160,7 @@ void main() {
 
   test('favorites are unavailable without credentials', () async {
     await expectLater(
-      client.favorites(force: true),
+      client.favorites(),
       throwsA(
         isA<DioException>().having(
           (e) => e.response?.statusCode,
@@ -194,7 +193,7 @@ void main() {
       identity: client.identity,
     );
 
-    final posts = await signedIn.favorites(force: true);
+    final posts = await signedIn.favorites();
 
     expect(posts.map((e) => e.id), [id]);
   });

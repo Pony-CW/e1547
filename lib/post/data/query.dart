@@ -16,7 +16,7 @@ extension PostQuerying on PostClient {
   Query<Post> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
     key: [queryKey, id],
-    queryFn: () => get(id: id, force: true),
+    queryFn: () => get(id: id),
     config: postCache.getConfig(vendored: vendored),
   );
 
@@ -62,17 +62,15 @@ extension PostQuerying on PostClient {
         cache: queryCache,
         key: [queryKey, query],
         getNextArg: (state) => state.nextPage,
-        queryFn: (page) => this
-            .page(page: page, query: query, force: true)
-            .then(postCache.savePage),
+        queryFn: (page) =>
+            this.page(page: page, query: query).then(postCache.savePage),
       );
 
   InfiniteQuery<List<int>, int> useFavorites() => InfiniteQuery<List<int>, int>(
     cache: queryCache,
     key: [queryKey, 'favorites'],
     getNextArg: (state) => state.nextPage,
-    queryFn: (page) =>
-        favorites(page: page, force: true).then(postCache.savePage),
+    queryFn: (page) => favorites(page: page).then(postCache.savePage),
   );
 
   InfiniteQuery<List<int>, int> useByPool({required int id}) =>
@@ -90,7 +88,7 @@ extension PostQuerying on PostClient {
           final lower = (page - 1) * perPage;
           if (lower >= ids.length) return const [];
           final slice = ids.sublist(lower, min(lower + perPage, ids.length));
-          final fetched = await byIds(ids: slice, force: true);
+          final fetched = await byIds(ids: slice);
           return postCache.savePage(fetched);
         },
       );
@@ -100,17 +98,14 @@ extension PostQuerying on PostClient {
         cache: queryCache,
         key: [queryKey, 'by_tags', tags],
         getNextArg: (state) => state.nextPage,
-        queryFn: (page) => byTags(
-          tags: tags,
-          page: page,
-          force: true,
-        ).then(postCache.savePage),
+        queryFn: (page) =>
+            byTags(tags: tags, page: page).then(postCache.savePage),
       );
 
   Query<List<Post>> useByIds({required List<int> ids}) => Query(
     cache: queryCache,
     key: [queryKey, 'ids', ids],
-    queryFn: () => byIds(ids: ids, force: true).then((fetched) {
+    queryFn: () => byIds(ids: ids).then((fetched) {
       postCache.savePage(fetched);
       return fetched;
     }),

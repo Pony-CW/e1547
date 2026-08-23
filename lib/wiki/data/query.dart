@@ -12,7 +12,7 @@ extension WikiQuerying on WikiClient {
   Query<Wiki> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
     key: [queryKey, id],
-    queryFn: () => get(id: id, force: true),
+    queryFn: () => get(id: id),
     config: wikiCache.getConfig(vendored: vendored),
   );
 
@@ -20,7 +20,7 @@ extension WikiQuerying on WikiClient {
     cache: queryCache,
     key: [queryKey, 'title', title],
     queryFn: () async {
-      final wiki = await getByTitle(title: title, force: true);
+      final wiki = await getByTitle(title: title);
       wikiCache.set(wiki);
       return wiki;
     },
@@ -33,6 +33,6 @@ extension WikiQuerying on WikiClient {
         key: [queryKey, query],
         getNextArg: (state) => state.nextPage,
         queryFn: (key) =>
-            page(page: key, query: query, force: true).then(wikiCache.savePage),
+            page(page: key, query: query).then(wikiCache.savePage),
       );
 }

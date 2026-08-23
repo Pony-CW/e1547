@@ -12,7 +12,7 @@ extension PoolQuerying on PoolClient {
   Query<Pool> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
     key: [queryKey, id],
-    queryFn: () => get(id: id, force: true),
+    queryFn: () => get(id: id),
     config: poolCache.getConfig(vendored: vendored),
   );
 
@@ -22,6 +22,6 @@ extension PoolQuerying on PoolClient {
         key: [queryKey, query],
         getNextArg: (state) => state.nextPage,
         queryFn: (key) =>
-            page(page: key, query: query, force: true).then(poolCache.savePage),
+            page(page: key, query: query).then(poolCache.savePage),
       );
 }

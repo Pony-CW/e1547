@@ -12,7 +12,7 @@ extension UserQuerying on UserClient {
   Query<User> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
     key: [queryKey, id],
-    queryFn: () => get(id: id, force: true),
+    queryFn: () => get(id: id),
     config: userCache.getConfig(vendored: vendored),
   );
 
@@ -20,7 +20,7 @@ extension UserQuerying on UserClient {
     cache: queryCache,
     key: [queryKey, 'name', name],
     queryFn: () async {
-      final user = await getByName(name: name, force: true);
+      final user = await getByName(name: name);
       userCache.set(user);
       return user;
     },

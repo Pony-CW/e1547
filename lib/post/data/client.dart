@@ -22,28 +22,21 @@ class PostClient {
   final ValueNotifier<Traits> traits;
   final Identity identity;
 
-  Future<Post> get({required int id, bool? force, CancelToken? cancelToken}) =>
-      dio
-          .get(
-            '/posts/$id.json',
-            cancelToken: cancelToken,
-            options: forceOptions(force),
-          )
-          .then(unwrapRailsArray)
-          .then((response) => E621Post.fromJson(response.data));
+  Future<Post> get({required int id, CancelToken? cancelToken}) => dio
+      .get('/posts/$id.json', cancelToken: cancelToken)
+      .then(unwrapRailsArray)
+      .then((response) => E621Post.fromJson(response.data));
 
   Future<List<Post>> page({
     int? page,
     int? limit,
     QueryMap? query,
-    bool? force,
     CancelToken? cancelToken,
   }) => dio
       .get(
         '/posts.json',
         queryParameters: {'page': page, 'limit': limit, ...?query}.toQuery(),
         cancelToken: cancelToken,
-        options: forceOptions(force),
       )
       .then(unwrapRailsArray)
       .then(
@@ -63,7 +56,6 @@ class PostClient {
 
   Future<List<Post>> byIds({
     required List<int> ids,
-    bool? force,
     CancelToken? cancelToken,
   }) async {
     if (ids.isEmpty) return [];
@@ -82,7 +74,6 @@ class PostClient {
       List<Post> part = await page(
         query: {'tags': filter},
         limit: chunk.length,
-        force: force,
         cancelToken: cancelToken,
       );
       Map<int, Post> table = {for (Post e in part) e.id: e};
@@ -98,7 +89,6 @@ class PostClient {
     required List<String> tags,
     int? page,
     int? limit,
-    bool? force,
     CancelToken? cancelToken,
   }) async {
     page ??= 1;
@@ -120,7 +110,6 @@ class PostClient {
       page: sitePage,
       query: {'tags': filter},
       limit: limit,
-      force: force,
       cancelToken: cancelToken,
     );
   }
@@ -141,7 +130,6 @@ class PostClient {
     int? page,
     int? limit,
     QueryMap? query,
-    bool? force,
     CancelToken? cancelToken,
   }) => dio
       .get(
@@ -152,7 +140,6 @@ class PostClient {
           // may not contain tags, or we get redirected to a html page
           ...?(query?..remove('tags')),
         },
-        options: forceOptions(force),
         cancelToken: cancelToken,
       )
       .then(unwrapRailsArray)

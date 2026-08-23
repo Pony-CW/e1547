@@ -13,7 +13,7 @@ extension CommentQuerying on CommentClient {
   Query<Comment> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
     key: [queryKey, id],
-    queryFn: () => get(id: id, force: true),
+    queryFn: () => get(id: id),
     config: commentCache.getConfig(vendored: vendored),
   );
 
@@ -22,11 +22,8 @@ extension CommentQuerying on CommentClient {
         cache: queryCache,
         key: [queryKey, query],
         getNextArg: (state) => state.nextPage,
-        queryFn: (key) => page(
-          page: key,
-          query: query,
-          force: true,
-        ).then(commentCache.savePage),
+        queryFn: (key) =>
+            page(page: key, query: query).then(commentCache.savePage),
       );
 
   Mutation<void, String> useCreate({required int postId}) => Mutation(

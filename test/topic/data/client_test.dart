@@ -22,7 +22,7 @@ void main() {
   test('maps a recorded topic onto the model', () async {
     final recorded = loadFixtureList('topics.json').first;
 
-    final topic = (await client.page(force: true)).first;
+    final topic = (await client.page()).first;
 
     expect(topic.id, recorded['id']);
     expect(topic.title, recorded['title']);
@@ -36,7 +36,7 @@ void main() {
   test('reads a topic by id', () async {
     final recorded = loadFixtureList('topics.json').first;
 
-    final topic = await client.get(id: recorded['id']! as int, force: true);
+    final topic = await client.get(id: recorded['id']! as int);
 
     expect(topic.title, recorded['title']);
   });

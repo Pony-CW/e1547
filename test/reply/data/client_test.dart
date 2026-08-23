@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/identity/identity.dart';
 import 'package:e1547/reply/reply.dart';
@@ -21,7 +20,6 @@ void main() {
     client = ReplyClient(
       dio: createDefaultDio(
         Identity(id: 1, host: fake.url, username: 'tester', headers: null),
-        cache: MemCacheStore(),
       ),
     );
   });
@@ -31,10 +29,7 @@ void main() {
   test('maps a recorded reply onto the model', () async {
     final recorded = loadFixtureList('replies.json').first;
 
-    final replies = await client.page(
-      query: {'search[topic_id]': '$topic'},
-      force: true,
-    );
+    final replies = await client.page(query: {'search[topic_id]': '$topic'});
 
     final reply = replies.firstWhere((e) => e.id == recorded['id']);
     expect(reply.body, recorded['body']);
@@ -46,10 +41,7 @@ void main() {
   test('lists every reply of a topic', () async {
     final recorded = loadFixtureList('replies.json');
 
-    final replies = await client.page(
-      query: {'search[topic_id]': '$topic'},
-      force: true,
-    );
+    final replies = await client.page(query: {'search[topic_id]': '$topic'});
 
     expect(replies.map((e) => e.id), recorded.map((e) => e['id']));
   });
@@ -69,10 +61,7 @@ void main() {
   test('creating a reply makes it readable', () async {
     await client.create(topicId: topic, content: 'hello');
 
-    final replies = await client.page(
-      query: {'search[topic_id]': '$topic'},
-      force: true,
-    );
+    final replies = await client.page(query: {'search[topic_id]': '$topic'});
 
     expect(replies.last.body, 'hello');
   });
@@ -97,7 +86,7 @@ void main() {
 
     await client.update(id: id, content: 'edited');
 
-    expect((await client.get(id: id, force: true)).body, 'edited');
+    expect((await client.get(id: id)).body, 'edited');
   });
 
   test('the server rejects params it does not permit', () async {

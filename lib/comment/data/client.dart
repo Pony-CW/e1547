@@ -7,29 +7,19 @@ class CommentClient {
 
   final Dio dio;
 
-  Future<Comment> get({
-    required int id,
-    bool? force,
-    CancelToken? cancelToken,
-  }) => dio
-      .get(
-        '/comments/$id.json',
-        options: forceOptions(force),
-        cancelToken: cancelToken,
-      )
+  Future<Comment> get({required int id, CancelToken? cancelToken}) => dio
+      .get('/comments/$id.json', cancelToken: cancelToken)
       .then((response) => E621Comment.fromJson(response.data));
 
   Future<List<Comment>> page({
     int? page,
     int? limit,
     QueryMap? query,
-    bool? force,
     CancelToken? cancelToken,
   }) => dio
       .get(
         '/comments.json',
         queryParameters: {'page': page, 'limit': limit, ...?query}.toQuery(),
-        options: forceOptions(force),
         cancelToken: cancelToken,
       )
       .then(unwrapRailsArray)

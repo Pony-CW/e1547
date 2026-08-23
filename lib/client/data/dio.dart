@@ -10,12 +10,7 @@ import 'package:e1547/shared/shared.dart';
 import 'package:native_dio_adapter/native_dio_adapter.dart';
 
 /// Create a default [Dio] instance for the given [Identity].
-/// Includes user agent, logging and caching.
-Dio createDefaultDio(
-  Identity identity, {
-  CacheStore? cache,
-  CachedQuery? queryCache,
-}) {
+Dio createDefaultDio(Identity identity, {CachedQuery? queryCache}) {
   final dio = Dio(
     BaseOptions(
       baseUrl: normalizeHostUrl(identity.host),
@@ -30,17 +25,6 @@ Dio createDefaultDio(
   dio.httpClientAdapter = NativeAdapter();
   dio.interceptors.add(NewlineReplaceInterceptor());
   dio.interceptors.add(LoggingDioInterceptor());
-  if (cache != null) {
-    dio.interceptors.add(
-      ClientCacheInterceptor(
-        options: ClientCacheConfig(
-          store: cache,
-          maxAge: const Duration(minutes: 5),
-          pageParam: 'page',
-        ),
-      ),
-    );
-  }
   if (queryCache != null) {
     dio.queryCache = queryCache;
   }

@@ -15,7 +15,7 @@ extension FollowQuerying on FollowClient {
   Query<Follow> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
     key: [queryKey, id],
-    queryFn: () => get(id: id, force: true),
+    queryFn: () => get(id: id),
     config: followCache.getConfig(vendored: vendored),
   );
 
@@ -26,7 +26,7 @@ extension FollowQuerying on FollowClient {
         getNextArg: (state) => state.nextPage,
         queryFn: (pageKey) async {
           try {
-            final result = await page(page: pageKey, query: query, force: true);
+            final result = await page(page: pageKey, query: query);
             return followCache.savePage(result);
           } catch (e, st) {
             _logger.warn(
@@ -43,7 +43,7 @@ extension FollowQuerying on FollowClient {
   Query<List<Follow>> useAll({QueryMap? query}) => Query(
     cache: queryCache,
     key: [queryKey, 'all', query],
-    queryFn: () => all(query: query, force: true),
+    queryFn: () => all(query: query),
   );
 
   Query<Map<FollowType, List<String>>> useTimelineTags() => Query(
@@ -52,7 +52,6 @@ extension FollowQuerying on FollowClient {
     queryFn: () async {
       final follows = await all(
         query: FollowsQuery(types: [FollowType.update, FollowType.notify]),
-        force: true,
       );
 
       final Map<FollowType, List<String>> result = {

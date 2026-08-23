@@ -13,7 +13,7 @@ extension ReplyQuerying on ReplyClient {
   Query<Reply> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
     key: [queryKey, id],
-    queryFn: () => get(id: id, force: true),
+    queryFn: () => get(id: id),
     config: replyCache.getConfig(vendored: vendored),
   );
 
@@ -22,11 +22,8 @@ extension ReplyQuerying on ReplyClient {
         cache: queryCache,
         key: [queryKey, query],
         getNextArg: (state) => state.nextPage,
-        queryFn: (key) => page(
-          page: key,
-          query: query,
-          force: true,
-        ).then(replyCache.savePage),
+        queryFn: (key) =>
+            page(page: key, query: query).then(replyCache.savePage),
       );
 
   Mutation<void, String> useCreate({required int topicId}) => Mutation(

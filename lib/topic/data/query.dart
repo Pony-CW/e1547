@@ -12,7 +12,7 @@ extension TopicQuerying on TopicClient {
   Query<Topic> useGet({required int id, bool? vendored}) => Query(
     cache: queryCache,
     key: [queryKey, id],
-    queryFn: () => get(id: id, force: true),
+    queryFn: () => get(id: id),
     config: topicCache.getConfig(vendored: vendored),
   );
 
@@ -21,10 +21,7 @@ extension TopicQuerying on TopicClient {
         cache: queryCache,
         key: [queryKey, query],
         getNextArg: (state) => state.nextPage,
-        queryFn: (key) => page(
-          page: key,
-          query: query,
-          force: true,
-        ).then(topicCache.savePage),
+        queryFn: (key) =>
+            page(page: key, query: query).then(topicCache.savePage),
       );
 }

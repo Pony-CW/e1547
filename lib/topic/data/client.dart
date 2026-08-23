@@ -7,26 +7,19 @@ class TopicClient {
 
   final Dio dio;
 
-  Future<Topic> get({required int id, bool? force, CancelToken? cancelToken}) =>
-      dio
-          .get(
-            '/forum_topics/$id.json',
-            options: forceOptions(force),
-            cancelToken: cancelToken,
-          )
-          .then((response) => E621Topic.fromJson(response.data));
+  Future<Topic> get({required int id, CancelToken? cancelToken}) => dio
+      .get('/forum_topics/$id.json', cancelToken: cancelToken)
+      .then((response) => E621Topic.fromJson(response.data));
 
   Future<List<Topic>> page({
     int? page,
     int? limit,
     QueryMap? query,
-    bool? force,
     CancelToken? cancelToken,
   }) => dio
       .get(
         '/forum_topics.json',
         queryParameters: {'page': page, 'limit': limit, ...?query}.toQuery(),
-        options: forceOptions(force),
         cancelToken: cancelToken,
       )
       .then(unwrapRailsArray)

@@ -9,7 +9,6 @@ import 'package:e1547/query/query.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:http_cache_drift_store/http_cache_drift_store.dart';
 import 'package:notified_preferences/notified_preferences.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -119,14 +118,13 @@ void registerFlutterErrorHandler(
 }
 
 /// Initializes the storages used by the app with default production values.
-Future<AppStorage> initializeAppStorage({bool cache = true}) async {
+Future<AppStorage> initializeAppStorage() async {
   final String temporaryFiles = await getTemporaryAppDirectory();
   cleanupImageCache();
   await completeDbImport();
   return AppStorage(
     preferences: await SharedPreferences.getInstance(),
     temporaryFiles: temporaryFiles,
-    httpCache: cache ? DriftCacheStore(databasePath: temporaryFiles) : null,
     queryCache: CachedQuery.asNewInstance()
       ..configFlutter(
         config: const GlobalQueryConfig(
