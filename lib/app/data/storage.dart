@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:e1547/files/files.dart';
 import 'package:e1547/follow/follow.dart';
 import 'package:e1547/history/history.dart';
 import 'package:e1547/identity/data/database.dart';
@@ -21,13 +22,14 @@ import 'storage.drift.dart';
     TasksTable,
     TasksIdentitiesTable,
     QueryStorageTable,
+    FileCacheTable,
   ],
 )
 class AppDatabase extends $AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -99,6 +101,12 @@ class AppDatabase extends $AppDatabase {
       }
       if (from < 8) {
         await m.createTable(queryStorageTable);
+      }
+      if (from < 9) {
+        await m.createTable(fileCacheTable);
+        // createTable does not create indexes, unlike createAll.
+        await m.create(fileCacheLookup);
+        await m.create(fileCacheTouched);
       }
     },
     beforeOpen: (details) => customStatement('PRAGMA foreign_keys = ON'),

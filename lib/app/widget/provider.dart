@@ -5,10 +5,9 @@
 /// because no two controllers should be attached to global singletons.
 library;
 
-import 'dart:io';
-
 import 'package:e1547/app/app.dart';
 import 'package:e1547/client/client.dart';
+import 'package:e1547/files/files.dart';
 import 'package:e1547/identity/identity.dart';
 import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
@@ -128,42 +127,14 @@ class ClientProvider
       );
 }
 
-class CacheManagerProvider
-    extends SubProvider<IdentityClient, BaseCacheManager> {
-  CacheManagerProvider({super.child, super.builder})
+class FileCacheProvider
+    extends SubProvider2<Client, AppStorage, BaseCacheManager> {
+  FileCacheProvider({super.child, super.builder})
     : super(
-        create: (context, client) => CacheManager(
-          Config(
-            DefaultCacheManager.key,
-            stalePeriod: const Duration(days: 1),
-            repo: JsonCacheInfoRepository(
-              databaseName: DefaultCacheManager.key,
-            ),
-            fileService: _IdentityHttpFileClient(client.identity),
-          ),
-        ),
+        create: (context, client, storage) =>
+            createFileCache(dio: client.dio, database: storage.sqlite),
+        dispose: (context, manager) => manager.dispose(),
       );
-}
-
-class _IdentityHttpFileClient extends HttpFileService {
-  _IdentityHttpFileClient(this.identity);
-
-  final Identity identity;
-
-  @override
-  Future<FileServiceResponse> get(
-    String url, {
-    Map<String, String>? headers,
-  }) async {
-    return super.get(
-      url,
-      headers: {
-        ...headers ?? {},
-        HttpHeaders.userAgentHeader: AppInfo.instance.userAgent,
-        ...?identity.headers,
-      },
-    );
-  }
 }
 
 class AppInfoClientProvider extends SubProvider0<AppInfoClient?> {
