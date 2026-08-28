@@ -122,7 +122,7 @@ class ClientProvider
         keys: (context) => [
           context.watch<IdentityClient>().identity,
           context.watch<TraitsClient>(), // notifier is created per identity
-          context.watch<AppStorage>().httpCache,
+          context.watch<AppStorage>().queryCache,
         ],
         dispose: (context, client) => client.dispose(),
       );
@@ -168,5 +168,8 @@ class _IdentityHttpFileClient extends HttpFileService {
 
 class AppInfoClientProvider extends SubProvider0<AppInfoClient?> {
   AppInfoClientProvider({super.child, super.builder})
-    : super(create: (context) => AppInfoClient());
+    : super(
+        create: (context) =>
+            AppInfoClient(queryCache: context.read<AppStorage>().queryCache),
+      );
 }

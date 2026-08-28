@@ -35,54 +35,56 @@ class App extends StatelessWidget {
             drawerHeader: (context) => const UserDrawerHeader(),
           ),
         ],
-        builder: (context, child) => ValueListenableBuilder<Language>(
-          valueListenable: context.watch<Settings>().languages,
-          builder: (context, language, _) => ValueListenableBuilder<AppTheme>(
-            valueListenable: context.watch<Settings>().theme,
-            builder: (context, value, child) => ExcludeSemantics(
-              child: AnnotatedRegion<SystemUiOverlayStyle>(
-                value:
-                    value.data.appBarTheme.systemOverlayStyle ??
-                    const SystemUiOverlayStyle(),
-                child: SubValue<GlobalKey<NavigatorState>>(
-                  create: () => GlobalKey<NavigatorState>(),
-                  builder: (context, navigatorKey) => MaterialApp(
-                    title: AppInfo.instance.appName,
-                    theme: value.data,
-                    scrollBehavior: AndroidStretchScrollBehaviour(),
-                    localizationsDelegates: const [
-                      AppLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                      RelativeTimeLocalizations.delegate,
-                    ],
-                    supportedLocales: const [Locale('en'), Locale('zh', 'CN')],
-                    locale: language.locale,
-                    navigatorKey: navigatorKey,
-                    navigatorObservers: [
-                      context.watch<AnyRouteObserver>(),
-                      RouteLoggerObserver(),
-                      MaterialApp.createMaterialHeroController(),
-                    ],
-                    routes: context.watch<RouterDrawerController>().routes,
-                    builder: (context, child) => WindowFrame(
-                      child: WindowShortcuts(
-                        navigatorKey: navigatorKey,
-                        child: SecureDisplay(
-                          child: LockScreen(
-                            child: LoadingShell(
-                              child: MultiProvider(
-                                providers: [
-                                  IdentityClientProvider(),
-                                  TraitsClientProvider(),
-                                  ClientProvider(),
-                                  CacheManagerProvider(),
-                                  TasksControllerProvider(),
-                                ],
-                                child: LoadingCore(
-                                  child: ErrorNotifier(
-                                    navigatorKey: navigatorKey,
+        builder: (context, child) => LogLevelScope(
+          child: ValueListenableBuilder<Language>(
+            valueListenable: context.watch<Settings>().languages,
+            builder: (context, language, _) => ValueListenableBuilder<AppTheme>(
+              valueListenable: context.watch<Settings>().theme,
+              builder: (context, value, child) => ExcludeSemantics(
+                child: AnnotatedRegion<SystemUiOverlayStyle>(
+                  value:
+                      value.data.appBarTheme.systemOverlayStyle ??
+                      const SystemUiOverlayStyle(),
+                  child: SubValue<GlobalKey<NavigatorState>>(
+                    create: () => GlobalKey<NavigatorState>(),
+                    builder: (context, navigatorKey) => MaterialApp(
+                      title: AppInfo.instance.appName,
+                      theme: value.data,
+                      scrollBehavior: AndroidStretchScrollBehaviour(),
+                      localizationsDelegates: const [
+                        AppLocalizations.delegate,
+                        GlobalWidgetsLocalizations.delegate,
+                        GlobalMaterialLocalizations.delegate,
+                        GlobalCupertinoLocalizations.delegate,
+                        RelativeTimeLocalizations.delegate,
+                      ],
+                      supportedLocales: const [
+                        Locale('en'),
+                        Locale('zh', 'CN'),
+                      ],
+                      locale: language.locale,
+                      navigatorKey: navigatorKey,
+                      navigatorObservers: [
+                        context.watch<AnyRouteObserver>(),
+                        RouteLoggerObserver(),
+                        MaterialApp.createMaterialHeroController(),
+                      ],
+                      routes: context.watch<RouterDrawerController>().routes,
+                      builder: (context, child) => WindowFrame(
+                        child: WindowShortcuts(
+                          navigatorKey: navigatorKey,
+                          child: SecureDisplay(
+                            child: LockScreen(
+                              child: LoadingShell(
+                                child: MultiProvider(
+                                  providers: [
+                                    IdentityClientProvider(),
+                                    TraitsClientProvider(),
+                                    ClientProvider(),
+                                    CacheManagerProvider(),
+                                    TasksControllerProvider(),
+                                  ],
+                                  child: LoadingCore(
                                     child: OnboardingGate(
                                       child: AccountConnector(
                                         navigatorKey: navigatorKey,
@@ -91,7 +93,7 @@ class App extends StatelessWidget {
                                             navigatorKey: navigatorKey,
                                             child: NotificationHandler(
                                               navigatorKey: navigatorKey,
-                                              child: TasksOverlayHost(
+                                              child: AppBubbleOverlay(
                                                 navigatorKey: navigatorKey,
                                                 child: child!,
                                               ),

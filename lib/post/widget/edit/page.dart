@@ -1,3 +1,4 @@
+import 'package:e1547/client/client.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +83,10 @@ class _PostEditPageState extends State<PostEditPage> {
 
       final body = editData.toForm();
       if (body != null) {
-        await context.read<PostController>().updatePost(widget.post, body);
+        await context.read<Client>().posts.update(
+          id: widget.post.id,
+          data: body,
+        );
 
         if (mounted) {
           messenger.showSnackBar(

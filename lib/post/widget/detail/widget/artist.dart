@@ -43,7 +43,7 @@ class ArtistDisplay extends StatelessWidget {
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => UserLoadingPage(
-                        post.uploaderId.toString(),
+                        post.uploaderId,
                         initalPage: UserPageSection.uploads,
                       ),
                     ),

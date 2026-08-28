@@ -165,10 +165,10 @@ class _VideoBarState extends State<VideoBar> {
 
   @override
   void dispose() {
-    super.dispose();
     for (final s in subscriptions) {
       s.cancel();
     }
+    super.dispose();
   }
 
   @override
@@ -406,10 +406,10 @@ class PostVideoRoute extends StatefulWidget {
   State<PostVideoRoute> createState() => PostVideoRouteState();
 }
 
-class PostVideoRouteState extends State<PostVideoRoute>
-    with DefaultRouteAware<PostVideoRoute> {
-  late VideoPlayer? player;
-  late final bool _wasPlaying;
+class PostVideoRouteState extends State<PostVideoRoute> {
+  VideoPlayer? player;
+  VideoService? _videos;
+  bool _wasPlaying = false;
   bool _keepPlaying = false;
 
   void keepPlaying() => _keepPlaying = true;
@@ -419,31 +419,38 @@ class PostVideoRouteState extends State<PostVideoRoute>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _wasPlaying =
-          widget.post.getVideo(context, listen: false)?.state.playing ?? false;
+      _wasPlaying = player?.state.playing ?? false;
     });
-  }
-
-  @override
-  void didPushNext() {
-    super.didPushNext();
-    if (_keepPlaying) {
-      _keepPlaying = false;
-    } else {
-      player?.pause();
-    }
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    player = widget.post.getVideo(context);
+    VideoPlayer? next = widget.post.getVideo(context);
+    if (next == player) return;
+    if (player case VideoPlayer previous) {
+      if (!_keepPlaying) previous.pause();
+      _keepPlaying = false;
+      _videos?.release(previous);
+    }
+    player = next;
+    if (next != null) {
+      _videos = context.read<VideoService>();
+      _videos!.acquire(next);
+    }
   }
 
   @override
   void dispose() {
-    if (widget.stopOnDispose && !_wasPlaying) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => player?.pause());
+    // The lease outlives this state by a frame, so that pausing cannot land
+    // on a player that has already been recycled for another video.
+    if (player case VideoPlayer held) {
+      bool stop = widget.stopOnDispose && !_wasPlaying;
+      VideoService? videos = _videos;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (stop) held.pause();
+        videos?.release(held);
+      });
     }
     super.dispose();
   }
@@ -459,7 +466,7 @@ class PostVideoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    VideoPlayer player = post.getVideo(context)!;
+    VideoPlayer? player = post.getVideo(context);
 
     Widget placeholder() {
       return PostImageWidget(
@@ -470,6 +477,8 @@ class PostVideoWidget extends StatelessWidget {
         lowResCacheSize: context.watch<ImageCacheSize?>()?.size,
       );
     }
+
+    if (player == null) return placeholder();
 
     return SubStream<bool>(
       create: () => player.initialized,

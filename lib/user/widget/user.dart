@@ -1,9 +1,9 @@
 import 'package:e1547/app/app.dart';
 import 'package:e1547/client/client.dart';
-import 'package:e1547/history/history.dart';
 import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/markup/markup.dart';
 import 'package:e1547/post/post.dart';
+import 'package:e1547/query/query.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
 import 'package:e1547/ticket/ticket.dart';
@@ -11,6 +11,7 @@ import 'package:e1547/traits/traits.dart';
 import 'package:e1547/user/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_sub/flutter_sub.dart';
 
 enum UserPageSection { favorites, uploads, info }
 
@@ -26,27 +27,25 @@ class UserPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _UserPageProvider(
+    return UserHistoryConnector(
       user: user,
-      child: Consumer<_UserPageControllers>(
-        builder: (context, controllers, child) => LayoutBuilder(
+      child: SubValue.builder(
+        create: (context) => PostFilter(context.read<Client>()),
+        dispose: (_, v) => v.dispose(),
+        builder: (context, filter) => LayoutBuilder(
           builder: (context, constraints) {
             Widget body;
             PreferredSizeWidget? appbar;
-            Map<Widget, WidgetBuilder> tabs = {
+            final tabs = <Widget, WidgetBuilder>{
               Tab(text: AppLocalizations.of(context)!.favorites): (context) =>
-                  ChangeNotifierProvider<PostController>.value(
-                    value: controllers.favoritePosts,
-                    builder: (context, child) => PostSliverDisplay(
-                      controller: controllers.favoritePosts,
-                    ),
+                  _UserPostsTab(
+                    filter: filter,
+                    params: PostParams(tags: 'fav:${user.name}'),
                   ),
               Tab(text: AppLocalizations.of(context)!.uploads): (context) =>
-                  ChangeNotifierProvider<PostController>.value(
-                    value: controllers.uploadedPosts,
-                    builder: (context, child) => PostSliverDisplay(
-                      controller: controllers.uploadedPosts,
-                    ),
+                  _UserPostsTab(
+                    filter: filter,
+                    params: PostParams(tags: 'user:${user.name}'),
                   ),
             };
 
@@ -60,7 +59,6 @@ class UserPage extends StatelessWidget {
                     ),
                     sliver: UserSliverAppBar(
                       user: user,
-                      avatar: controllers.profilePost,
                       tabs: tabs.keys.toList(),
                     ),
                   ),
@@ -122,7 +120,6 @@ class UserPage extends StatelessWidget {
                                 width: 100,
                                 child: UserAvatar(
                                   id: user.avatarId,
-                                  controller: controllers.profilePost,
                                   userId: user.id,
                                   hasCroppedAvatar: user.hasCroppedAvatar,
                                 ),
@@ -177,30 +174,20 @@ class UserPage extends StatelessWidget {
               );
             }
 
-            return ControllerHistoryConnector<PostController?>(
-              controller: controllers.profilePost,
-              addToHistory: (context, client, controller) =>
-                  client.histories.add(
-                    UserHistoryRequest.item(
-                      user: user,
-                      avatar: controller?.items?.first,
-                    ),
-                  ),
-              child: DefaultTabController(
-                length: tabs.length,
-                initialIndex: initialPage.index,
-                child: Scaffold(
-                  appBar: appbar,
-                  drawer: const RouterDrawer(),
-                  endDrawer: ContextDrawer(
-                    title: Text(AppLocalizations.of(context)!.posts),
-                    children: [
-                      DrawerMultiDenySwitch(controllers: controllers.all),
-                      DrawerMultiTagCounter(controllers: controllers.all),
-                    ],
-                  ),
-                  body: body,
+            return DefaultTabController(
+              length: tabs.length,
+              initialIndex: initialPage.index,
+              child: Scaffold(
+                appBar: appbar,
+                drawer: const RouterDrawer(),
+                endDrawer: ContextDrawer(
+                  title: Text(AppLocalizations.of(context)!.posts),
+                  children: [
+                    DrawerDenySwitch(filter: filter),
+                    DrawerMultiTagCounter(filter: filter),
+                  ],
                 ),
+                body: body,
               ),
             );
           },
@@ -210,17 +197,36 @@ class UserPage extends StatelessWidget {
   }
 }
 
+class _UserPostsTab extends StatelessWidget {
+  const _UserPostsTab({required this.filter, required this.params});
+
+  final PostFilter filter;
+  final PostParams params;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilterControllerProvider<PostFilter, Post>.value(
+      value: filter,
+      child: ChangeNotifierProvider(
+        create: (_) => PostParamsController(initial: params, canSearch: false),
+        child: SliverMainAxisGroup(
+          slivers: [
+            SliverPadding(
+              padding: defaultActionListPadding,
+              sliver: const SliverPostList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class UserSliverAppBar extends StatelessWidget {
-  const UserSliverAppBar({
-    super.key,
-    required this.user,
-    this.tabs,
-    this.avatar,
-  });
+  const UserSliverAppBar({super.key, required this.user, this.tabs});
 
   final User user;
   final List<Widget>? tabs;
-  final PostController? avatar;
 
   @override
   Widget build(BuildContext context) {
@@ -254,7 +260,6 @@ class UserSliverAppBar extends StatelessWidget {
                   width: 100,
                   child: UserAvatar(
                     id: user.avatarId,
-                    controller: avatar,
                     userId: user.id,
                     hasCroppedAvatar: user.hasCroppedAvatar,
                   ),
@@ -337,44 +342,6 @@ class _UserProfileActions extends StatelessWidget {
       ],
     );
   }
-}
-
-class _UserPageControllers {
-  _UserPageControllers({
-    required this.favoritePosts,
-    required this.uploadedPosts,
-    this.profilePost,
-  });
-
-  List<PostController> get all => [
-    favoritePosts,
-    uploadedPosts,
-    if (profilePost != null) profilePost!,
-  ];
-
-  final PostController favoritePosts;
-  final PostController uploadedPosts;
-  final PostController? profilePost;
-
-  void dispose() => all.forEach((e) => e.dispose());
-}
-
-class _UserPageProvider extends SubProvider<Client, _UserPageControllers> {
-  // ignore: unused_element, unused_element_parameter
-  _UserPageProvider({required User user, super.child, super.builder})
-    : super(
-        create: (context, client) => _UserPageControllers(
-          favoritePosts: UserFavoritesController(
-            client: client,
-            user: user.name,
-          ),
-          uploadedPosts: UserUploadsController(client: client, user: user.name),
-          profilePost: user.avatarId != null
-              ? SinglePostController(client: client, id: user.avatarId!)
-              : null,
-        ),
-        dispose: (context, value) => value.dispose(),
-      );
 }
 
 class UserInfo extends StatelessWidget {

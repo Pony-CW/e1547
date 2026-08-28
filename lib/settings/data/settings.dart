@@ -88,6 +88,11 @@ class Settings extends NotifiedSettings {
     key: 'showBeta',
     initialValue: false,
   );
+  late final ValueNotifier<bool> verboseLogs = createSetting<bool>(
+    key: 'verboseLogs',
+    initialValue: false,
+  );
+
   late final ValueNotifier<bool> showDev = createSetting<bool>(
     key: 'showDev',
     initialValue: false,

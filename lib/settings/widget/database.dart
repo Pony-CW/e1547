@@ -157,7 +157,7 @@ class DatabaseExportTile extends StatelessWidget {
     } on Exception catch (e) {
       navigator.pop();
       messenger.showSnackBar(const SnackBar(content: Text('Export failed')));
-      _logger.severe('Database export failed', e);
+      _logger.warn('Database export failed', null, e);
     }
   }
 
@@ -236,7 +236,7 @@ class DatabaseImportTile extends StatelessWidget {
         messenger.showSnackBar(
           SnackBar(content: Text('Invalid database file: $e')),
         );
-        _logger.warning('Database validation failed', e);
+        _logger.warn('Database validation failed', null, e);
         return;
       } finally {
         driftRuntimeOptions.dontWarnAboutMultipleDatabases = false;

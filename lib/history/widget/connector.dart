@@ -1,21 +1,24 @@
+import 'dart:async';
+
+import 'package:cached_query_flutter/cached_query_flutter.dart';
 import 'package:e1547/client/client.dart';
+import 'package:e1547/history/history.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sub/flutter_sub.dart';
 
 typedef HistoryConnector<T> =
-    void Function(BuildContext context, Client client, T data);
+    HistoryRequest Function(BuildContext context, T data);
 
 class ItemHistoryConnector<T> extends StatefulWidget {
   const ItemHistoryConnector({
     super.key,
     required this.item,
-    required this.addToHistory,
+    required this.getEntry,
     required this.child,
   });
 
   final T item;
-  final HistoryConnector<T> addToHistory;
+  final HistoryConnector<T> getEntry;
   final Widget child;
 
   @override
@@ -28,14 +31,16 @@ class _ItemHistoryConnectorState<T> extends State<ItemHistoryConnector<T>> {
   void initState() {
     super.initState();
     final client = context.read<Client>();
-    widget.addToHistory(context, client, widget.item);
+    final request = widget.getEntry(context, widget.item);
+    client.histories.useAdd().mutate(request);
   }
 
   @override
   void didUpdateWidget(covariant ItemHistoryConnector<T> oldWidget) {
     if (oldWidget.item != widget.item) {
       final client = context.read<Client>();
-      widget.addToHistory(context, client, widget.item);
+      final request = widget.getEntry(context, widget.item);
+      client.histories.useAdd().mutate(request);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -44,41 +49,62 @@ class _ItemHistoryConnectorState<T> extends State<ItemHistoryConnector<T>> {
   Widget build(BuildContext context) => widget.child;
 }
 
-class ControllerHistoryConnector<T extends DataController?>
-    extends StatefulWidget {
-  const ControllerHistoryConnector({
+class QueryHistoryConnector<S> extends StatefulWidget {
+  const QueryHistoryConnector({
     super.key,
-    required this.addToHistory,
-    required this.controller,
+    required this.query,
+    required this.getEntry,
     required this.child,
   });
 
-  final T controller;
-  final HistoryConnector<T> addToHistory;
+  final Cacheable<S> query;
+  final HistoryRequest? Function(BuildContext context, S state) getEntry;
   final Widget child;
 
   @override
-  State<ControllerHistoryConnector<T>> createState() =>
-      _ControllerHistoryConnectorState<T>();
+  State<QueryHistoryConnector<S>> createState() =>
+      _QueryHistoryConnectorState<S>();
 }
 
-class _ControllerHistoryConnectorState<T extends DataController?>
-    extends State<ControllerHistoryConnector<T>> {
+class _QueryHistoryConnectorState<S> extends State<QueryHistoryConnector<S>> {
+  StreamSubscription<S>? _sub;
+  bool _added = false;
+
   @override
-  Widget build(BuildContext context) {
-    return SubListener(
-      initialize: true,
-      listenable: Listenable.merge([widget.controller]),
-      listener: () async {
-        T? controller = widget.controller;
-        if (controller == null) return;
-        await controller.waitForNextPage();
-        if (controller.error != null) return;
-        if (!context.mounted) return;
-        final client = context.read<Client>();
-        widget.addToHistory(context, client, controller);
-      },
-      builder: (context) => widget.child,
-    );
+  void initState() {
+    super.initState();
+    _subscribe();
   }
+
+  @override
+  void didUpdateWidget(covariant QueryHistoryConnector<S> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(widget.query, oldWidget.query)) {
+      _sub?.cancel();
+      _added = false;
+      _subscribe();
+    }
+  }
+
+  void _subscribe() {
+    _try(widget.query.state);
+    _sub = widget.query.stream.listen(_try);
+  }
+
+  void _try(S state) {
+    if (_added || !mounted) return;
+    final request = widget.getEntry(context, state);
+    if (request == null) return;
+    _added = true;
+    context.read<Client>().histories.useAdd().mutate(request);
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

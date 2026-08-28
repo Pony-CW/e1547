@@ -87,7 +87,7 @@ Future<void> updateFollowNotifications({
   required List<Follow> updated,
   required FlutterLocalNotificationsPlugin notifications,
 }) async {
-  final Logger logger = Logger('Notifications');
+  final Logger logger = Logger('FollowNotifications', {'identity': identity});
 
   Map<Follow, int> updates = {};
   List<Follow> seen = [];
@@ -111,7 +111,10 @@ Future<void> updateFollowNotifications({
       picture = (await DefaultCacheManager().getSingleFile(thumbnail)).path;
     }
 
-    logger.fine('${follow.tags} has $unseen new posts!');
+    logger.debug('{tags} has {unseen} new posts', {
+      'tags': follow.tags,
+      'unseen': unseen,
+    });
 
     NotificationDetails notificationDetails = _createNotificationDetails(
       thumbnailPath: picture,
@@ -163,7 +166,10 @@ Future<void> updateFollowNotifications({
       }
     }
 
-    logger.info('Sent notification, title: $title\nbody: $description');
+    logger.info('Notified: {title} {body}', {
+      'title': title,
+      'body': description,
+    });
   }
 
   for (final follow in seen) {

@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
-import 'package:e1547/follow/data/database.dart';
+import 'package:e1547/follow/follow.dart';
 import 'package:e1547/history/history.dart';
 import 'package:e1547/identity/data/database.dart';
-import 'package:e1547/shared/shared.dart';
+import 'package:e1547/query/query.dart';
 import 'package:e1547/task/task.dart';
 import 'package:e1547/traits/traits.dart';
 import 'package:notified_preferences/notified_preferences.dart';
@@ -20,13 +20,14 @@ import 'storage.drift.dart';
     FollowsIdentitiesTable,
     TasksTable,
     TasksIdentitiesTable,
+    QueryStorageTable,
   ],
 )
 class AppDatabase extends $AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -96,6 +97,9 @@ class AppDatabase extends $AppDatabase {
       if (from >= 6 && from < 7) {
         await m.addColumn(tasksTable, tasksTable.metadata);
       }
+      if (from < 8) {
+        await m.createTable(queryStorageTable);
+      }
     },
     beforeOpen: (details) => customStatement('PRAGMA foreign_keys = ON'),
   );
@@ -106,17 +110,17 @@ class AppStorage {
   const AppStorage({
     required this.preferences,
     required this.temporaryFiles,
-    required this.httpCache,
+    required this.queryCache,
     required this.sqlite,
   });
 
   final SharedPreferences preferences;
   final String temporaryFiles;
-  final CacheStore? httpCache;
+  final CachedQuery queryCache;
   final AppDatabase sqlite;
 
   Future<void> close() async {
-    await httpCache?.close();
+    queryCache.deleteCache();
     await sqlite.close();
   }
 }

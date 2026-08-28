@@ -5,6 +5,7 @@ import 'package:e1547/app/app.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/follow/follow.dart';
 import 'package:e1547/logs/logs.dart';
+import 'package:e1547/pool/pool.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
@@ -29,7 +30,7 @@ class _NotificationHandlerState extends State<NotificationHandler> {
   late Future<FlutterLocalNotificationsPlugin> notifications =
       initializeNotifications(onDidReceiveNotificationResponse: handle);
   List<Follow>? previousFollows;
-  Logger logger = Logger('Notifications');
+  Logger logger = Logger('NotificationRouter');
 
   @override
   void initState() {
@@ -96,7 +97,7 @@ class _NotificationHandlerState extends State<NotificationHandler> {
     try {
       notification = NotificationPayload.fromJson(json.decode(payload));
     } on FormatException catch (e, s) {
-      logger.severe('Failed to parse notification payload', e, s);
+      logger.error('Failed to parse notification payload', null, e, s);
       return;
     }
 
@@ -107,15 +108,15 @@ class _NotificationHandlerState extends State<NotificationHandler> {
           (_) => false,
         );
         if (notification.query != null) {
+          final String? tags = notification.query!['tags'];
+          final poolId = tags != null
+              ? poolRegex().firstMatch(tags)?.namedGroup('id')
+              : null;
           widget.navigatorKey.currentState!.push(
             MaterialPageRoute(
-              builder: (context) => PostsSearchPage(
-                query: notification!.query!,
-                orderPoolsByOldest: false,
-                readerMode: poolRegex().hasMatch(
-                  notification.query!['tags'] ?? '',
-                ),
-              ),
+              builder: (context) => poolId != null
+                  ? PoolLoadingPage(int.parse(poolId), orderByOldest: false)
+                  : PostsPage(params: PostParams(tags: tags)),
             ),
           );
         }
@@ -128,7 +129,9 @@ class _NotificationHandlerState extends State<NotificationHandler> {
         }
         break;
       default:
-        logger.warning('Unknown notification type: ${notification.type}');
+        logger.warn('Unknown notification type {type}', {
+          'type': notification.type,
+        });
         return;
     }
   }

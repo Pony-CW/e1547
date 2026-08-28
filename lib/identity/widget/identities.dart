@@ -1,5 +1,7 @@
+import 'package:e1547/app/app.dart';
 import 'package:e1547/identity/identity.dart';
 import 'package:e1547/l10n/app_localizations.dart';
+import 'package:e1547/query/query.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/user/user.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +62,13 @@ class IdentitiesPage extends StatelessWidget {
                           child: Text(AppLocalizations.of(context)!.removeUC),
                           onPressed: () {
                             Navigator.of(context).maybePop();
+                            final storage = context.read<AppStorage>();
                             context.read<IdentityClient>().remove(identity);
+                            removeIdentityQueries(
+                              cache: storage.queryCache,
+                              database: storage.sqlite,
+                              identity: identity.id,
+                            );
                           },
                         ),
                       ],

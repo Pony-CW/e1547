@@ -30,7 +30,10 @@ class SettingsPage extends StatelessWidget {
               LimitedWidthLayout.of(context).padding,
             ),
             children: [
-              ListTileHeader(title: AppLocalizations.of(context)!.account),
+              SectionHeader(
+                indent: SectionHeader.listTileIndent,
+                title: AppLocalizations.of(context)!.account,
+              ),
               Consumer<IdentityClient>(
                 builder: (context, client, child) => IdentityTile(
                   identity: client.identity,
@@ -44,7 +47,10 @@ class SettingsPage extends StatelessWidget {
                 ),
               ),
               const Divider(),
-              ListTileHeader(title: AppLocalizations.of(context)!.user),
+              SectionHeader(
+                indent: SectionHeader.listTileIndent,
+                title: AppLocalizations.of(context)!.user,
+              ),
               Consumer<Client>(
                 builder: (context, client, child) => ValueListenableBuilder(
                   valueListenable: client.traits,
@@ -118,7 +124,10 @@ class SettingsPage extends StatelessWidget {
                 ),
               ),
               const Divider(),
-              ListTileHeader(title: AppLocalizations.of(context)!.appearance),
+              SectionHeader(
+                indent: SectionHeader.listTileIndent,
+                title: AppLocalizations.of(context)!.appearance,
+              ),
               //PonyCW: ChatGPT
               ValueListenableBuilder<Language>(
                 valueListenable: settings.languages,
@@ -243,7 +252,10 @@ class SettingsPage extends StatelessWidget {
                 ),
               ),
               const Divider(),
-              ListTileHeader(title: AppLocalizations.of(context)!.interactions),
+              SectionHeader(
+                indent: SectionHeader.listTileIndent,
+                title: AppLocalizations.of(context)!.interactions,
+              ),
               if (!Platform.isIOS)
                 ValueListenableBuilder<String?>(
                   valueListenable: settings.downloadPath,
@@ -320,7 +332,10 @@ class SettingsPage extends StatelessWidget {
                 ),
               ),
               const Divider(),
-              ListTileHeader(title: AppLocalizations.of(context)!.security),
+              SectionHeader(
+                indent: SectionHeader.listTileIndent,
+                title: AppLocalizations.of(context)!.security,
+              ),
               if (PlatformCapabilities.hasSecureDisplay)
                 ValueListenableBuilder<bool>(
                   valueListenable: settings.secureDisplay,
@@ -399,7 +414,10 @@ class SettingsPage extends StatelessWidget {
                 ),
               ),
               const Divider(),
-              ListTileHeader(title: AppLocalizations.of(context)!.development),
+              SectionHeader(
+                indent: SectionHeader.listTileIndent,
+                title: AppLocalizations.of(context)!.development,
+              ),
               ValueListenableBuilder<bool>(
                 valueListenable: settings.showDev,
                 builder: (context, value, child) {
@@ -418,26 +436,19 @@ class SettingsPage extends StatelessWidget {
                 },
               ),
               if (context.watch<Logs?>() != null) ...[
-                Consumer<Logs>(
-                  builder: (context, logs, child) => SubStream<List<LogRecord>>(
-                    create: () => logs.stream(
-                      filter: (level, type) => level >= Level.SEVERE,
-                    ),
-                    builder: (context, snapshot) => ListTile(
-                      leading: const Icon(Icons.format_list_numbered),
-                      title: Text(AppLocalizations.of(context)!.logs),
-                      subtitle: (snapshot.data?.isNotEmpty ?? false)
-                          ? Text(
-                              AppLocalizations.of(
-                                context,
-                              )!.logsSubtitle(snapshot.data!.length),
-                            )
-                          : null,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const LogsPage(),
-                        ),
-                      ),
+                Consumer<LogErrors>(
+                  builder: (context, errors, child) => ListTile(
+                    leading: const Icon(Icons.format_list_numbered),
+                    title: Text(AppLocalizations.of(context)!.logs),
+                    subtitle: errors.isEmpty
+                        ? null
+                        : Text(
+                            AppLocalizations.of(
+                              context,
+                            )!.logsSubtitle(errors.length),
+                          ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const LogsPage()),
                     ),
                   ),
                 ),
