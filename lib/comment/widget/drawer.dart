@@ -1,4 +1,5 @@
 import 'package:e1547/comment/comment.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,7 @@ class CommentListDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = context.watch<CommentParamsController>();
     return ContextDrawer(
-      title: const Text('Comments'),
+      title: Text(AppLocalizations.of(context)!.comments),
       children: [
         SwitchListTile(
           secondary: const Icon(Icons.sort),

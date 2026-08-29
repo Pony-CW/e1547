@@ -18,6 +18,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search => 'Search';
 
   @override
+  String get searchEmpty => 'No posts';
+
+  @override
+  String get searchError => 'Failed to load posts';
+
+  @override
   String get favorites => 'Favorites';
 
   @override
@@ -27,10 +33,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get timeline => 'Timeline';
 
   @override
-  String get timelineEmpty => 'No posts';
-
-  @override
-  String get timelineError => 'Failed to load posts';
+  String get subscribe => 'Subscribe';
 
   @override
   String get subscriptions => 'Subscriptions';
@@ -42,6 +45,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionsError => 'Failed to load subscriptions';
 
   @override
+  String get follow => 'Follow';
+
+  @override
+  String get unfollow => 'Unfollow';
+
+  @override
+  String get bookmark => 'Bookmark';
+
+  @override
   String get bookmarks => 'Bookmarks';
 
   @override
@@ -49,6 +61,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bookmarksError => 'Failed to load bookmarks';
+
+  @override
+  String get unbookmark => 'Unbookmark';
 
   @override
   String get pools => 'Pools';
@@ -100,6 +115,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chooseIdentity => 'Choose identity';
+
+  @override
+  String get comments => 'Comments';
 
   @override
   String get commentsLC => 'comments';
@@ -234,6 +252,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get user => 'User';
+
+  @override
+  String userID(int id) {
+    return 'User #$id';
+  }
+
+  @override
+  String userName(String name) {
+    return 'User $name';
+  }
 
   @override
   String get unblock => 'Unblock';
@@ -375,13 +403,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get users => 'Users';
 
   @override
-  String get wikis => 'Wikis';
-
-  @override
   String get replies => 'Replies';
 
   @override
   String get tags => 'Tags';
+
+  @override
+  String get wiki => 'Wiki';
+
+  @override
+  String get wikis => 'Wikis';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get subtract => 'Subtract';
 
   @override
   String get tasks => 'Tasks';

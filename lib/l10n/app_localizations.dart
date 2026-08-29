@@ -117,6 +117,18 @@ abstract class AppLocalizations {
   /// **'Search'**
   String get search;
 
+  /// No description provided for @searchEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No posts'**
+  String get searchEmpty;
+
+  /// No description provided for @searchError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load posts'**
+  String get searchError;
+
   /// No description provided for @favorites.
   ///
   /// In en, this message translates to:
@@ -135,17 +147,11 @@ abstract class AppLocalizations {
   /// **'Timeline'**
   String get timeline;
 
-  /// No description provided for @timelineEmpty.
+  /// No description provided for @subscribe.
   ///
   /// In en, this message translates to:
-  /// **'No posts'**
-  String get timelineEmpty;
-
-  /// No description provided for @timelineError.
-  ///
-  /// In en, this message translates to:
-  /// **'Failed to load posts'**
-  String get timelineError;
+  /// **'Subscribe'**
+  String get subscribe;
 
   /// No description provided for @subscriptions.
   ///
@@ -165,6 +171,24 @@ abstract class AppLocalizations {
   /// **'Failed to load subscriptions'**
   String get subscriptionsError;
 
+  /// No description provided for @follow.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow'**
+  String get follow;
+
+  /// No description provided for @unfollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollow'**
+  String get unfollow;
+
+  /// No description provided for @bookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark'**
+  String get bookmark;
+
   /// No description provided for @bookmarks.
   ///
   /// In en, this message translates to:
@@ -182,6 +206,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load bookmarks'**
   String get bookmarksError;
+
+  /// No description provided for @unbookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Unbookmark'**
+  String get unbookmark;
 
   /// No description provided for @pools.
   ///
@@ -284,6 +314,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose identity'**
   String get chooseIdentity;
+
+  /// No description provided for @comments.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get comments;
 
   /// No description provided for @commentsLC.
   ///
@@ -524,6 +560,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'User'**
   String get user;
+
+  /// lib/user/widget/loading.dart - User ID
+  ///
+  /// In en, this message translates to:
+  /// **'User #{id}'**
+  String userID(int id);
+
+  /// lib/user/widget/loading.dart - User Name
+  ///
+  /// In en, this message translates to:
+  /// **'User {name}'**
+  String userName(String name);
 
   /// No description provided for @unblock.
   ///
@@ -766,12 +814,6 @@ abstract class AppLocalizations {
   /// **'Users'**
   String get users;
 
-  /// No description provided for @wikis.
-  ///
-  /// In en, this message translates to:
-  /// **'Wikis'**
-  String get wikis;
-
   /// No description provided for @replies.
   ///
   /// In en, this message translates to:
@@ -783,6 +825,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tags'**
   String get tags;
+
+  /// No description provided for @wiki.
+  ///
+  /// In en, this message translates to:
+  /// **'Wiki'**
+  String get wiki;
+
+  /// No description provided for @wikis.
+  ///
+  /// In en, this message translates to:
+  /// **'Wikis'**
+  String get wikis;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @subtract.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtract'**
+  String get subtract;
 
   /// No description provided for @tasks.
   ///

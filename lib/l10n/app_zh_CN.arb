@@ -3,22 +3,28 @@
 
   "home": "主页",
   "hot": "热门",
+
   "search": "搜索",
-  
-  "favorites": "喜爱",
+  "searchEmpty": "没有帖子",
+  "searchError": "加载帖子失败",
+
+  "favorites": "收藏",
   "favoritesError": "Favorites are unavailable for anonymous users",
 
   "timeline": "时间线",
-  "timelineEmpty": "没有帖子",
-  "timelineError": "加载帖子失败",
 
+  "subscribe": "订阅",
   "subscriptions": "订阅",
   "subscriptionsEmpty": "没有订阅",
   "subscriptionsError": "加载订阅失败",
+  "follow": "关注",
+  "unfollow": "取消关注",
 
+  "bookmark": "书签",
   "bookmarks": "书签",
   "bookmarksEmpty": "没有书签",
   "bookmarksError": "加载书签失败",
+  "unbookmark": "取消书签",
 
   "pools": "图池",
 
@@ -40,6 +46,7 @@
   "flagError": "你需要登录才能标记帖子",
   "chooseIdentity": "选择身份",
 
+  "comments": "评论",
   "commentsLC": "评论",
   "commentsNumUC": "评论 ({count})",
   "@commentsNumUC": {
@@ -131,8 +138,26 @@
   },
 
   "user": "用户",
-  "unblock": "解除阻止",
-  "block": "阻止",
+  "userID": "用户 #{id}",
+  "@userID": {
+    "description": "lib/user/widget/loading.dart - User ID",
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "userName": "用户 {name}",
+  "@userName": {
+    "description": "lib/user/widget/loading.dart - User Name",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "unblock": "取消屏蔽",
+  "block": "屏蔽",
   "blacklist": "黑名单",
   "follows": "关注",
   "uploads": "上传",
@@ -146,7 +171,7 @@
   "rankLC": "级别",
   "postsLC": "帖子",
   "editsLC": "编辑",
-  "favoritesLC": "喜爱",
+  "favoritesLC": "收藏",
   "comissionLC": "评论",
   "forumLC": "论坛",
 
@@ -250,9 +275,13 @@
   "type": "类型",
   "posts": "帖子",
   "users": "用户",
-  "wikis": "维基",
   "replies": "回复",
   "tags": "标签",
+
+  "wiki": "维基",
+  "wikis": "维基",
+  "add": "添加",
+  "subtract": "Subtract",
 
   "tasks": "任务",
   "tasksEmpty": "没有任务",
@@ -262,14 +291,14 @@
   "tasksClear": "清理已完成",
   "tasksClearLC": "清理已完成",
   "tasksDownload": "下载",
-  "tasksFavorite": "喜爱",
-  "tasksUnfavorite": "取消喜爱",
+  "tasksFavorite": "收藏",
+  "tasksUnfavorite": "取消收藏",
   "tasksDownloading": "正在下载",
-  "tasksFavoriting": "正在喜爱",
-  "tasksUnfavoriting": "正在取消喜爱",
+  "tasksFavoriting": "正在收藏",
+  "tasksUnfavoriting": "正在取消收藏",
   "tasksDownloaded": "下载完成",
-  "tasksFavorited": "喜爱完成",
-  "tasksUnfavorited": "取消喜爱完成",
+  "tasksFavorited": "收藏完成",
+  "tasksUnfavorited": "取消收藏完成",
   "tasksSelected": "{num} 项已选择",
   "@tasksSelected": {
     "description": "lib/task/widget/prompt.dart - Selected Num",
@@ -341,9 +370,9 @@
 
   "interactions": "交互",
   "downloadLocation": "下载路径",
-  "upvoteFavorites": "顶和喜爱选项",
-  "upvoteFavoritesTrue": "顶和喜爱",
-  "upvoteFavoritesFalse": "仅喜爱",
+  "upvoteFavorites": "顶和收藏选项",
+  "upvoteFavoritesTrue": "顶和收藏",
+  "upvoteFavoritesFalse": "仅收藏",
   "videoVolume": "视频声音",
   "videoVolumeTrue": "静音",
   "videoVolumeFalse": "有声",

@@ -48,16 +48,18 @@ class FollowsSubscriptionsPage extends StatelessWidget {
                 items: state.data?.pages.expand((p) => p).toList(),
                 child: PromptActions(
                   child: AdaptiveScaffold(
-                    appBar: const FollowSelectionAppBar(
+                    appBar: FollowSelectionAppBar(
                       child: DefaultAppBar(
-                        title: Text('Subscriptions'),
-                        actions: [ContextDrawerButton()],
+                        title: Text(
+                          AppLocalizations.of(context)!.subscriptions,
+                        ),
+                        actions: const [ContextDrawerButton()],
                       ),
                     ),
                     drawer: const RouterDrawer(),
-                    endDrawer: const ContextDrawer(
-                      title: Text('Subscriptions'),
-                      children: [
+                    endDrawer: ContextDrawer(
+                      title: Text(AppLocalizations.of(context)!.subscriptions),
+                      children: const [
                         FollowEditingTile(),
                         Divider(),
                         FollowFilterReadTile(),
@@ -91,9 +93,15 @@ class FollowsSubscriptionsPage extends StatelessWidget {
                               onRetry: query.getNextPage,
                               itemBuilder: (context, item, index) =>
                                   FollowTile(follow: item),
-                              onEmpty: const Text('No subscriptions'),
-                              onError: const Text(
-                                'Failed to load subscriptions',
+                              onEmpty: Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.subscriptionsEmpty,
+                              ),
+                              onError: Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.subscriptionsError,
                               ),
                             ),
                             crossAxisCount: TileLayout.of(

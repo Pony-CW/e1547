@@ -1,4 +1,5 @@
 import 'package:e1547/client/client.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/query/query.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/user/user.dart';
@@ -36,7 +37,11 @@ class UserLoadingPage extends StatelessWidget {
         loadingBuilder: (context, child) => Scaffold(
           appBar: AppBar(
             leading: const CloseButton(),
-            title: Text(id != null ? 'User #$id' : 'User $name'),
+            title: Text(
+              id != null
+                  ? AppLocalizations.of(context)!.userID(id)
+                  : AppLocalizations.of(context)!.userName(name!),
+            ),
           ),
           body: child(context),
         ),

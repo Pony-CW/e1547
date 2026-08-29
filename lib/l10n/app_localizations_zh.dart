@@ -18,7 +18,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get search => '搜索';
 
   @override
-  String get favorites => '喜爱';
+  String get searchEmpty => '没有帖子';
+
+  @override
+  String get searchError => '加载帖子失败';
+
+  @override
+  String get favorites => '收藏';
 
   @override
   String get favoritesError => 'Favorites are unavailable for anonymous users';
@@ -27,10 +33,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get timeline => '时间线';
 
   @override
-  String get timelineEmpty => '没有帖子';
-
-  @override
-  String get timelineError => '加载帖子失败';
+  String get subscribe => '订阅';
 
   @override
   String get subscriptions => '订阅';
@@ -42,6 +45,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get subscriptionsError => '加载订阅失败';
 
   @override
+  String get follow => '关注';
+
+  @override
+  String get unfollow => '取消关注';
+
+  @override
+  String get bookmark => '书签';
+
+  @override
   String get bookmarks => '书签';
 
   @override
@@ -49,6 +61,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get bookmarksError => '加载书签失败';
+
+  @override
+  String get unbookmark => '取消书签';
 
   @override
   String get pools => '图池';
@@ -100,6 +115,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chooseIdentity => '选择身份';
+
+  @override
+  String get comments => '评论';
 
   @override
   String get commentsLC => '评论';
@@ -234,10 +252,20 @@ class AppLocalizationsZh extends AppLocalizations {
   String get user => '用户';
 
   @override
-  String get unblock => '解除阻止';
+  String userID(int id) {
+    return '用户 #$id';
+  }
 
   @override
-  String get block => '阻止';
+  String userName(String name) {
+    return '用户 $name';
+  }
+
+  @override
+  String get unblock => '取消屏蔽';
+
+  @override
+  String get block => '屏蔽';
 
   @override
   String get blacklist => '黑名单';
@@ -279,7 +307,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get editsLC => '编辑';
 
   @override
-  String get favoritesLC => '喜爱';
+  String get favoritesLC => '收藏';
 
   @override
   String get comissionLC => '评论';
@@ -372,13 +400,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get users => '用户';
 
   @override
-  String get wikis => '维基';
-
-  @override
   String get replies => '回复';
 
   @override
   String get tags => '标签';
+
+  @override
+  String get wiki => '维基';
+
+  @override
+  String get wikis => '维基';
+
+  @override
+  String get add => '添加';
+
+  @override
+  String get subtract => 'Subtract';
 
   @override
   String get tasks => '任务';
@@ -405,28 +442,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tasksDownload => '下载';
 
   @override
-  String get tasksFavorite => '喜爱';
+  String get tasksFavorite => '收藏';
 
   @override
-  String get tasksUnfavorite => '取消喜爱';
+  String get tasksUnfavorite => '取消收藏';
 
   @override
   String get tasksDownloading => '正在下载';
 
   @override
-  String get tasksFavoriting => '正在喜爱';
+  String get tasksFavoriting => '正在收藏';
 
   @override
-  String get tasksUnfavoriting => '正在取消喜爱';
+  String get tasksUnfavoriting => '正在取消收藏';
 
   @override
   String get tasksDownloaded => '下载完成';
 
   @override
-  String get tasksFavorited => '喜爱完成';
+  String get tasksFavorited => '收藏完成';
 
   @override
-  String get tasksUnfavorited => '取消喜爱完成';
+  String get tasksUnfavorited => '取消收藏完成';
 
   @override
   String tasksSelected(int num) {
@@ -497,13 +534,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get downloadLocation => '下载路径';
 
   @override
-  String get upvoteFavorites => '顶和喜爱选项';
+  String get upvoteFavorites => '顶和收藏选项';
 
   @override
-  String get upvoteFavoritesTrue => '顶和喜爱';
+  String get upvoteFavoritesTrue => '顶和收藏';
 
   @override
-  String get upvoteFavoritesFalse => '仅喜爱';
+  String get upvoteFavoritesFalse => '仅收藏';
 
   @override
   String get videoVolume => '视频声音';
@@ -684,7 +721,13 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get search => '搜索';
 
   @override
-  String get favorites => '喜爱';
+  String get searchEmpty => '没有帖子';
+
+  @override
+  String get searchError => '加载帖子失败';
+
+  @override
+  String get favorites => '收藏';
 
   @override
   String get favoritesError => 'Favorites are unavailable for anonymous users';
@@ -693,10 +736,7 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get timeline => '时间线';
 
   @override
-  String get timelineEmpty => '没有帖子';
-
-  @override
-  String get timelineError => '加载帖子失败';
+  String get subscribe => '订阅';
 
   @override
   String get subscriptions => '订阅';
@@ -708,6 +748,15 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get subscriptionsError => '加载订阅失败';
 
   @override
+  String get follow => '关注';
+
+  @override
+  String get unfollow => '取消关注';
+
+  @override
+  String get bookmark => '书签';
+
+  @override
   String get bookmarks => '书签';
 
   @override
@@ -715,6 +764,9 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
 
   @override
   String get bookmarksError => '加载书签失败';
+
+  @override
+  String get unbookmark => '取消书签';
 
   @override
   String get pools => '图池';
@@ -766,6 +818,9 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
 
   @override
   String get chooseIdentity => '选择身份';
+
+  @override
+  String get comments => '评论';
 
   @override
   String get commentsLC => '评论';
@@ -900,10 +955,20 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get user => '用户';
 
   @override
-  String get unblock => '解除阻止';
+  String userID(int id) {
+    return '用户 #$id';
+  }
 
   @override
-  String get block => '阻止';
+  String userName(String name) {
+    return '用户 $name';
+  }
+
+  @override
+  String get unblock => '取消屏蔽';
+
+  @override
+  String get block => '屏蔽';
 
   @override
   String get blacklist => '黑名单';
@@ -945,7 +1010,7 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get editsLC => '编辑';
 
   @override
-  String get favoritesLC => '喜爱';
+  String get favoritesLC => '收藏';
 
   @override
   String get comissionLC => '评论';
@@ -1038,13 +1103,22 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get users => '用户';
 
   @override
-  String get wikis => '维基';
-
-  @override
   String get replies => '回复';
 
   @override
   String get tags => '标签';
+
+  @override
+  String get wiki => '维基';
+
+  @override
+  String get wikis => '维基';
+
+  @override
+  String get add => '添加';
+
+  @override
+  String get subtract => 'Subtract';
 
   @override
   String get tasks => '任务';
@@ -1071,28 +1145,28 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get tasksDownload => '下载';
 
   @override
-  String get tasksFavorite => '喜爱';
+  String get tasksFavorite => '收藏';
 
   @override
-  String get tasksUnfavorite => '取消喜爱';
+  String get tasksUnfavorite => '取消收藏';
 
   @override
   String get tasksDownloading => '正在下载';
 
   @override
-  String get tasksFavoriting => '正在喜爱';
+  String get tasksFavoriting => '正在收藏';
 
   @override
-  String get tasksUnfavoriting => '正在取消喜爱';
+  String get tasksUnfavoriting => '正在取消收藏';
 
   @override
   String get tasksDownloaded => '下载完成';
 
   @override
-  String get tasksFavorited => '喜爱完成';
+  String get tasksFavorited => '收藏完成';
 
   @override
-  String get tasksUnfavorited => '取消喜爱完成';
+  String get tasksUnfavorited => '取消收藏完成';
 
   @override
   String tasksSelected(int num) {
@@ -1163,13 +1237,13 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get downloadLocation => '下载路径';
 
   @override
-  String get upvoteFavorites => '顶和喜爱选项';
+  String get upvoteFavorites => '顶和收藏选项';
 
   @override
-  String get upvoteFavoritesTrue => '顶和喜爱';
+  String get upvoteFavoritesTrue => '顶和收藏';
 
   @override
-  String get upvoteFavoritesFalse => '仅喜爱';
+  String get upvoteFavoritesFalse => '仅收藏';
 
   @override
   String get videoVolume => '视频声音';

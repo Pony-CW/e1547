@@ -1,4 +1,5 @@
 import 'package:e1547/client/client.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ class DenyListEditor extends StatelessWidget {
   Widget build(BuildContext context) {
     final client = context.read<Client>();
     return TextEditor(
-      title: const Text('Blacklist'),
+      title: Text(AppLocalizations.of(context)!.blacklist),
       actions: [
         IconButton(
           icon: const Icon(Icons.help_outline),

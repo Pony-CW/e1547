@@ -3,22 +3,28 @@
 
   "home": "Home",
   "hot": "Hot",
+
   "search": "Search",
+  "searchEmpty": "No posts",
+  "searchError": "Failed to load posts",
 
   "favorites": "Favorites",
   "favoritesError": "Favorites are unavailable for anonymous users",
 
   "timeline": "Timeline",
-  "timelineEmpty": "No posts",
-  "timelineError": "Failed to load posts",
 
+  "subscribe": "Subscribe",
   "subscriptions": "Subscriptions",
   "subscriptionsEmpty": "No subscriptions",
   "subscriptionsError": "Failed to load subscriptions",
+  "follow": "Follow",
+  "unfollow": "Unfollow",
 
-  "bookmarks": "Bookmarks",
+  "bookmark": "Bookmark",
+  "bookmarks": "Bookmarks",  
   "bookmarksEmpty": "No bookmarks",
   "bookmarksError": "Failed to load bookmarks",
+  "unbookmark": "Unbookmark",
 
   "pools": "Pools",
 
@@ -40,6 +46,7 @@
   "flagError": "You must be logged in to flag posts!",
   "chooseIdentity": "Choose identity",
 
+  "comments": "Comments",
   "commentsLC": "comments",
   "commentsNumUC": "COMMENTS ({count})",
   "@commentsNumUC": {
@@ -131,6 +138,24 @@
   },
 
   "user": "User",
+  "userID": "User #{id}",
+  "@userID": {
+    "description": "lib/user/widget/loading.dart - User ID",
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "userName": "User {name}",
+  "@userName": {
+    "description": "lib/user/widget/loading.dart - User Name",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "unblock": "Unblock",
   "block": "Block",
   "blacklist": "Blacklist",
@@ -250,9 +275,13 @@
   "type": "Type",
   "posts": "Posts",
   "users": "Users",
-  "wikis": "Wikis",
   "replies": "Replies",
   "tags": "Tags",
+
+  "wiki": "Wiki",
+  "wikis": "Wikis",
+  "add": "Add",
+  "subtract": "Subtract",
 
   "tasks": "Tasks",
   "tasksEmpty": "No tasks",

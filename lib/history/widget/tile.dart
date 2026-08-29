@@ -1,6 +1,7 @@
 import 'package:e1547/app/app.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/history/history.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/markup/markup.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
@@ -116,7 +117,7 @@ class _HistoryTileDropdown extends StatelessWidget {
       itemBuilder: (context) => [
         if (entry.isSearch(LinkType.post))
           PopupMenuTile(
-            title: 'Wiki',
+            title: AppLocalizations.of(context)!.wiki,
             icon: Icons.info,
             value: () => showTagSearchPrompt(
               context: context,
@@ -130,12 +131,12 @@ class _HistoryTileDropdown extends StatelessWidget {
             value: () => showHistoryPrompt(context: context, entry: entry),
           ),
         PopupMenuTile(
-          title: 'Share',
+          title: AppLocalizations.of(context)!.share,
           icon: Icons.share,
           value: () => Share.text(context, client.withHost(entry.link)),
         ),
         PopupMenuTile(
-          title: 'Delete',
+          title: AppLocalizations.of(context)!.delete,
           icon: Icons.delete,
           value: () => client.histories.useRemove().mutate([entry.id]),
         ),

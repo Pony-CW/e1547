@@ -10,11 +10,11 @@ class TopicListDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = context.watch<TopicFilter>();
     return ContextDrawer(
-      title: const Text('Topics'),
+      title: Text(AppLocalizations.of(context)!.topics),
       children: [
         SwitchListTile(
           secondary: const Icon(Icons.sell),
-          title: const Text('Hide tags edits'),
+          title: Text(AppLocalizations.of(context)!.topicsHide),
           subtitle: Text(
             controller.value.hideTagEditing ? 'hidden' : 'visible',
             maxLines: 1,

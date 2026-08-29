@@ -1,5 +1,6 @@
 import 'package:e1547/client/client.dart';
 import 'package:e1547/comment/comment.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/markup/markup.dart';
 import 'package:e1547/query/query.dart';
 import 'package:e1547/shared/shared.dart';
@@ -213,7 +214,7 @@ class CommentMenu extends StatelessWidget {
       itemBuilder: (context) => [
         if (client.identity.username == comment.creatorName)
           PopupMenuTile(
-            title: 'Edit',
+            title: AppLocalizations.of(context)!.edit,
             icon: Icons.edit,
             value: () => guardWithLogin(
               context: context,
@@ -244,7 +245,7 @@ class CommentMenu extends StatelessWidget {
           },
         ),
         PopupMenuTile(
-          title: 'Report',
+          title: AppLocalizations.of(context)!.report,
           icon: Icons.report,
           value: () => guardWithLogin(
             context: context,

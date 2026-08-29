@@ -23,12 +23,12 @@ class FollowsTimelinePage extends StatelessWidget {
           builder: (context, tagsState) {
             final tags = tagsState.data;
             if (tags == null) {
-              return const Scaffold(
+              return Scaffold(
                 appBar: DefaultAppBar(
-                  title: Text('Timeline'),
-                  actions: [ContextDrawerButton()],
+                  title: Text(AppLocalizations.of(context)!.timeline),
+                  actions: const [ContextDrawerButton()],
                 ),
-                body: Center(child: CircularProgressIndicator()),
+                body: const Center(child: CircularProgressIndicator()),
               );
             }
             final followedTags = [
@@ -36,14 +36,18 @@ class FollowsTimelinePage extends StatelessWidget {
               ...tags[FollowType.notify] ?? const <String>[],
             ];
             return AdaptiveScaffold(
-              appBar: const DefaultAppBar(
-                title: Text('Timeline'),
-                actions: [ContextDrawerButton()],
+              appBar: DefaultAppBar(
+                title: Text(AppLocalizations.of(context)!.timeline),
+                actions: const [ContextDrawerButton()],
               ),
               drawer: const RouterDrawer(),
-              endDrawer: const ContextDrawer(
-                title: Text('Timeline'),
-                children: [FollowEditingTile(), Divider(), DrawerDenySwitch()],
+              endDrawer: ContextDrawer(
+                title: Text(AppLocalizations.of(context)!.timeline),
+                children: const [
+                  FollowEditingTile(),
+                  Divider(),
+                  DrawerDenySwitch(),
+                ],
               ),
               body: LimitedWidthLayout(
                 child: ListenableBuilder(

@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/follow/follow.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -84,12 +85,12 @@ class _FollowEditorState extends State<FollowEditor> {
           TextEditorContent(key: notify, title: 'Notify', value: value[notify]),
           TextEditorContent(
             key: subscribe,
-            title: 'Subscribe',
+            title: AppLocalizations.of(context)!.subscribe,
             value: value[subscribe],
           ),
           TextEditorContent(
             key: bookmark,
-            title: 'Bookmark',
+            title: AppLocalizations.of(context)!.bookmark,
             value: value[bookmark],
           ),
         ],

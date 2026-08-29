@@ -1,5 +1,6 @@
 import 'package:e1547/client/client.dart';
 import 'package:e1547/comment/comment.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -37,7 +38,7 @@ class CommentListDropdown extends StatelessWidget {
         ),
         if (postId != null)
           PopupMenuTile(
-            title: 'Comment',
+            title: AppLocalizations.of(context)!.comment,
             icon: Icons.comment,
             value: () => guardWithLogin(
               context: context,

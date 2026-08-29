@@ -17,7 +17,7 @@ class HistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('History'),
+            Text(AppLocalizations.of(context)!.history),
             CrossFade.builder(
               showChild: date != null,
               builder: (context) => Text(

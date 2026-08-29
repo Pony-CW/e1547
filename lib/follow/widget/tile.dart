@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e1547/app/app.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/follow/follow.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/pool/pool.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
@@ -94,16 +95,22 @@ class FollowTile extends StatelessWidget {
                 id: follow.id,
                 type: !bookmarked ? FollowType.bookmark : FollowType.update,
               ),
-              title: bookmarked ? 'Subscribe' : 'Bookmark',
+              title: bookmarked
+                  ? AppLocalizations.of(context)!.subscribe
+                  : AppLocalizations.of(context)!.bookmark,
               icon: bookmarked ? Icons.person_add : Icons.bookmark,
             ),
           if (promptController != null && follow.tags.split(' ').length > 1)
             PopupMenuTile(value: editTitle, title: 'Rename', icon: Icons.label),
           if (promptController != null)
-            PopupMenuTile(value: edit, title: 'Edit', icon: Icons.edit),
+            PopupMenuTile(
+              value: edit,
+              title: AppLocalizations.of(context)!.edit,
+              icon: Icons.edit,
+            ),
           PopupMenuTile(
             value: () => client.follows.delete(follow.id),
-            title: 'Unfollow',
+            title: AppLocalizations.of(context)!.unfollow,
             icon: Icons.person_remove,
           ),
         ],
