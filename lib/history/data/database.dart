@@ -218,11 +218,14 @@ class HistoryRepository extends DatabaseAccessor<GeneratedDatabase>
 
   Future<void> remove(int id) => removeAll([id]);
 
-  Future<void> removeAll(List<int>? ids, {int? identity}) =>
-      (delete(historiesTable)
-            ..where((tbl) => _identityQuery(tbl, identity))
-            ..where((tbl) => Variable(ids).isNull() | tbl.id.isIn(ids!)))
-          .go();
+  Future<void> removeAll(List<int>? ids, {int? identity}) {
+    final query = delete(historiesTable)
+      ..where((tbl) => _identityQuery(tbl, identity));
+    if (ids != null) {
+      query.where((tbl) => tbl.id.isIn(ids));
+    }
+    return query.go();
+  }
 
   Future<void> trim({
     required int maxAmount,
