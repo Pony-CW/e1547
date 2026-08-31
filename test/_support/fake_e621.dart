@@ -84,7 +84,6 @@ class FakeE621 {
         orElse: () => throw FakeE621Error(404, 'Not found'),
       );
 
-  /// Users and wiki pages are addressed by id or by their unique name.
   Response _showUser(Request request, String lookup) =>
       _json(_lookup([state.user], lookup, 'name'));
 
@@ -129,8 +128,6 @@ class FakeE621 {
     return _json(comment);
   }
 
-  /// The type filter lives under `search`, so a bare `type` param is ignored
-  /// the way Rails ignores it.
   Response _listFlags(Request request) {
     final type = request.url.queryParameters['search[type]'];
     final flags = switch (type) {
@@ -173,8 +170,6 @@ class FakeE621 {
     }
   }
 
-  /// A one pixel image, so widgets that load a recorded asset url get bytes
-  /// an image decoder accepts.
   static final Uint8List _pixel = base64Decode(
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGM4ceIEAAS0Al'
     'kWLoFAAAAAAElFTkSuQmCC',
@@ -200,12 +195,6 @@ class FakeE621 {
     return _json({'posts': _paginate(posts, query)});
   }
 
-  /// Favorites are served by the post serializer, so they carry the post
-  /// payload rather than a shape of their own.
-  ///
-  /// The controller looks the owner up by `user_id` or by the current user,
-  /// and an anonymous user has no id, so an unauthenticated request without
-  /// that param looks up nothing and reads as missing.
   Response _listFavorites(Request request) {
     final query = request.url.queryParameters;
     if (query['user_id'] == null && _username(request) == null) {
@@ -347,8 +336,7 @@ class FakeE621 {
 
   /// Reads `name[field]` params, throwing when a field is not in [allowed].
   ///
-  /// Rails drops an unpermitted field instead, which hides a client sending
-  /// the wrong one.
+  /// We throw to enforce validity in clients, unlike Rails which ignores extra parameters.
   Map<String, String> _permit(
     Map<String, String> params,
     String name,
@@ -399,8 +387,7 @@ class FakeE621 {
     return items.sublist(start, (start + limit).clamp(0, items.length));
   }
 
-  /// A rejected page or limit is [410], which the paginator treats as the
-  /// range being gone rather than the request being malformed.
+  /// An invalid page or limit is [410].
   int _parseLimit(String? limit) {
     if (limit == null || limit.isEmpty) return recordsPerPage;
     final value = int.tryParse(limit);
@@ -458,8 +445,6 @@ class FakeE621 {
     return {};
   }
 
-  /// Recorded asset urls carry a placeholder host, which only becomes a real
-  /// address once the server has bound a port.
   Response _json(Object? body, {int status = 200}) => Response(
     status,
     body: jsonEncode(body).replaceAll(fixtureHost, url),
@@ -512,11 +497,6 @@ class FakeE621State {
     required this.reportReasons,
   });
 
-  /// Each count repeats that resource until there are that many of it, so a
-  /// test can ask for more than fit in a page without a fixture that large.
-  ///
-  /// Locks the second topic, because the forum has none locked often enough to
-  /// record one.
   factory FakeE621State.seeded({
     int? posts,
     int? topics,
@@ -540,13 +520,12 @@ class FakeE621State {
       wikis: loadFixtureList('wiki_pages.json'),
       flags: loadFixtureList('flags.json'),
       lockedTopics: {locked['id']! as int},
-      // ids of the rows in e621's post_report_reasons table
-      reportReasons: {1, 2, 3, 4, 5, 6},
+      reportReasons: _postReportReasonIds,
     );
   }
 
-  /// Ids continue past the recorded ones, so a repeated record never collides
-  /// with the template it came from.
+  static const Set<int> _postReportReasonIds = {1, 2, 3, 4, 5, 6};
+
   static List<Map<String, Object?>> _repeat(
     List<Map<String, Object?>> templates,
     int? count,
@@ -574,7 +553,7 @@ class FakeE621State {
   final List<Map<String, Object?>> tagAliases;
   final List<Map<String, Object?>> users;
 
-  /// The show route returns more fields than the index does.
+  /// `/users/<id>` returns more fields than `/users`.
   final Map<String, Object?> user;
   final List<Map<String, Object?>> wikis;
   final List<Map<String, Object?>> flags;

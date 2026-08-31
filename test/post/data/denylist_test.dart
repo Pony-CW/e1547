@@ -7,7 +7,7 @@ import '../../_support/posts.dart';
 /// `app/javascript/src/js/core/blacklist`.
 void main() {
   group('lines', () {
-    test('a single tag denies a post carrying it', () {
+    test('a single tag denies a post with it', () {
       final post = samplePost(
         tags: {
           'general': ['cat', 'sitting'],
