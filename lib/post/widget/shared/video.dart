@@ -242,6 +242,19 @@ class _VideoBarState extends State<VideoBar> {
   }
 }
 
+const Duration videoSeekStep = Duration(seconds: 10);
+
+Duration videoSeekTarget({
+  required Duration position,
+  required Duration duration,
+  required Duration offset,
+}) {
+  final target = position + offset;
+  if (target < Duration.zero) return Duration.zero;
+  if (duration > Duration.zero && target > duration) return duration;
+  return target;
+}
+
 class VideoGesture extends StatefulWidget {
   const VideoGesture({super.key, required this.forward, required this.player});
 
@@ -271,19 +284,13 @@ class _VideoGestureState extends State<VideoGesture>
       behavior: HitTestBehavior.translucent,
       onDoubleTap: () async {
         Duration current = widget.player.state.position;
-        bool boundOnZero = current == Duration.zero;
-        bool boundOnEnd = current == widget.player.state.duration;
-        if ((!widget.forward && boundOnZero) ||
-            (widget.forward && boundOnEnd)) {
-          return;
-        }
+        Duration target = videoSeekTarget(
+          position: current,
+          duration: widget.player.state.duration,
+          offset: widget.forward ? videoSeekStep : -videoSeekStep,
+        );
+        if (target == current) return;
 
-        Duration target = current;
-        if (widget.forward) {
-          target += const Duration(seconds: 10);
-        } else {
-          target -= const Duration(seconds: 10);
-        }
         setState(() {
           combo++;
         });
@@ -307,7 +314,7 @@ class _VideoGestureState extends State<VideoGesture>
                 color: Colors.white,
               ),
               title: Text(
-                '${10 * combo} seconds',
+                '${videoSeekStep.inSeconds * combo} seconds',
                 style: const TextStyle(color: Colors.white),
               ),
             ),
