@@ -13,14 +13,10 @@
 
   "timeline": "时间线",
 
-  "subscribe": "订阅",
   "subscriptions": "订阅",
   "subscriptionsEmpty": "没有订阅",
   "subscriptionsError": "加载订阅失败",
-  "follow": "关注",
-  "unfollow": "取消关注",
 
-  "bookmark": "书签",
   "bookmarks": "书签",
   "bookmarksEmpty": "没有书签",
   "bookmarksError": "加载书签失败",
@@ -31,23 +27,15 @@
   "forum": "论坛",
   "topics": "话题",
   "topicsHide": "隐藏标签编辑",
-  "topicsHideOn": "hide tag alias and implications",
-  "topicsHideOff": "show tag alias and implications",
+  "topicsHideOn": "隐藏",
+  "topicsHideOff": "显示",
 
-  "share": "分享",
-  "download": "下载",
-  "browse": "浏览器",
-  "comment": "评论",
-  "report": "举报",
-  "flag": "标记",
-  "editError": "你需要登录才能编辑帖子！",
-  "commentError": "你需要登录才能评论！",
-  "reportError": "你需要登录才能举报帖子！",
-  "flagError": "你需要登录才能标记帖子",
   "chooseIdentity": "选择身份",
 
   "comments": "评论",
   "commentsLC": "评论",
+  "commentsEmpty": "没有评论",
+  "commentsError": "加载评论失败",
   "commentsNumUC": "评论 ({count})",
   "@commentsNumUC": {
     "description": "lib/post/widget/detail/widget/comments.dart - COMMENTS",
@@ -68,20 +56,18 @@
   },
   "file": "文件",
   "sources": "来源",
+  "textEdited": "（已编辑）",
+  "@textEdited": {
+    "description": "For other languages, the leading space can be adjusted as needed for display purposes."
+  },
 
+  "experimentalTitle": "实验性平台",
+  "experimentalSubtitle": "此平台不受支持。可能存在 Bug 和部分功能缺失。",
   "version": "版本",
   "versionMessage1": "检查更新中……",
   "versionMessage2": "检查更新失败",
-  "versionMessage3": "您处在最新版本",
-  "versionMessage4": "新版本可用: {version}",
-  "@versionMessage4": {
-    "description": "lib/settings/widget/about.dart - First Version",
-    "placeholders": {
-      "version": {
-        "type": "String"
-      }
-    }
-  },
+  "versionMessage3": "你已是最新版本",
+  "versionMessage4": "新版本可用: ",
   "forumThread": "e621 线程 #{TopicId}",
   "@forumThread": {
     "description": "lib/settings/widget/about.dart - Forum Thread",
@@ -109,8 +95,6 @@
   "siteInfo": "The site is where your posts and account live.",
   "signIn": "登录",
   "guest": "访客",
-  "removeWarn": "移除账户？",
-  "removeWarnInfo": "其所有数据将被永久移除，包括历史与关注等",
   "anonymous": "匿名",
   "username": "用户名",
   "userWarn": "您需要填写用户名",
@@ -176,7 +160,7 @@
   "forumLC": "论坛",
 
   "history": "历史",
-  "historySubtitle": "{num} 页已访问",
+  "historySubtitle": "{num} 已访问",
   "@historySubtitle": {
     "description": "lib/settings/widget/settings.dart &\nlib/history/widget/drawer.dart - History subtitle",
     "placeholders": {
@@ -185,6 +169,8 @@
       }
     }
   },
+  "historyEmpty": "你的历史是空的",
+  "historyError": "加载历史失败",
   "historyClear": "清除历史",
   "historyClearSub": "删除所有条目",
   "historyClearWarn": "清除历史？",
@@ -272,13 +258,14 @@
   },
   "hotPosts": "热门帖子",
   "entries": "条目",
+  "items": "项目",
+  "searches": "搜索",
   "type": "类型",
   "posts": "帖子",
   "users": "用户",
   "replies": "回复",
   "tags": "标签",
 
-  "wiki": "维基",
   "wikis": "维基",
   "add": "添加",
   "subtract": "Subtract",
@@ -412,6 +399,17 @@
     }
   },
   "logsError": "发生严重错误！",
+  "allLogs": "所有日志",
+  "dismissAll": "忽略所有",
+  "logErrorsTitle": "{count, plural, =0 {} =1 {1 错误} other {{count} 错误}}",
+  "@logErrorsTitle": {
+    "description": "lib/logs/widget/prompt.dart - logErrorsTitle",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
 
   "database": "数据库",
   "databaseExport": "保存并备份您的数据库",
@@ -426,22 +424,74 @@
   "import": "导入",
   "cancel": "取消",
   "importUC": "导入",
-  "cancelUC": "取消",
-  "remove": "移除",
-  "removeUC": "移除",
   "restart": "需要重启",
   "restartWarn": "App 需要重启以完成更改",
   "restartNow": "现在重启",
 
-  "noArtist": "无作者",
+  "noArtist": "无艺术家",
+  "noTags": "无标签",
 
   "enabled": "启用",
   "enabledLC": "启用",
   "disabledLC": "禁用",
 
   "selectAll": "选择全部",
-  "dismiss": "消除",
 
+  "refresh": "刷新",
+  "newestFirst": "最新优先",
+  "oldestFirst": "最早优先",
+  "reply": "回复",
+  "replyError": "你需要登录才能回复！",
+  "replyCommentsError": "你需要登录才能回复评论！",
+  "copyID": "复制 ID",
+  "copyReplyID": "已复制回复 ID #${replyid}",
+  "@copyReplyID": {
+    "description": "lib/reply/widget/reply.dart - Copied reply id",
+    "placeholders": {
+      "replyid": {
+        "type": "int"
+      }
+    }
+  },
+  "copyCommentID": "已复制评论 ID #{commentid}",
+  "@copyCommentID": {
+    "description": "lib/comment/widget/tile.dart - Copied comment id",
+    "placeholders": {
+      "commentid": {
+        "type": "int"
+      }
+    }
+  },
+  "markAsRead": "标记为已读",
+  "disableNotifications": "禁用通知",
+  "enableNotifications": "启用通知",
+  "subscribe": "订阅",
+  "bookmark": "书签",
+  "rename": "重命名",
+  "follow": "关注",
+  "unfollow": "取消关注",
+  "wiki": "维基",
+  "description": "Description",
+  "delete": "删除",
+  "remove": "移除",
+  "removeUC": "移除",
+  "removeWarn": "移除账户？",
+  "removeWarnInfo": "其所有数据将被永久移除，包括历史与关注等",
+  "cancelUC": "取消",
+  "share": "分享",
+  "download": "下载",
+  "downloadUC": "下载",
+  "browse": "浏览器",
   "edit": "编辑",
-  "delete": "删除"
+  "editCommentsError": "你需要登录才能编辑评论！",
+  "editPostsError": "你需要登录才能编辑帖子！",
+  "editRepliesError": "你需要登录才能编辑回复！",
+  "comment": "评论",
+  "commentError": "你需要登录才能评论！",
+  "report": "举报",
+  "reportCommentError": "你需要登录才能举报评论！",
+  "reportPostsError": "你需要登录才能举报帖子！",
+  "reportRepliesError": "你需要登录才能举报回复！",
+  "flag": "标记",
+  "flagPostsError": "你需要登录才能标记帖子！"
 }

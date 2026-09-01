@@ -219,27 +219,29 @@ class CommentMenu extends StatelessWidget {
             value: () => guardWithLogin(
               context: context,
               callback: () => editComment(context: context, comment: comment),
-              error: 'You must be logged in to edit comments!',
+              error: AppLocalizations.of(context)!.editCommentsError,
             ),
           ),
         PopupMenuTile(
-          title: 'Reply',
+          title: AppLocalizations.of(context)!.reply,
           icon: Icons.reply,
           value: () => guardWithLogin(
             context: context,
             callback: () => replyComment(context: context, comment: comment),
-            error: 'You must be logged in to reply to comments!',
+            error: AppLocalizations.of(context)!.replyCommentsError,
           ),
         ),
         PopupMenuTile(
-          title: 'Copy ID',
+          title: AppLocalizations.of(context)!.copyID,
           icon: Icons.tag,
           value: () async {
             Clipboard.setData(ClipboardData(text: comment.id.toString()));
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 duration: const Duration(seconds: 1),
-                content: Text('Copied comment id #${comment.id}'),
+                content: Text(
+                  AppLocalizations.of(context)!.copyCommentID(comment.id),
+                ),
               ),
             );
           },
@@ -254,7 +256,7 @@ class CommentMenu extends StatelessWidget {
                 builder: (context) => CommentReportScreen(comment: comment),
               ),
             ),
-            error: 'You must be logged in to report comments!',
+            error: AppLocalizations.of(context)!.reportCommentError,
           ),
         ),
       ],

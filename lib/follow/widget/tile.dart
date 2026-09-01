@@ -73,7 +73,7 @@ class FollowTile extends StatelessWidget {
           if ((follow.unseen ?? 0) > 0)
             PopupMenuTile(
               value: () => client.follows.markSeen(follow.id),
-              title: 'Mark as read',
+              title: AppLocalizations.of(context)!.markAsRead,
               icon: Icons.mark_email_read,
             ),
           if (PlatformCapabilities.hasNotifications && !bookmarked)
@@ -83,8 +83,8 @@ class FollowTile extends StatelessWidget {
                 type: !notified ? FollowType.notify : FollowType.update,
               ),
               title: notified
-                  ? 'Disable notifications'
-                  : 'Enable notifications',
+                  ? AppLocalizations.of(context)!.disableNotifications
+                  : AppLocalizations.of(context)!.enableNotifications,
               icon: notified
                   ? Icons.notifications_off
                   : Icons.notifications_active,
@@ -101,7 +101,11 @@ class FollowTile extends StatelessWidget {
               icon: bookmarked ? Icons.person_add : Icons.bookmark,
             ),
           if (promptController != null && follow.tags.split(' ').length > 1)
-            PopupMenuTile(value: editTitle, title: 'Rename', icon: Icons.label),
+            PopupMenuTile(
+              value: editTitle,
+              title: AppLocalizations.of(context)!.rename,
+              icon: Icons.label,
+            ),
           if (promptController != null)
             PopupMenuTile(
               value: edit,

@@ -164,7 +164,7 @@ class ReplyMenu extends StatelessWidget {
             value: () => guardWithLogin(
               context: context,
               callback: () => editReply(context: context, reply: reply),
-              error: 'You must be logged in to edit replies!',
+              error: AppLocalizations.of(context)!.editRepliesError,
             ),
           ),
         PopupMenuTile(
@@ -173,18 +173,20 @@ class ReplyMenu extends StatelessWidget {
           value: () => guardWithLogin(
             context: context,
             callback: () => quoteReply(context: context, reply: reply),
-            error: 'You must be logged in to reply!',
+            error: AppLocalizations.of(context)!.replyError,
           ),
         ),
         PopupMenuTile(
-          title: 'Copy ID',
+          title: AppLocalizations.of(context)!.copyID,
           icon: Icons.tag,
           value: () async {
             Clipboard.setData(ClipboardData(text: reply.id.toString()));
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 duration: const Duration(seconds: 1),
-                content: Text('Copied reply id #${reply.id}'),
+                content: Text(
+                  AppLocalizations.of(context)!.copyReplyID(reply.id),
+                ),
               ),
             );
           },
@@ -199,7 +201,7 @@ class ReplyMenu extends StatelessWidget {
                 builder: (context) => ReplyReportScreen(reply: reply),
               ),
             ),
-            error: 'You must be logged in to report replies!',
+            error: AppLocalizations.of(context)!.reportRepliesError,
           ),
         ),
       ],

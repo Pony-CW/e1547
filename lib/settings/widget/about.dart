@@ -152,10 +152,8 @@ class AboutExperimental extends StatelessWidget {
             FontAwesomeIcons.triangleExclamation,
             color: Theme.of(context).colorScheme.error,
           ),
-          title: const Text('Experimental platform'),
-          subtitle: const Text(
-            'This platform is not supported. Expect bugs and missing features.',
-          ),
+          title: Text(AppLocalizations.of(context)!.experimentalTitle),
+          subtitle: Text(AppLocalizations.of(context)!.experimentalSubtitle),
         ),
         const Divider(),
       ],
@@ -188,7 +186,7 @@ class AboutVersion extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'A newer version is available: ',
+                  AppLocalizations.of(context)!.versionMessage4,
                   style: TextStyle(color: dimTextColor(context, 0.5)),
                 ),
                 ...versions
@@ -212,9 +210,12 @@ class AboutVersion extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: Navigator.of(context).maybePop,
-            child: const Text('CANCEL'),
+            child: Text(AppLocalizations.of(context)!.cancelUC),
           ),
-          TextButton(onPressed: openGithub, child: const Text('DOWNLOAD')),
+          TextButton(
+            onPressed: openGithub,
+            child: Text(AppLocalizations.of(context)!.downloadUC),
+          ),
         ],
       );
     }
@@ -225,17 +226,18 @@ class AboutVersion extends StatelessWidget {
       Widget icon;
       VoidCallback? onTap;
       if (data == null && (state?.isLoading ?? true)) {
-        message = 'Fetching updates...';
+        message = AppLocalizations.of(context)!.versionMessage1;
         icon = const FaIcon(FontAwesomeIcons.clockRotateLeft);
       } else if (data == null) {
-        message = 'Failed to check for updates';
+        message = AppLocalizations.of(context)!.versionMessage2;
         onTap = openGithub;
         icon = const FaIcon(FontAwesomeIcons.circleExclamation);
       } else if (data.isEmpty) {
-        message = 'You have the newest version';
+        message = AppLocalizations.of(context)!.versionMessage3;
         icon = const FaIcon(FontAwesomeIcons.clockRotateLeft);
       } else {
-        message = 'A newer version is available: ${data.first.version}';
+        message =
+            '${AppLocalizations.of(context)!.versionMessage4}${data.first.version}';
         onTap = () => showDialog(
           context: context,
           builder: (context) => changesDialog(data),

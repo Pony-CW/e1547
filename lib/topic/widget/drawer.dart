@@ -16,7 +16,9 @@ class TopicListDrawer extends StatelessWidget {
           secondary: const Icon(Icons.sell),
           title: Text(AppLocalizations.of(context)!.topicsHide),
           subtitle: Text(
-            controller.value.hideTagEditing ? 'hidden' : 'visible',
+            controller.value.hideTagEditing
+                ? AppLocalizations.of(context)!.topicsHideOn
+                : AppLocalizations.of(context)!.topicsHideOff,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

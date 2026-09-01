@@ -319,7 +319,7 @@ class _UserProfileActions extends StatelessWidget {
                 ),
               );
             },
-            error: AppLocalizations.of(context)!.reportError,
+            error: AppLocalizations.of(context)!.reportPostsError,
           ),
         ),
         PopupMenuTile(

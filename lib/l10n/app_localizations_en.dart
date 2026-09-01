@@ -33,9 +33,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get timeline => 'Timeline';
 
   @override
-  String get subscribe => 'Subscribe';
-
-  @override
   String get subscriptions => 'Subscriptions';
 
   @override
@@ -43,15 +40,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get subscriptionsError => 'Failed to load subscriptions';
-
-  @override
-  String get follow => 'Follow';
-
-  @override
-  String get unfollow => 'Unfollow';
-
-  @override
-  String get bookmark => 'Bookmark';
 
   @override
   String get bookmarks => 'Bookmarks';
@@ -78,40 +66,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get topicsHide => 'hide tags edits';
 
   @override
-  String get topicsHideOn => 'hide tag alias and implications';
+  String get topicsHideOn => 'hidden';
 
   @override
-  String get topicsHideOff => 'show tag alias and implications';
-
-  @override
-  String get share => 'Share';
-
-  @override
-  String get download => 'Download';
-
-  @override
-  String get browse => 'Browse';
-
-  @override
-  String get comment => 'Comment';
-
-  @override
-  String get report => 'Report';
-
-  @override
-  String get flag => 'Flag';
-
-  @override
-  String get editError => 'You must be logged in to edit posts!';
-
-  @override
-  String get commentError => 'You must be logged in to comment!';
-
-  @override
-  String get reportError => 'You must be logged in to report posts!';
-
-  @override
-  String get flagError => 'You must be logged in to flag posts!';
+  String get topicsHideOff => 'visible';
 
   @override
   String get chooseIdentity => 'Choose identity';
@@ -121,6 +79,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commentsLC => 'comments';
+
+  @override
+  String get commentsEmpty => 'No comments';
+
+  @override
+  String get commentsError => 'Failed to load comments';
 
   @override
   String commentsNumUC(int count) {
@@ -139,6 +103,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sources => 'Sources';
 
   @override
+  String get textEdited => ' (edited)';
+
+  @override
+  String get experimentalTitle => 'Experimental platform';
+
+  @override
+  String get experimentalSubtitle =>
+      'This platform is not supported. Expect bugs and missing features.';
+
+  @override
   String get version => 'Version';
 
   @override
@@ -151,9 +125,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get versionMessage3 => 'You have the newest version';
 
   @override
-  String versionMessage4(String version) {
-    return 'A newer version is available: $version';
-  }
+  String get versionMessage4 => 'A newer version is available: ';
 
   @override
   String forumThread(int TopicId) {
@@ -211,13 +183,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guest => 'Guest';
-
-  @override
-  String get removeWarn => 'Remove account?';
-
-  @override
-  String get removeWarnInfo =>
-      'All its data will be permanently removed, including history and follows.';
 
   @override
   String get anonymous => 'Anonymous';
@@ -326,6 +291,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get historyEmpty => 'Your history is empty';
+
+  @override
+  String get historyError => 'Failed to load history';
+
+  @override
   String get historyClear => 'Clear history';
 
   @override
@@ -394,6 +365,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get entries => 'Entries';
 
   @override
+  String get items => 'Items';
+
+  @override
+  String get searches => 'Searches';
+
+  @override
   String get type => 'Type';
 
   @override
@@ -407,9 +384,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tags => 'Tags';
-
-  @override
-  String get wiki => 'Wiki';
 
   @override
   String get wikis => 'Wikis';
@@ -632,6 +606,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logsError => 'A critical error has occured!';
 
   @override
+  String get allLogs => 'All logs';
+
+  @override
+  String get dismissAll => 'Dismiss all';
+
+  @override
+  String logErrorsTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count errors',
+      one: '1 error',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get database => 'Database';
 
   @override
@@ -669,15 +661,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importUC => 'IMPORT';
 
   @override
-  String get cancelUC => 'CANCEL';
-
-  @override
-  String get remove => 'Remove';
-
-  @override
-  String get removeUC => 'REMOVE';
-
-  @override
   String get restart => 'Restart Required';
 
   @override
@@ -688,6 +671,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noArtist => 'no artist';
+
+  @override
+  String get noTags => 'no tags';
 
   @override
   String get enabled => 'Enabled';
@@ -702,11 +688,131 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectAll => 'Select all';
 
   @override
-  String get dismiss => 'dismiss';
+  String get refresh => 'Refresh';
+
+  @override
+  String get newestFirst => 'Newest first';
+
+  @override
+  String get oldestFirst => 'Oldest first';
+
+  @override
+  String get reply => 'Reply';
+
+  @override
+  String get replyError => 'You must be logged in to reply!';
+
+  @override
+  String get replyCommentsError =>
+      'You must be logged in to reply to comments!';
+
+  @override
+  String get copyID => 'Copy ID';
+
+  @override
+  String copyReplyID(int replyid) {
+    return 'Copied reply id #\$$replyid';
+  }
+
+  @override
+  String copyCommentID(int commentid) {
+    return 'Copied comment id #$commentid';
+  }
+
+  @override
+  String get markAsRead => 'Mark as read';
+
+  @override
+  String get disableNotifications => 'Disable notifications';
+
+  @override
+  String get enableNotifications => 'Enable notifications';
+
+  @override
+  String get subscribe => 'Subscribe';
+
+  @override
+  String get bookmark => 'Bookmark';
+
+  @override
+  String get rename => 'Rename';
+
+  @override
+  String get follow => 'Follow';
+
+  @override
+  String get unfollow => 'Unfollow';
+
+  @override
+  String get wiki => 'Wiki';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get remove => 'Remove';
+
+  @override
+  String get removeUC => 'REMOVE';
+
+  @override
+  String get removeWarn => 'Remove account?';
+
+  @override
+  String get removeWarnInfo =>
+      'All its data will be permanently removed, including history and follows.';
+
+  @override
+  String get cancelUC => 'CANCEL';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get download => 'Download';
+
+  @override
+  String get downloadUC => 'DOWNLOAD';
+
+  @override
+  String get browse => 'Browse';
 
   @override
   String get edit => 'Edit';
 
   @override
-  String get delete => 'Delete';
+  String get editCommentsError => 'You must be logged in to edit comments!';
+
+  @override
+  String get editPostsError => 'You must be logged in to edit posts!';
+
+  @override
+  String get editRepliesError => 'You must be logged in to edit replies!';
+
+  @override
+  String get comment => 'Comment';
+
+  @override
+  String get commentError => 'You must be logged in to comment!';
+
+  @override
+  String get report => 'Report';
+
+  @override
+  String get reportCommentError => 'You must be logged in to report comments!';
+
+  @override
+  String get reportPostsError => 'You must be logged in to report posts!';
+
+  @override
+  String get reportRepliesError => 'You must be logged in to report replies!';
+
+  @override
+  String get flag => 'Flag';
+
+  @override
+  String get flagPostsError => 'You must be logged in to flag posts!';
 }

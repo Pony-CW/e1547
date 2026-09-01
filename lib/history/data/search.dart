@@ -3,13 +3,13 @@ import 'package:e1547/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 extension HistorySearchFilterDisplaying on HistoryCategory {
-  String get title {
-    switch (this) {
-      case HistoryCategory.items:
-        return 'Items';
-      case HistoryCategory.searches:
-        return 'Searches';
-    }
+  String title(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return switch (this) {
+      HistoryCategory.items => l10n.items,
+      HistoryCategory.searches => l10n.searches,
+    };
   }
 
   Widget? get icon {

@@ -126,7 +126,7 @@ class _HistoryTileDropdown extends StatelessWidget {
           ),
         if (entry.subtitle != null)
           PopupMenuTile(
-            title: 'Description',
+            title: AppLocalizations.of(context)!.description,
             icon: Icons.description,
             value: () => showHistoryPrompt(context: context, entry: entry),
           ),

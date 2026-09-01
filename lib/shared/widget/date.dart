@@ -1,3 +1,4 @@
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:relative_time/relative_time.dart';
@@ -24,7 +25,7 @@ class TimedText extends StatelessWidget {
         Flexible(child: child),
         Text(
           ' • ${created.relativeTime(context)}'
-          '${updated != null && updated!.isAfter(created) ? ' (edited)' : ''}',
+          '${updated != null && updated!.isAfter(created) ? AppLocalizations.of(context)!.textEdited : ''}',
           maxLines: 1,
           style: TextStyle(fontSize: 12, color: dimTextColor(context)),
         ),

@@ -158,7 +158,7 @@ class HistoryCategoryFilterTile extends StatelessWidget {
               padding: const EdgeInsets.only(left: 16),
               child: CheckboxListTile(
                 secondary: filter.icon,
-                title: Text(filter.title),
+                title: Text(filter.title(context)),
                 value: controller.value.categories?.contains(filter) ?? true,
                 onChanged: (value) {
                   if (value == null) return;

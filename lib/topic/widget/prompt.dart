@@ -1,4 +1,5 @@
 import 'package:e1547/client/client.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
 import 'package:e1547/topic/topic.dart';
@@ -26,7 +27,7 @@ Future<void> showTopicPrompt({
           icon: const Icon(Icons.share),
           onTap: () async =>
               Share.text(context, context.read<Client>().withHost(topic.link)),
-          label: const Text('Share'),
+          label: Text(AppLocalizations.of(context)!.share),
         ),
       ],
     ),

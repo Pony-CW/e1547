@@ -19,15 +19,15 @@ class CommentListDropdown extends StatelessWidget {
       onSelected: (value) => value(),
       itemBuilder: (context) => [
         PopupMenuTile(
-          title: 'Refresh',
+          title: AppLocalizations.of(context)!.refresh,
           icon: Icons.refresh,
           value: () => query.invalidate(),
         ),
         PopupMenuTile(
           icon: Icons.sort,
           title: controller.value.order == CommentOrder.oldest
-              ? 'Newest first'
-              : 'Oldest first',
+              ? AppLocalizations.of(context)!.newestFirst
+              : AppLocalizations.of(context)!.oldestFirst,
           value: () => controller.update(
             (p) => p.copyWith(
               order: p.order == CommentOrder.oldest
@@ -51,7 +51,7 @@ class CommentListDropdown extends StatelessWidget {
                   query.invalidate();
                 }
               },
-              error: 'You must be logged in to comment!',
+              error: AppLocalizations.of(context)!.commentError,
             ),
           ),
       ],

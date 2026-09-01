@@ -147,12 +147,6 @@ abstract class AppLocalizations {
   /// **'Timeline'**
   String get timeline;
 
-  /// No description provided for @subscribe.
-  ///
-  /// In en, this message translates to:
-  /// **'Subscribe'**
-  String get subscribe;
-
   /// No description provided for @subscriptions.
   ///
   /// In en, this message translates to:
@@ -170,24 +164,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load subscriptions'**
   String get subscriptionsError;
-
-  /// No description provided for @follow.
-  ///
-  /// In en, this message translates to:
-  /// **'Follow'**
-  String get follow;
-
-  /// No description provided for @unfollow.
-  ///
-  /// In en, this message translates to:
-  /// **'Unfollow'**
-  String get unfollow;
-
-  /// No description provided for @bookmark.
-  ///
-  /// In en, this message translates to:
-  /// **'Bookmark'**
-  String get bookmark;
 
   /// No description provided for @bookmarks.
   ///
@@ -240,74 +216,14 @@ abstract class AppLocalizations {
   /// No description provided for @topicsHideOn.
   ///
   /// In en, this message translates to:
-  /// **'hide tag alias and implications'**
+  /// **'hidden'**
   String get topicsHideOn;
 
   /// No description provided for @topicsHideOff.
   ///
   /// In en, this message translates to:
-  /// **'show tag alias and implications'**
+  /// **'visible'**
   String get topicsHideOff;
-
-  /// No description provided for @share.
-  ///
-  /// In en, this message translates to:
-  /// **'Share'**
-  String get share;
-
-  /// No description provided for @download.
-  ///
-  /// In en, this message translates to:
-  /// **'Download'**
-  String get download;
-
-  /// No description provided for @browse.
-  ///
-  /// In en, this message translates to:
-  /// **'Browse'**
-  String get browse;
-
-  /// No description provided for @comment.
-  ///
-  /// In en, this message translates to:
-  /// **'Comment'**
-  String get comment;
-
-  /// No description provided for @report.
-  ///
-  /// In en, this message translates to:
-  /// **'Report'**
-  String get report;
-
-  /// No description provided for @flag.
-  ///
-  /// In en, this message translates to:
-  /// **'Flag'**
-  String get flag;
-
-  /// No description provided for @editError.
-  ///
-  /// In en, this message translates to:
-  /// **'You must be logged in to edit posts!'**
-  String get editError;
-
-  /// No description provided for @commentError.
-  ///
-  /// In en, this message translates to:
-  /// **'You must be logged in to comment!'**
-  String get commentError;
-
-  /// No description provided for @reportError.
-  ///
-  /// In en, this message translates to:
-  /// **'You must be logged in to report posts!'**
-  String get reportError;
-
-  /// No description provided for @flagError.
-  ///
-  /// In en, this message translates to:
-  /// **'You must be logged in to flag posts!'**
-  String get flagError;
 
   /// No description provided for @chooseIdentity.
   ///
@@ -326,6 +242,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'comments'**
   String get commentsLC;
+
+  /// No description provided for @commentsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No comments'**
+  String get commentsEmpty;
+
+  /// No description provided for @commentsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load comments'**
+  String get commentsError;
 
   /// lib/post/widget/detail/widget/comments.dart - COMMENTS
   ///
@@ -351,6 +279,24 @@ abstract class AppLocalizations {
   /// **'Sources'**
   String get sources;
 
+  /// For other languages, the leading space can be adjusted as needed for display purposes.
+  ///
+  /// In en, this message translates to:
+  /// **' (edited)'**
+  String get textEdited;
+
+  /// No description provided for @experimentalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Experimental platform'**
+  String get experimentalTitle;
+
+  /// No description provided for @experimentalSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This platform is not supported. Expect bugs and missing features.'**
+  String get experimentalSubtitle;
+
   /// No description provided for @version.
   ///
   /// In en, this message translates to:
@@ -375,11 +321,11 @@ abstract class AppLocalizations {
   /// **'You have the newest version'**
   String get versionMessage3;
 
-  /// lib/settings/widget/about.dart - First Version
+  /// No description provided for @versionMessage4.
   ///
   /// In en, this message translates to:
-  /// **'A newer version is available: {version}'**
-  String versionMessage4(String version);
+  /// **'A newer version is available: '**
+  String get versionMessage4;
 
   /// lib/settings/widget/about.dart - Forum Thread
   ///
@@ -488,18 +434,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Guest'**
   String get guest;
-
-  /// No description provided for @removeWarn.
-  ///
-  /// In en, this message translates to:
-  /// **'Remove account?'**
-  String get removeWarn;
-
-  /// No description provided for @removeWarnInfo.
-  ///
-  /// In en, this message translates to:
-  /// **'All its data will be permanently removed, including history and follows.'**
-  String get removeWarnInfo;
 
   /// No description provided for @anonymous.
   ///
@@ -694,6 +628,18 @@ abstract class AppLocalizations {
   /// **'{num} pages visited'**
   String historySubtitle(int num);
 
+  /// No description provided for @historyEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your history is empty'**
+  String get historyEmpty;
+
+  /// No description provided for @historyError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load history'**
+  String get historyError;
+
   /// No description provided for @historyClear.
   ///
   /// In en, this message translates to:
@@ -796,6 +742,18 @@ abstract class AppLocalizations {
   /// **'Entries'**
   String get entries;
 
+  /// No description provided for @items.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get items;
+
+  /// No description provided for @searches.
+  ///
+  /// In en, this message translates to:
+  /// **'Searches'**
+  String get searches;
+
   /// No description provided for @type.
   ///
   /// In en, this message translates to:
@@ -825,12 +783,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tags'**
   String get tags;
-
-  /// No description provided for @wiki.
-  ///
-  /// In en, this message translates to:
-  /// **'Wiki'**
-  String get wiki;
 
   /// No description provided for @wikis.
   ///
@@ -1234,6 +1186,24 @@ abstract class AppLocalizations {
   /// **'A critical error has occured!'**
   String get logsError;
 
+  /// No description provided for @allLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'All logs'**
+  String get allLogs;
+
+  /// No description provided for @dismissAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss all'**
+  String get dismissAll;
+
+  /// lib/logs/widget/prompt.dart - logErrorsTitle
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0 {} =1 {1 error} other {{count} errors}}'**
+  String logErrorsTitle(int count);
+
   /// No description provided for @database.
   ///
   /// In en, this message translates to:
@@ -1306,24 +1276,6 @@ abstract class AppLocalizations {
   /// **'IMPORT'**
   String get importUC;
 
-  /// No description provided for @cancelUC.
-  ///
-  /// In en, this message translates to:
-  /// **'CANCEL'**
-  String get cancelUC;
-
-  /// No description provided for @remove.
-  ///
-  /// In en, this message translates to:
-  /// **'Remove'**
-  String get remove;
-
-  /// No description provided for @removeUC.
-  ///
-  /// In en, this message translates to:
-  /// **'REMOVE'**
-  String get removeUC;
-
   /// No description provided for @restart.
   ///
   /// In en, this message translates to:
@@ -1347,6 +1299,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'no artist'**
   String get noArtist;
+
+  /// No description provided for @noTags.
+  ///
+  /// In en, this message translates to:
+  /// **'no tags'**
+  String get noTags;
 
   /// No description provided for @enabled.
   ///
@@ -1372,11 +1330,179 @@ abstract class AppLocalizations {
   /// **'Select all'**
   String get selectAll;
 
-  /// No description provided for @dismiss.
+  /// No description provided for @refresh.
   ///
   /// In en, this message translates to:
-  /// **'dismiss'**
-  String get dismiss;
+  /// **'Refresh'**
+  String get refresh;
+
+  /// No description provided for @newestFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest first'**
+  String get newestFirst;
+
+  /// No description provided for @oldestFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest first'**
+  String get oldestFirst;
+
+  /// No description provided for @reply.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply'**
+  String get reply;
+
+  /// No description provided for @replyError.
+  ///
+  /// In en, this message translates to:
+  /// **'You must be logged in to reply!'**
+  String get replyError;
+
+  /// No description provided for @replyCommentsError.
+  ///
+  /// In en, this message translates to:
+  /// **'You must be logged in to reply to comments!'**
+  String get replyCommentsError;
+
+  /// No description provided for @copyID.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy ID'**
+  String get copyID;
+
+  /// lib/reply/widget/reply.dart - Copied reply id
+  ///
+  /// In en, this message translates to:
+  /// **'Copied reply id #\${replyid}'**
+  String copyReplyID(int replyid);
+
+  /// lib/comment/widget/tile.dart - Copied comment id
+  ///
+  /// In en, this message translates to:
+  /// **'Copied comment id #{commentid}'**
+  String copyCommentID(int commentid);
+
+  /// No description provided for @markAsRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as read'**
+  String get markAsRead;
+
+  /// No description provided for @disableNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable notifications'**
+  String get disableNotifications;
+
+  /// No description provided for @enableNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable notifications'**
+  String get enableNotifications;
+
+  /// No description provided for @subscribe.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe'**
+  String get subscribe;
+
+  /// No description provided for @bookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark'**
+  String get bookmark;
+
+  /// No description provided for @rename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get rename;
+
+  /// No description provided for @follow.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow'**
+  String get follow;
+
+  /// No description provided for @unfollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollow'**
+  String get unfollow;
+
+  /// No description provided for @wiki.
+  ///
+  /// In en, this message translates to:
+  /// **'Wiki'**
+  String get wiki;
+
+  /// No description provided for @description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remove;
+
+  /// No description provided for @removeUC.
+  ///
+  /// In en, this message translates to:
+  /// **'REMOVE'**
+  String get removeUC;
+
+  /// No description provided for @removeWarn.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove account?'**
+  String get removeWarn;
+
+  /// No description provided for @removeWarnInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'All its data will be permanently removed, including history and follows.'**
+  String get removeWarnInfo;
+
+  /// No description provided for @cancelUC.
+  ///
+  /// In en, this message translates to:
+  /// **'CANCEL'**
+  String get cancelUC;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
+  /// No description provided for @download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get download;
+
+  /// No description provided for @downloadUC.
+  ///
+  /// In en, this message translates to:
+  /// **'DOWNLOAD'**
+  String get downloadUC;
+
+  /// No description provided for @browse.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse'**
+  String get browse;
 
   /// No description provided for @edit.
   ///
@@ -1384,11 +1510,71 @@ abstract class AppLocalizations {
   /// **'Edit'**
   String get edit;
 
-  /// No description provided for @delete.
+  /// No description provided for @editCommentsError.
   ///
   /// In en, this message translates to:
-  /// **'Delete'**
-  String get delete;
+  /// **'You must be logged in to edit comments!'**
+  String get editCommentsError;
+
+  /// No description provided for @editPostsError.
+  ///
+  /// In en, this message translates to:
+  /// **'You must be logged in to edit posts!'**
+  String get editPostsError;
+
+  /// No description provided for @editRepliesError.
+  ///
+  /// In en, this message translates to:
+  /// **'You must be logged in to edit replies!'**
+  String get editRepliesError;
+
+  /// No description provided for @comment.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment'**
+  String get comment;
+
+  /// No description provided for @commentError.
+  ///
+  /// In en, this message translates to:
+  /// **'You must be logged in to comment!'**
+  String get commentError;
+
+  /// No description provided for @report.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get report;
+
+  /// No description provided for @reportCommentError.
+  ///
+  /// In en, this message translates to:
+  /// **'You must be logged in to report comments!'**
+  String get reportCommentError;
+
+  /// No description provided for @reportPostsError.
+  ///
+  /// In en, this message translates to:
+  /// **'You must be logged in to report posts!'**
+  String get reportPostsError;
+
+  /// No description provided for @reportRepliesError.
+  ///
+  /// In en, this message translates to:
+  /// **'You must be logged in to report replies!'**
+  String get reportRepliesError;
+
+  /// No description provided for @flag.
+  ///
+  /// In en, this message translates to:
+  /// **'Flag'**
+  String get flag;
+
+  /// No description provided for @flagPostsError.
+  ///
+  /// In en, this message translates to:
+  /// **'You must be logged in to flag posts!'**
+  String get flagPostsError;
 }
 
 class _AppLocalizationsDelegate

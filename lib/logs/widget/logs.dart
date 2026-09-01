@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:e1547/app/app.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/logs/logs.dart';
 import 'package:e1547/settings/settings.dart';
 import 'package:e1547/shared/shared.dart';
@@ -321,7 +322,7 @@ class _LogPageState extends State<LogPage> {
             appBar: LogSelectionAppBar(
               child: DefaultAppBar(
                 title: Text(
-                  'Logs${date != null ? ' - ${DateFormatting.date(date)}' : ''}',
+                  '${AppLocalizations.of(context)!.logs}${date != null ? ' - ${DateFormatting.date(date)}' : ''}',
                 ),
                 actions: [
                   if (widget.onShowAll != null)

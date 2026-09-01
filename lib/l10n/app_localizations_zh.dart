@@ -33,9 +33,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get timeline => '时间线';
 
   @override
-  String get subscribe => '订阅';
-
-  @override
   String get subscriptions => '订阅';
 
   @override
@@ -43,15 +40,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get subscriptionsError => '加载订阅失败';
-
-  @override
-  String get follow => '关注';
-
-  @override
-  String get unfollow => '取消关注';
-
-  @override
-  String get bookmark => '书签';
 
   @override
   String get bookmarks => '书签';
@@ -78,40 +66,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get topicsHide => '隐藏标签编辑';
 
   @override
-  String get topicsHideOn => 'hide tag alias and implications';
+  String get topicsHideOn => '隐藏';
 
   @override
-  String get topicsHideOff => 'show tag alias and implications';
-
-  @override
-  String get share => '分享';
-
-  @override
-  String get download => '下载';
-
-  @override
-  String get browse => '浏览器';
-
-  @override
-  String get comment => '评论';
-
-  @override
-  String get report => '举报';
-
-  @override
-  String get flag => '标记';
-
-  @override
-  String get editError => '你需要登录才能编辑帖子！';
-
-  @override
-  String get commentError => '你需要登录才能评论！';
-
-  @override
-  String get reportError => '你需要登录才能举报帖子！';
-
-  @override
-  String get flagError => '你需要登录才能标记帖子';
+  String get topicsHideOff => '显示';
 
   @override
   String get chooseIdentity => '选择身份';
@@ -121,6 +79,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get commentsLC => '评论';
+
+  @override
+  String get commentsEmpty => '没有评论';
+
+  @override
+  String get commentsError => '加载评论失败';
 
   @override
   String commentsNumUC(int count) {
@@ -139,6 +103,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sources => '来源';
 
   @override
+  String get textEdited => '（已编辑）';
+
+  @override
+  String get experimentalTitle => '实验性平台';
+
+  @override
+  String get experimentalSubtitle => '此平台不受支持。可能存在 Bug 和部分功能缺失。';
+
+  @override
   String get version => '版本';
 
   @override
@@ -148,12 +121,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get versionMessage2 => '检查更新失败';
 
   @override
-  String get versionMessage3 => '您处在最新版本';
+  String get versionMessage3 => '你已是最新版本';
 
   @override
-  String versionMessage4(String version) {
-    return '新版本可用: $version';
-  }
+  String get versionMessage4 => '新版本可用: ';
 
   @override
   String forumThread(int TopicId) {
@@ -210,12 +181,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get guest => '访客';
-
-  @override
-  String get removeWarn => '移除账户？';
-
-  @override
-  String get removeWarnInfo => '其所有数据将被永久移除，包括历史与关注等';
 
   @override
   String get anonymous => '匿名';
@@ -320,8 +285,14 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String historySubtitle(int num) {
-    return '$num 页已访问';
+    return '$num 已访问';
   }
+
+  @override
+  String get historyEmpty => '你的历史是空的';
+
+  @override
+  String get historyError => '加载历史失败';
 
   @override
   String get historyClear => '清除历史';
@@ -391,6 +362,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get entries => '条目';
 
   @override
+  String get items => '项目';
+
+  @override
+  String get searches => '搜索';
+
+  @override
   String get type => '类型';
 
   @override
@@ -404,9 +381,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get tags => '标签';
-
-  @override
-  String get wiki => '维基';
 
   @override
   String get wikis => '维基';
@@ -629,6 +603,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get logsError => '发生严重错误！';
 
   @override
+  String get allLogs => '所有日志';
+
+  @override
+  String get dismissAll => '忽略所有';
+
+  @override
+  String logErrorsTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 错误',
+      one: '1 错误',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get database => '数据库';
 
   @override
@@ -665,15 +657,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get importUC => '导入';
 
   @override
-  String get cancelUC => '取消';
-
-  @override
-  String get remove => '移除';
-
-  @override
-  String get removeUC => '移除';
-
-  @override
   String get restart => '需要重启';
 
   @override
@@ -683,7 +666,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get restartNow => '现在重启';
 
   @override
-  String get noArtist => '无作者';
+  String get noArtist => '无艺术家';
+
+  @override
+  String get noTags => '无标签';
 
   @override
   String get enabled => '启用';
@@ -698,13 +684,131 @@ class AppLocalizationsZh extends AppLocalizations {
   String get selectAll => '选择全部';
 
   @override
-  String get dismiss => '消除';
+  String get refresh => '刷新';
+
+  @override
+  String get newestFirst => '最新优先';
+
+  @override
+  String get oldestFirst => '最早优先';
+
+  @override
+  String get reply => '回复';
+
+  @override
+  String get replyError => '你需要登录才能回复！';
+
+  @override
+  String get replyCommentsError => '你需要登录才能回复评论！';
+
+  @override
+  String get copyID => '复制 ID';
+
+  @override
+  String copyReplyID(int replyid) {
+    return '已复制回复 ID #\$$replyid';
+  }
+
+  @override
+  String copyCommentID(int commentid) {
+    return '已复制评论 ID #$commentid';
+  }
+
+  @override
+  String get markAsRead => '标记为已读';
+
+  @override
+  String get disableNotifications => '禁用通知';
+
+  @override
+  String get enableNotifications => '启用通知';
+
+  @override
+  String get subscribe => '订阅';
+
+  @override
+  String get bookmark => '书签';
+
+  @override
+  String get rename => '重命名';
+
+  @override
+  String get follow => '关注';
+
+  @override
+  String get unfollow => '取消关注';
+
+  @override
+  String get wiki => '维基';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get delete => '删除';
+
+  @override
+  String get remove => '移除';
+
+  @override
+  String get removeUC => '移除';
+
+  @override
+  String get removeWarn => '移除账户？';
+
+  @override
+  String get removeWarnInfo => '其所有数据将被永久移除，包括历史与关注等';
+
+  @override
+  String get cancelUC => '取消';
+
+  @override
+  String get share => '分享';
+
+  @override
+  String get download => '下载';
+
+  @override
+  String get downloadUC => '下载';
+
+  @override
+  String get browse => '浏览器';
 
   @override
   String get edit => '编辑';
 
   @override
-  String get delete => '删除';
+  String get editCommentsError => '你需要登录才能编辑评论！';
+
+  @override
+  String get editPostsError => '你需要登录才能编辑帖子！';
+
+  @override
+  String get editRepliesError => '你需要登录才能编辑回复！';
+
+  @override
+  String get comment => '评论';
+
+  @override
+  String get commentError => '你需要登录才能评论！';
+
+  @override
+  String get report => '举报';
+
+  @override
+  String get reportCommentError => '你需要登录才能举报评论！';
+
+  @override
+  String get reportPostsError => '你需要登录才能举报帖子！';
+
+  @override
+  String get reportRepliesError => '你需要登录才能举报回复！';
+
+  @override
+  String get flag => '标记';
+
+  @override
+  String get flagPostsError => '你需要登录才能标记帖子！';
 }
 
 /// The translations for Chinese, as used in China (`zh_CN`).
@@ -736,9 +840,6 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get timeline => '时间线';
 
   @override
-  String get subscribe => '订阅';
-
-  @override
   String get subscriptions => '订阅';
 
   @override
@@ -746,15 +847,6 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
 
   @override
   String get subscriptionsError => '加载订阅失败';
-
-  @override
-  String get follow => '关注';
-
-  @override
-  String get unfollow => '取消关注';
-
-  @override
-  String get bookmark => '书签';
 
   @override
   String get bookmarks => '书签';
@@ -781,40 +873,10 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get topicsHide => '隐藏标签编辑';
 
   @override
-  String get topicsHideOn => 'hide tag alias and implications';
+  String get topicsHideOn => '隐藏';
 
   @override
-  String get topicsHideOff => 'show tag alias and implications';
-
-  @override
-  String get share => '分享';
-
-  @override
-  String get download => '下载';
-
-  @override
-  String get browse => '浏览器';
-
-  @override
-  String get comment => '评论';
-
-  @override
-  String get report => '举报';
-
-  @override
-  String get flag => '标记';
-
-  @override
-  String get editError => '你需要登录才能编辑帖子！';
-
-  @override
-  String get commentError => '你需要登录才能评论！';
-
-  @override
-  String get reportError => '你需要登录才能举报帖子！';
-
-  @override
-  String get flagError => '你需要登录才能标记帖子';
+  String get topicsHideOff => '显示';
 
   @override
   String get chooseIdentity => '选择身份';
@@ -824,6 +886,12 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
 
   @override
   String get commentsLC => '评论';
+
+  @override
+  String get commentsEmpty => '没有评论';
+
+  @override
+  String get commentsError => '加载评论失败';
 
   @override
   String commentsNumUC(int count) {
@@ -842,6 +910,15 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get sources => '来源';
 
   @override
+  String get textEdited => '（已编辑）';
+
+  @override
+  String get experimentalTitle => '实验性平台';
+
+  @override
+  String get experimentalSubtitle => '此平台不受支持。可能存在 Bug 和部分功能缺失。';
+
+  @override
   String get version => '版本';
 
   @override
@@ -851,12 +928,10 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get versionMessage2 => '检查更新失败';
 
   @override
-  String get versionMessage3 => '您处在最新版本';
+  String get versionMessage3 => '你已是最新版本';
 
   @override
-  String versionMessage4(String version) {
-    return '新版本可用: $version';
-  }
+  String get versionMessage4 => '新版本可用: ';
 
   @override
   String forumThread(int TopicId) {
@@ -913,12 +988,6 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
 
   @override
   String get guest => '访客';
-
-  @override
-  String get removeWarn => '移除账户？';
-
-  @override
-  String get removeWarnInfo => '其所有数据将被永久移除，包括历史与关注等';
 
   @override
   String get anonymous => '匿名';
@@ -1023,8 +1092,14 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
 
   @override
   String historySubtitle(int num) {
-    return '$num 页已访问';
+    return '$num 已访问';
   }
+
+  @override
+  String get historyEmpty => '你的历史是空的';
+
+  @override
+  String get historyError => '加载历史失败';
 
   @override
   String get historyClear => '清除历史';
@@ -1094,6 +1169,12 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get entries => '条目';
 
   @override
+  String get items => '项目';
+
+  @override
+  String get searches => '搜索';
+
+  @override
   String get type => '类型';
 
   @override
@@ -1107,9 +1188,6 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
 
   @override
   String get tags => '标签';
-
-  @override
-  String get wiki => '维基';
 
   @override
   String get wikis => '维基';
@@ -1332,6 +1410,24 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get logsError => '发生严重错误！';
 
   @override
+  String get allLogs => '所有日志';
+
+  @override
+  String get dismissAll => '忽略所有';
+
+  @override
+  String logErrorsTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 错误',
+      one: '1 错误',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get database => '数据库';
 
   @override
@@ -1368,15 +1464,6 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get importUC => '导入';
 
   @override
-  String get cancelUC => '取消';
-
-  @override
-  String get remove => '移除';
-
-  @override
-  String get removeUC => '移除';
-
-  @override
   String get restart => '需要重启';
 
   @override
@@ -1386,7 +1473,10 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get restartNow => '现在重启';
 
   @override
-  String get noArtist => '无作者';
+  String get noArtist => '无艺术家';
+
+  @override
+  String get noTags => '无标签';
 
   @override
   String get enabled => '启用';
@@ -1401,11 +1491,129 @@ class AppLocalizationsZhCn extends AppLocalizationsZh {
   String get selectAll => '选择全部';
 
   @override
-  String get dismiss => '消除';
+  String get refresh => '刷新';
+
+  @override
+  String get newestFirst => '最新优先';
+
+  @override
+  String get oldestFirst => '最早优先';
+
+  @override
+  String get reply => '回复';
+
+  @override
+  String get replyError => '你需要登录才能回复！';
+
+  @override
+  String get replyCommentsError => '你需要登录才能回复评论！';
+
+  @override
+  String get copyID => '复制 ID';
+
+  @override
+  String copyReplyID(int replyid) {
+    return '已复制回复 ID #\$$replyid';
+  }
+
+  @override
+  String copyCommentID(int commentid) {
+    return '已复制评论 ID #$commentid';
+  }
+
+  @override
+  String get markAsRead => '标记为已读';
+
+  @override
+  String get disableNotifications => '禁用通知';
+
+  @override
+  String get enableNotifications => '启用通知';
+
+  @override
+  String get subscribe => '订阅';
+
+  @override
+  String get bookmark => '书签';
+
+  @override
+  String get rename => '重命名';
+
+  @override
+  String get follow => '关注';
+
+  @override
+  String get unfollow => '取消关注';
+
+  @override
+  String get wiki => '维基';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get delete => '删除';
+
+  @override
+  String get remove => '移除';
+
+  @override
+  String get removeUC => '移除';
+
+  @override
+  String get removeWarn => '移除账户？';
+
+  @override
+  String get removeWarnInfo => '其所有数据将被永久移除，包括历史与关注等';
+
+  @override
+  String get cancelUC => '取消';
+
+  @override
+  String get share => '分享';
+
+  @override
+  String get download => '下载';
+
+  @override
+  String get downloadUC => '下载';
+
+  @override
+  String get browse => '浏览器';
 
   @override
   String get edit => '编辑';
 
   @override
-  String get delete => '删除';
+  String get editCommentsError => '你需要登录才能编辑评论！';
+
+  @override
+  String get editPostsError => '你需要登录才能编辑帖子！';
+
+  @override
+  String get editRepliesError => '你需要登录才能编辑回复！';
+
+  @override
+  String get comment => '评论';
+
+  @override
+  String get commentError => '你需要登录才能评论！';
+
+  @override
+  String get report => '举报';
+
+  @override
+  String get reportCommentError => '你需要登录才能举报评论！';
+
+  @override
+  String get reportPostsError => '你需要登录才能举报帖子！';
+
+  @override
+  String get reportRepliesError => '你需要登录才能举报回复！';
+
+  @override
+  String get flag => '标记';
+
+  @override
+  String get flagPostsError => '你需要登录才能标记帖子！';
 }

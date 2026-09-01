@@ -13,14 +13,10 @@
 
   "timeline": "Timeline",
 
-  "subscribe": "Subscribe",
   "subscriptions": "Subscriptions",
   "subscriptionsEmpty": "No subscriptions",
   "subscriptionsError": "Failed to load subscriptions",
-  "follow": "Follow",
-  "unfollow": "Unfollow",
 
-  "bookmark": "Bookmark",
   "bookmarks": "Bookmarks",  
   "bookmarksEmpty": "No bookmarks",
   "bookmarksError": "Failed to load bookmarks",
@@ -31,23 +27,15 @@
   "forum": "Forum",
   "topics": "Topics",
   "topicsHide": "hide tags edits",
-  "topicsHideOn": "hide tag alias and implications",
-  "topicsHideOff": "show tag alias and implications",
+  "topicsHideOn": "hidden",
+  "topicsHideOff": "visible",
 
-  "share": "Share",
-  "download": "Download",
-  "browse": "Browse",
-  "comment": "Comment",
-  "report": "Report",
-  "flag": "Flag",
-  "editError": "You must be logged in to edit posts!",
-  "commentError": "You must be logged in to comment!",
-  "reportError": "You must be logged in to report posts!",
-  "flagError": "You must be logged in to flag posts!",
   "chooseIdentity": "Choose identity",
 
   "comments": "Comments",
   "commentsLC": "comments",
+  "commentsEmpty": "No comments",
+  "commentsError": "Failed to load comments",
   "commentsNumUC": "COMMENTS ({count})",
   "@commentsNumUC": {
     "description": "lib/post/widget/detail/widget/comments.dart - COMMENTS",
@@ -68,20 +56,18 @@
   },
   "file": "File",
   "sources": "Sources",
+  "textEdited": " (edited)",
+  "@textEdited": {
+    "description": "For other languages, the leading space can be adjusted as needed for display purposes."
+  },
 
+  "experimentalTitle": "Experimental platform",
+  "experimentalSubtitle": "This platform is not supported. Expect bugs and missing features.",
   "version": "Version",
   "versionMessage1": "Fetching updates...",
   "versionMessage2": "Failed to check for updates",
   "versionMessage3": "You have the newest version",
-  "versionMessage4": "A newer version is available: {version}",
-  "@versionMessage4": {
-    "description": "lib/settings/widget/about.dart - First Version",
-    "placeholders": {
-      "version": {
-        "type": "String"
-      }
-    }
-  },
+  "versionMessage4": "A newer version is available: ",
   "forumThread": "e621 thread #{TopicId}",
   "@forumThread": {
     "description": "lib/settings/widget/about.dart - Forum Thread",
@@ -109,8 +95,6 @@
   "siteInfo": "The site is where your posts and account live.",
   "signIn": "Sign in",
   "guest": "Guest",
-  "removeWarn": "Remove account?",
-  "removeWarnInfo": "All its data will be permanently removed, including history and follows.",
   "anonymous": "Anonymous",
   "username": "Username",
   "userWarn": "You must provide a username.",
@@ -185,6 +169,8 @@
       }
     }
   },
+  "historyEmpty": "Your history is empty",
+  "historyError": "Failed to load history",
   "historyClear": "Clear history",
   "historyClearSub": "Delete all entries",
   "historyClearWarn": "Clear history?",
@@ -272,13 +258,14 @@
   },
   "hotPosts": "Hot posts",
   "entries": "Entries",
+  "items": "Items",
+  "searches": "Searches",
   "type": "Type",
   "posts": "Posts",
   "users": "Users",
   "replies": "Replies",
   "tags": "Tags",
 
-  "wiki": "Wiki",
   "wikis": "Wikis",
   "add": "Add",
   "subtract": "Subtract",
@@ -412,6 +399,17 @@
     }
   },
   "logsError": "A critical error has occured!",
+  "allLogs": "All logs",
+  "dismissAll": "Dismiss all",
+  "logErrorsTitle": "{count, plural, =0 {} =1 {1 error} other {{count} errors}}",
+  "@logErrorsTitle": {
+    "description": "lib/logs/widget/prompt.dart - logErrorsTitle",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
 
   "database": "Database",
   "databaseExport": "Save a backup copy of your database",
@@ -426,22 +424,74 @@
   "import": "Import",
   "cancel": "Cancel",
   "importUC": "IMPORT",
-  "cancelUC": "CANCEL",
-  "remove": "Remove",
-  "removeUC": "REMOVE",
   "restart": "Restart Required",
   "restartWarn": "The app needs to restart to apply changes.",
   "restartNow": "RESTART NOW",
 
   "noArtist": "no artist",
+  "noTags": "no tags",
 
   "enabled": "Enabled",
   "enabledLC": "enabled",
   "disabledLC": "disabled",
 
   "selectAll": "Select all",
-  "dismiss": "dismiss",
 
+  "refresh": "Refresh",
+  "newestFirst": "Newest first",
+  "oldestFirst": "Oldest first",
+  "reply": "Reply",
+  "replyError": "You must be logged in to reply!",
+  "replyCommentsError": "You must be logged in to reply to comments!",
+  "copyID": "Copy ID",
+  "copyReplyID": "Copied reply id #${replyid}",
+  "@copyReplyID": {
+    "description": "lib/reply/widget/reply.dart - Copied reply id",
+    "placeholders": {
+      "replyid": {
+        "type": "int"
+      }
+    }
+  },
+  "copyCommentID": "Copied comment id #{commentid}",
+  "@copyCommentID": {
+    "description": "lib/comment/widget/tile.dart - Copied comment id",
+    "placeholders": {
+      "commentid": {
+        "type": "int"
+      }
+    }
+  },
+  "markAsRead": "Mark as read",
+  "disableNotifications": "Disable notifications",
+  "enableNotifications": "Enable notifications",
+  "subscribe": "Subscribe",
+  "bookmark": "Bookmark",
+  "rename": "Rename",
+  "follow": "Follow",
+  "unfollow": "Unfollow",
+  "wiki": "Wiki",
+  "description": "Description",
+  "delete": "Delete",
+  "remove": "Remove",
+  "removeUC": "REMOVE",
+  "removeWarn": "Remove account?",
+  "removeWarnInfo": "All its data will be permanently removed, including history and follows.",
+  "cancelUC": "CANCEL",
+  "share": "Share",
+  "download": "Download",
+  "downloadUC": "DOWNLOAD",
+  "browse": "Browse",
   "edit": "Edit",
-  "delete": "Delete"
+  "editCommentsError": "You must be logged in to edit comments!",
+  "editPostsError": "You must be logged in to edit posts!",
+  "editRepliesError": "You must be logged in to edit replies!",
+  "comment": "Comment",
+  "commentError": "You must be logged in to comment!",
+  "report": "Report",
+  "reportCommentError": "You must be logged in to report comments!",
+  "reportPostsError": "You must be logged in to report posts!",
+  "reportRepliesError": "You must be logged in to report replies!",
+  "flag": "Flag",
+  "flagPostsError": "You must be logged in to flag posts!"
 }

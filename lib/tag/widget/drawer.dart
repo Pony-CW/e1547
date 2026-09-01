@@ -87,7 +87,7 @@ class DrawerTagCounterBody extends StatelessWidget {
                     builder: (context) => CrossFade(
                       showChild: children!.isNotEmpty,
                       secondChild: Text(
-                        'no tags',
+                        AppLocalizations.of(context)!.noTags,
                         style: TextStyle(
                           fontStyle: FontStyle.italic,
                           color: dimTextColor(context),

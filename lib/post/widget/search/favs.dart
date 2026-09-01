@@ -16,11 +16,13 @@ class FavPage extends StatelessWidget {
     final client = context.watch<Client>();
     return RouterDrawerEntry<FavPage>(
       child: client.identity.username == null
-          ? const AdaptiveScaffold(
-              appBar: DefaultAppBar(title: Text('Favorites')),
+          ? AdaptiveScaffold(
+              appBar: DefaultAppBar(
+                title: Text(AppLocalizations.of(context)!.favorites),
+              ),
               body: IconMessage(
-                icon: Icon(Icons.person_search),
-                title: Text('Favorites are unavailable for anonymous users'),
+                icon: const Icon(Icons.person_search),
+                title: Text(AppLocalizations.of(context)!.favoritesError),
               ),
             )
           : FilterControllerProvider<PostFilter, Post>(
@@ -41,7 +43,7 @@ class FavPage extends StatelessWidget {
                         floatingActionButton: const PostsPageFab(),
                         drawer: const RouterDrawer(),
                         endDrawer: ContextDrawer(
-                          title: const Text('Posts'),
+                          title: Text(AppLocalizations.of(context)!.posts),
                           children: [
                             const FavoriteOrderSwitch(),
                             const Divider(),

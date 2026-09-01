@@ -52,7 +52,7 @@ List<PopupMenuItem<VoidCallback>> postMenuUserActions(
             ),
           ),
         ),
-        error: 'You must be logged in to edit posts!',
+        error: AppLocalizations.of(context)!.editPostsError,
       ),
     ),
     PopupMenuTile(
@@ -61,7 +61,7 @@ List<PopupMenuItem<VoidCallback>> postMenuUserActions(
       value: () => guardWithLogin(
         context: context,
         callback: () => writeComment(context: context, postId: post.id),
-        error: 'You must be logged in to comment!',
+        error: AppLocalizations.of(context)!.commentError,
       ),
     ),
     PopupMenuTile(
@@ -72,7 +72,7 @@ List<PopupMenuItem<VoidCallback>> postMenuUserActions(
         callback: () => Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => PostReportScreen(post: post)),
         ),
-        error: 'You must be logged in to report posts!',
+        error: AppLocalizations.of(context)!.reportPostsError,
       ),
     ),
     PopupMenuTile(
@@ -83,7 +83,7 @@ List<PopupMenuItem<VoidCallback>> postMenuUserActions(
         callback: () => Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => PostFlagScreen(post: post)),
         ),
-        error: 'You must be logged in to flag posts!',
+        error: AppLocalizations.of(context)!.flagPostsError,
       ),
     ),
   ];
