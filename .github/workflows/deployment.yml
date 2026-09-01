@@ -200,6 +200,13 @@ jobs:
       - name: install InnoSetup
         run: bundle exec fastlane windows bootstrap
 
+      - name: setup Chinese language for InnoSetup
+        shell: pwsh
+        run: |
+          curl.exe -L `
+          "https://raw.githubusercontent.com/kira-96/Inno-Setup-Chinese-Simplified-Translation/master/ChineseSimplified.isl" `
+          -o "C:\Program Files (x86)\Inno Setup 6\Languages\ChineseSimplified.isl"
+
       - name: build EXE
         run: bundle exec fastlane windows build
 
