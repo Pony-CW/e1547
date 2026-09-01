@@ -10,6 +10,7 @@ import 'package:e1547/post/post.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:e1547/tag/tag.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_sub/flutter_sub.dart';
 
 class NotificationHandler extends StatefulWidget {
@@ -80,11 +81,13 @@ class _NotificationHandlerState extends State<NotificationHandler> {
   Future<void> sendNotifications(List<Follow> follows, int identity) async {
     if (!PlatformCapabilities.hasNotifications) return;
     if (previousFollows != null) {
+      final BaseCacheManager cache = context.read<BaseCacheManager>();
       await updateFollowNotifications(
         identity: identity,
         previous: previousFollows!,
         updated: follows,
         notifications: await notifications,
+        cache: cache,
       );
     }
   }

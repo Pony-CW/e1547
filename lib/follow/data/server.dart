@@ -68,7 +68,7 @@ class FollowServer with Disposable {
               ? Value(posts!.first.id)
               : const Value.absent(),
           thumbnail: posts?.isNotEmpty ?? false
-              ? Value(posts!.first.sample)
+              ? Value(posts!.first.sample ?? posts.first.preview)
               : const Value.absent(),
           title: pool?.name != null
               ? Value(tagToName(pool!.name))

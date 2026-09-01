@@ -72,7 +72,7 @@ jobs:
         if: ${{ github.event.inputs.version != 'none' }}
         run: |
           dart pub global activate cider
-          cider bump ${{ env.VERSION_BUMP }} --bump-build
+          dart pub global run cider bump ${{ env.VERSION_BUMP }} --bump-build
 
       - name: configure release keys
         env:
@@ -144,7 +144,7 @@ jobs:
         if: ${{ github.event.inputs.version != 'none' }}
         run: |
           dart pub global activate cider
-          cider bump ${{ env.VERSION_BUMP }} --bump-build
+          dart pub global run cider bump ${{ env.VERSION_BUMP }} --bump-build
 
       - name: build IPA
         run: flutter build ios --no-codesign
@@ -189,7 +189,7 @@ jobs:
         shell: bash
         run: |
           dart pub global activate cider
-          cider bump ${{ env.VERSION_BUMP }} --bump-build
+          dart pub global run cider bump ${{ env.VERSION_BUMP }} --bump-build
 
       - name: setup ruby
         uses: ruby/setup-ruby@v1
@@ -243,7 +243,7 @@ jobs:
         if: ${{ github.event.inputs.version != 'none' }}
         run: |
           dart pub global activate cider
-          cider bump ${{ env.VERSION_BUMP }} --bump-build
+          dart pub global run cider bump ${{ env.VERSION_BUMP }} --bump-build
 
       - name: setup ruby
         uses: ruby/setup-ruby@v1

@@ -7,6 +7,7 @@ import 'package:e1547/history/data/database.drift.dart' as i3;
 import 'package:e1547/follow/data/database.drift.dart' as i4;
 import 'package:e1547/task/data/database.drift.dart' as i5;
 import 'package:e1547/query/data/storage.drift.dart' as i6;
+import 'package:e1547/files/data/storage.drift.dart' as i7;
 
 abstract class $AppDatabase extends i0.GeneratedDatabase {
   $AppDatabase(i0.QueryExecutor e) : super(e);
@@ -27,6 +28,9 @@ abstract class $AppDatabase extends i0.GeneratedDatabase {
       .$TasksIdentitiesTableTable(this);
   late final i6.$QueryStorageTableTable queryStorageTable = i6
       .$QueryStorageTableTable(this);
+  late final i7.$FileCacheTableTable fileCacheTable = i7.$FileCacheTableTable(
+    this,
+  );
   @override
   Iterable<i0.TableInfo<i0.Table, Object?>> get allTables =>
       allSchemaEntities.whereType<i0.TableInfo<i0.Table, Object?>>();
@@ -41,6 +45,9 @@ abstract class $AppDatabase extends i0.GeneratedDatabase {
     tasksTable,
     tasksIdentitiesTable,
     queryStorageTable,
+    fileCacheTable,
+    i7.fileCacheLookup,
+    i7.fileCacheTouched,
   ];
   @override
   i0.StreamQueryUpdateRules
@@ -149,4 +156,6 @@ class $AppDatabaseManager {
       i5.$$TasksIdentitiesTableTableTableManager(_db, _db.tasksIdentitiesTable);
   i6.$$QueryStorageTableTableTableManager get queryStorageTable =>
       i6.$$QueryStorageTableTableTableManager(_db, _db.queryStorageTable);
+  i7.$$FileCacheTableTableTableManager get fileCacheTable =>
+      i7.$$FileCacheTableTableTableManager(_db, _db.fileCacheTable);
 }

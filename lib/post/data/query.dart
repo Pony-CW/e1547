@@ -118,12 +118,17 @@ extension PostQuerying on PostClient {
     }),
   );
 
-  Mutation<void, Map<String, String?>> useUpdate({required int id}) => Mutation(
-    mutationFn: (data) => postCache.optimistic(
-      id,
-      (post) => post,
-      () => update(id: id, data: data),
-    ),
+  Mutation<void, PostEdit> useUpdate({required int id}) => Mutation(
+    mutationFn: (edit) {
+      final body = edit.toForm();
+      if (body == null) return Future.value();
+      return postCache.optimistic(
+        id,
+        edit.applyTo,
+        () => update(id: id, data: body),
+      );
+    },
+    onSuccess: (_, _) => get(id: id).then(postCache.set).ignore(),
   );
 
   Mutation<void, VoteRequest> useVote({required int id}) => Mutation(
