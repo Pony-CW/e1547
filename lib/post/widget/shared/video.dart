@@ -455,8 +455,8 @@ class PostVideoRouteState extends State<PostVideoRoute> {
       bool stop = widget.stopOnDispose && !_wasPlaying;
       VideoService? videos = _videos;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (stop) held.pause();
         videos?.release(held);
+        if (stop || !held.isLeased) held.pause();
       });
     }
     super.dispose();

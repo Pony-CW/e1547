@@ -124,6 +124,7 @@ extension M2ThemeData on ThemeData {
             ? Brightness.dark
             : Brightness.light,
         systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarContrastEnforced: false,
         systemNavigationBarIconBrightness: theme.brightness == Brightness.light
             ? Brightness.dark
             : Brightness.light,

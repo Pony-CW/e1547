@@ -392,17 +392,14 @@ class PostFeedTile extends StatelessWidget {
             post: post,
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => PostVideoRoute(
-                  post: post,
-                  child: ImageCacheSizeProvider(
-                    size: cacheSize,
-                    child: PostRouteScope(
-                      params: params,
-                      filter: filter,
-                      child: params != null
-                          ? PostFullscreenGallery(initialPostId: post.id)
-                          : PostFullscreen(post: post),
-                    ),
+                builder: (context) => ImageCacheSizeProvider(
+                  size: cacheSize,
+                  child: PostRouteScope(
+                    params: params,
+                    filter: filter,
+                    child: params != null
+                        ? PostFullscreenGallery(initialPostId: post.id)
+                        : PostFullscreen(post: post),
                   ),
                 ),
               ),

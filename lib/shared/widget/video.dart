@@ -11,7 +11,7 @@ import 'package:rxdart/rxdart.dart';
 export 'package:media_kit_video/media_kit_video.dart';
 
 class VideoPlayer extends Player {
-  VideoPlayer() {
+  VideoPlayer({super.platformPlayer}) {
     _subscriptions.addAll([
       stream.videoParams.listen((event) {
         _hasParams = event.w != null && event.h != null;
@@ -87,7 +87,9 @@ class VideoPlayer extends Player {
 }
 
 class VideoService extends ChangeNotifier {
-  VideoService({bool muteVideos = false}) : _muteVideos = muteVideos;
+  VideoService({bool muteVideos = false, VideoPlayer Function()? createPlayer})
+    : _muteVideos = muteVideos,
+      _createPlayer = createPlayer ?? VideoPlayer.new;
 
   static void ensureInitialized() => MediaKit.ensureInitialized();
 
@@ -102,6 +104,8 @@ class VideoService extends ChangeNotifier {
   final Logger _logger = Logger('Videos');
 
   final int maxLoaded = 3;
+
+  final VideoPlayer Function() _createPlayer;
 
   bool _muteVideos;
 
@@ -139,7 +143,7 @@ class VideoService extends ChangeNotifier {
       });
       unloadVideo(spare);
     }
-    player = _idle.isNotEmpty ? _idle.removeAt(0) : VideoPlayer();
+    player = _idle.isNotEmpty ? _idle.removeAt(0) : _createPlayer();
     _videos[key] = player;
     player.setPlaylistMode(PlaylistMode.single);
     player.setVolume(_muteVideos ? 0 : 100);

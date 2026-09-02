@@ -1,8 +1,6 @@
-import 'dart:async';
-
-import 'package:cached_query_flutter/cached_query_flutter.dart';
 import 'package:e1547/client/client.dart';
 import 'package:e1547/history/history.dart';
+import 'package:e1547/query/query.dart';
 import 'package:e1547/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -49,7 +47,7 @@ class _ItemHistoryConnectorState<T> extends State<ItemHistoryConnector<T>> {
   Widget build(BuildContext context) => widget.child;
 }
 
-class QueryHistoryConnector<S> extends StatefulWidget {
+class QueryHistoryConnector<S> extends StatelessWidget {
   const QueryHistoryConnector({
     super.key,
     required this.query,
@@ -62,49 +60,11 @@ class QueryHistoryConnector<S> extends StatefulWidget {
   final Widget child;
 
   @override
-  State<QueryHistoryConnector<S>> createState() =>
-      _QueryHistoryConnectorState<S>();
-}
-
-class _QueryHistoryConnectorState<S> extends State<QueryHistoryConnector<S>> {
-  StreamSubscription<S>? _sub;
-  bool _added = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _subscribe();
-  }
-
-  @override
-  void didUpdateWidget(covariant QueryHistoryConnector<S> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (!identical(widget.query, oldWidget.query)) {
-      _sub?.cancel();
-      _added = false;
-      _subscribe();
-    }
-  }
-
-  void _subscribe() {
-    _try(widget.query.state);
-    _sub = widget.query.stream.listen(_try);
-  }
-
-  void _try(S state) {
-    if (_added || !mounted) return;
-    final request = widget.getEntry(context, state);
-    if (request == null) return;
-    _added = true;
-    context.read<Client>().histories.useAdd().mutate(request);
-  }
-
-  @override
-  void dispose() {
-    _sub?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(BuildContext context) => QueryOnceConnector<S, HistoryRequest>(
+    query: query,
+    getRequest: getEntry,
+    onRequest: (context, request) =>
+        context.read<Client>().histories.useAdd().mutate(request),
+    child: child,
+  );
 }
