@@ -7,6 +7,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Fixed
 - Videos playing on after swiping away from them
+- Follows staying unread after visiting them
 
 ## [21.0.0+102] - 2026-08-31
 ### Added

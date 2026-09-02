@@ -1,4 +1,5 @@
 import 'package:e1547/client/client.dart';
+import 'package:e1547/follow/follow.dart';
 import 'package:e1547/pool/pool.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/query/query.dart';
@@ -34,42 +35,44 @@ class PoolPage extends StatelessWidget {
           create: (_) => PostDisplayController(PostDisplayType.comic),
           child: PoolHistoryConnector(
             pool: pool,
-            child: PostPageQueryBuilder(
-              builder: (context, state, query) => SelectionLayout<Post>(
-                items: state.data?.pages.expand((p) => p).toList(),
-                child: AdaptiveScaffold(
-                  appBar: PostSelectionAppBar(
-                    child: DefaultAppBar(
-                      title: Text(tagToName(pool.name)),
-                      actions: [
-                        IconButton(
-                          icon: const Icon(Icons.info_outline),
-                          tooltip: 'Info',
-                          onPressed: () =>
-                              showPoolPrompt(context: context, pool: pool),
+            child: FollowSeenConnector(
+              child: PostPageQueryBuilder(
+                builder: (context, state, query) => SelectionLayout<Post>(
+                  items: state.data?.pages.expand((p) => p).toList(),
+                  child: AdaptiveScaffold(
+                    appBar: PostSelectionAppBar(
+                      child: DefaultAppBar(
+                        title: Text(tagToName(pool.name)),
+                        actions: [
+                          IconButton(
+                            icon: const Icon(Icons.info_outline),
+                            tooltip: 'Info',
+                            onPressed: () =>
+                                showPoolPrompt(context: context, pool: pool),
+                          ),
+                          const ContextDrawerButton(),
+                        ],
+                      ),
+                    ),
+                    endDrawer: ContextDrawer(
+                      title: const Text('Pool'),
+                      children: [
+                        const PoolReaderSwitch(),
+                        const PoolOrderSwitch(),
+                        const DrawerDenySwitch(),
+                        DrawerTagCounter(
+                          posts: state.data?.pages.expand((p) => p).toList(),
+                          error: state.error,
                         ),
-                        const ContextDrawerButton(),
                       ],
                     ),
-                  ),
-                  endDrawer: ContextDrawer(
-                    title: const Text('Pool'),
-                    children: [
-                      const PoolReaderSwitch(),
-                      const PoolOrderSwitch(),
-                      const DrawerDenySwitch(),
-                      DrawerTagCounter(
-                        posts: state.data?.pages.expand((p) => p).toList(),
-                        error: state.error,
-                      ),
-                    ],
-                  ),
-                  body: LimitedWidthLayout(
-                    child: ListenableBuilder(
-                      listenable: context.watch<Settings>().tileSize,
-                      builder: (context, child) => TileLayout(
-                        tileSize: context.watch<Settings>().tileSize.value,
-                        child: const PostList(),
+                    body: LimitedWidthLayout(
+                      child: ListenableBuilder(
+                        listenable: context.watch<Settings>().tileSize,
+                        builder: (context, child) => TileLayout(
+                          tileSize: context.watch<Settings>().tileSize.value,
+                          child: const PostList(),
+                        ),
                       ),
                     ),
                   ),
