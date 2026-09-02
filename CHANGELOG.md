@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 - Videos playing on after swiping away from them
 - Follows staying unread after visiting them
+- System bars showing and hiding
 
 ## [21.0.0+102] - 2026-08-31
 ### Added
