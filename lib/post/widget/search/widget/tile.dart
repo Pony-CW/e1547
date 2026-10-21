@@ -47,8 +47,12 @@ class PostImageTile extends StatelessWidget {
                 Expanded(
                   child: PostTileOverlay(
                     post: post,
-                    child: Hero(
+                    child: ContentHero(
                       tag: post.link,
+                      content: FittedContent(
+                        fit: fit ?? BoxFit.cover,
+                        aspectRatio: post.width / post.height,
+                      ),
                       child: PostImageWidget(
                         post: post,
                         size: size ?? PostImageSize.sample,
@@ -207,7 +211,7 @@ void defaultPushPostDetail(BuildContext context, Post post) {
   final params = context.read<PostParamsController?>();
   final filter = context.read<PostFilter?>();
   Navigator.of(context).push(
-    MaterialPageRoute(
+    DismissRoute<void>(
       builder: (context) => ImageCacheSizeProvider(
         size: cacheSize,
         child: PostRouteScope(
@@ -391,7 +395,7 @@ class PostFeedTile extends StatelessWidget {
           child: PostImageTile(
             post: post,
             onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
+              DismissRoute<void>(
                 builder: (context) => ImageCacheSizeProvider(
                   size: cacheSize,
                   child: PostRouteScope(

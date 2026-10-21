@@ -1,7 +1,40 @@
 import 'dart:io';
 
 import 'package:e1547/shared/shared.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
+class GalleryPanController {
+  GalleryPanController(this.pages);
+
+  final PageController pages;
+  final ValueNotifier<bool> locked = ValueNotifier<bool>(false);
+  Drag? _drag;
+
+  void push(double delta) {
+    if (!pages.hasClients) return;
+    final Drag drag = _drag ??= pages.position.drag(
+      DragStartDetails(),
+      () => _drag = null,
+    );
+    drag.update(
+      DragUpdateDetails(
+        globalPosition: Offset.zero,
+        delta: Offset(delta, 0),
+        primaryDelta: delta,
+      ),
+    );
+  }
+
+  void release(double velocity) {
+    _drag?.end(
+      DragEndDetails(
+        velocity: Velocity(pixelsPerSecond: Offset(velocity, 0)),
+        primaryVelocity: velocity,
+      ),
+    );
+  }
+}
 
 class GalleryButtons extends StatelessWidget {
   const GalleryButtons({
@@ -36,7 +69,7 @@ class GalleryButtons extends StatelessWidget {
               child: Center(
                 child: GalleryPageButton(
                   controller: controller,
-                  direction: GalleryButtonDirection.left,
+                  direction: HorizontalDirection.left,
                 ),
               ),
             ),
@@ -50,7 +83,7 @@ class GalleryButtons extends StatelessWidget {
               child: Center(
                 child: GalleryPageButton(
                   controller: controller,
-                  direction: GalleryButtonDirection.right,
+                  direction: HorizontalDirection.right,
                 ),
               ),
             ),
@@ -61,8 +94,6 @@ class GalleryButtons extends StatelessWidget {
   }
 }
 
-enum GalleryButtonDirection { left, right }
-
 class GalleryPageButton extends StatefulWidget {
   const GalleryPageButton({
     super.key,
@@ -70,7 +101,7 @@ class GalleryPageButton extends StatefulWidget {
     required this.controller,
   });
 
-  final GalleryButtonDirection direction;
+  final HorizontalDirection direction;
   final PageController controller;
 
   @override
@@ -95,12 +126,12 @@ class _GalleryPageButtonState extends State<GalleryPageButton> {
   Widget build(BuildContext context) {
     Widget getIcon() {
       switch (widget.direction) {
-        case GalleryButtonDirection.left:
+        case HorizontalDirection.left:
           return const Icon(
             Icons.keyboard_arrow_left,
             shadows: [Shadow(blurRadius: 9)],
           );
-        case GalleryButtonDirection.right:
+        case HorizontalDirection.right:
           return const Icon(
             Icons.keyboard_arrow_right,
             shadows: [Shadow(blurRadius: 9)],
@@ -116,12 +147,12 @@ class _GalleryPageButtonState extends State<GalleryPageButton> {
         if (widget.controller.hasClients &&
             widget.controller.position.hasContentDimensions) {
           switch (widget.direction) {
-            case GalleryButtonDirection.left:
+            case HorizontalDirection.left:
               enabled =
                   widget.controller.position.minScrollExtent <
                   widget.controller.position.pixels;
               break;
-            case GalleryButtonDirection.right:
+            case HorizontalDirection.right:
               enabled =
                   widget.controller.position.maxScrollExtent >
                   widget.controller.position.pixels;
@@ -151,10 +182,10 @@ class _GalleryPageButtonState extends State<GalleryPageButton> {
                     onPressed: () {
                       int page = widget.controller.page!.round();
                       switch (widget.direction) {
-                        case GalleryButtonDirection.left:
+                        case HorizontalDirection.left:
                           page--;
                           break;
-                        case GalleryButtonDirection.right:
+                        case HorizontalDirection.right:
                           page++;
                           break;
                       }
