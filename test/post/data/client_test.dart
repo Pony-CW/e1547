@@ -136,17 +136,14 @@ void main() {
     expect(fake.requests.last.query['tags'], 'id:${ids.join(',')}');
   });
 
-  test('splits ids into chunks of 320', () async {
+  test('asks for more than 320 ids in one request limited to 320', () async {
     final ids = List.generate(321, (index) => index + 1);
 
     await client.byIds(ids: ids);
 
     final posts = fake.requests.where((e) => e.path == '/posts.json').toList();
-    expect(posts.length, 2);
-    expect(posts.first.query['tags'], 'id:${ids.take(320).join(',')}');
-    expect(posts.first.query['limit'], '320');
-    expect(posts.last.query['tags'], 'id:${ids.last}');
-    expect(posts.last.query['limit'], '1');
+    expect(posts.single.query['tags'], 'id:${ids.join(',')}');
+    expect(posts.single.query['limit'], '320');
   });
 
   test('restores the requested id order', () async {
@@ -158,6 +155,43 @@ void main() {
 
     expect(posts.map((e) => e.id), ids);
   });
+
+  test(
+    'finds posts by id that a search would hide, when asked for them',
+    () async {
+      final Map<String, Object?> recorded = fake.state.posts.first;
+      final Map<String, Object?> files =
+          recorded['files']! as Map<String, Object?>;
+      final Map<String, Object?> unavailable = {
+        ...files,
+        'original': {
+          ...(files['original']! as Map<String, Object?>),
+          'url': null,
+        },
+      };
+      fake.state.posts.addAll([
+        {
+          ...recorded,
+          'id': 998,
+          'flags': {
+            ...(recorded['flags']! as Map<String, Object?>),
+            'deleted': true,
+          },
+          'files': unavailable,
+        },
+        {...recorded, 'id': 999, 'files': unavailable},
+      ]);
+
+      final found = await client.byIds(ids: [998, 999], hidden: true);
+      final shown = await client.byIds(ids: [998, 999]);
+
+      expect(found.map((e) => (e.id, e.isDeleted, e.file)), [
+        (998, true, null),
+        (999, false, null),
+      ]);
+      expect(shown, isEmpty);
+    },
+  );
 
   test('drops posts that cannot be displayed', () async {
     fake.state.posts.add({

@@ -26,9 +26,18 @@ class CommentTile extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(right: 8, top: 4),
-                  child: Icon(Icons.person),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8, top: 4),
+                  child: UserSummaryAvatar(
+                    userId: comment.creatorId,
+                    radius: 12,
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            UserLoadingPage(comment.creatorId),
+                      ),
+                    ),
+                  ),
                 ),
                 Expanded(
                   child: Column(
@@ -132,7 +141,7 @@ class CommentVotes extends StatelessWidget {
     return MutationBuilder(
       mutation: client.comments.useVote(id: comment.id),
       builder: (context, state, mutate) {
-        final bool enabled = client.hasLogin || state.isLoading;
+        final bool enabled = client.hasLogin && !state.isLoading;
         return Dimmed(
           child: VoteDisplay(
             padding: EdgeInsets.zero,
@@ -140,9 +149,10 @@ class CommentVotes extends StatelessWidget {
             vote: comment.vote,
             onUpvote: enabled
                 ? (isLiked) async {
-                    mutate((upvote: true, replace: !isLiked)).catchError((
-                      error,
-                    ) {
+                    if ((await mutate((
+                      upvote: true,
+                      replace: !isLiked,
+                    ))).isError) {
                       messenger.showSnackBar(
                         SnackBar(
                           duration: const Duration(seconds: 1),
@@ -151,16 +161,17 @@ class CommentVotes extends StatelessWidget {
                           ),
                         ),
                       );
-                      return error;
-                    });
+                      return isLiked;
+                    }
                     return !isLiked;
                   }
                 : null,
             onDownvote: enabled
                 ? (isLiked) async {
-                    mutate((upvote: false, replace: !isLiked)).catchError((
-                      error,
-                    ) {
+                    if ((await mutate((
+                      upvote: false,
+                      replace: !isLiked,
+                    ))).isError) {
                       messenger.showSnackBar(
                         SnackBar(
                           duration: const Duration(seconds: 1),
@@ -169,8 +180,8 @@ class CommentVotes extends StatelessWidget {
                           ),
                         ),
                       );
-                      return error;
-                    });
+                      return isLiked;
+                    }
                     return !isLiked;
                   }
                 : null,

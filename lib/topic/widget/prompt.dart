@@ -12,31 +12,23 @@ Future<void> showTopicPrompt({
 }) => showPrompt<void>(
   context,
   dialogWidth: 800,
-  header: (context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-    child: OverflowBar(
-      alignment: MainAxisAlignment.spaceBetween,
-      overflowSpacing: 8,
-      children: [
-        Text(
-          tagToRaw(topic.title),
-          style: Theme.of(context).textTheme.titleLarge,
-          softWrap: true,
-        ),
-        ActionButton(
-          icon: const Icon(Icons.share),
-          onTap: () async =>
-              Share.text(context, context.read<Client>().withHost(topic.link)),
-          label: Text(AppLocalizations.of(context)!.share),
-        ),
-      ],
+  header: (context) => PromptHeader(
+    title: Text(
+      tagToRaw(topic.title),
+      style: Theme.of(context).textTheme.titleLarge,
+      softWrap: true,
+    ),
+    actions: ActionButton(
+      icon: const Icon(Icons.share),
+      onTap: () async =>
+          Share.text(context, context.read<Client>().withHost(topic.link)),
+      label: Text(AppLocalizations.of(context)!.share),
     ),
   ),
   body: Column(
     mainAxisSize: MainAxisSize.min,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const Divider(),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: TopicInfo(topic: topic),

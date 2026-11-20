@@ -269,7 +269,7 @@ class SettingsPage extends StatelessWidget {
                   builder: (context, value, child) => ListTile(
                     title: Text(AppLocalizations.of(context)!.downloadLocation),
                     subtitle: value != null
-                        ? Text(Uri.decodeComponent(Uri.parse(value).path))
+                        ? Text(FileDownloader.displayPath(value))
                         : null,
                     leading: const Icon(Icons.folder),
                     onTap: () async {
@@ -295,6 +295,18 @@ class SettingsPage extends StatelessWidget {
                   secondary: const Icon(Icons.arrow_upward),
                   value: value,
                   onChanged: (value) => settings.upvoteFavs.value = value,
+                ),
+              ),
+              ValueListenableBuilder<bool>(
+                valueListenable: settings.swipeToClose,
+                builder: (context, value, child) => SwitchListTile(
+                  title: const Text('Swipe to close'),
+                  subtitle: Text(
+                    value ? 'drag down to close' : 'buttons and back gesture',
+                  ),
+                  secondary: const Icon(Icons.swipe_down),
+                  value: value,
+                  onChanged: (value) => settings.swipeToClose.value = value,
                 ),
               ),
               ValueListenableBuilder<bool>(
@@ -389,7 +401,7 @@ class SettingsPage extends StatelessWidget {
                   value: value != null,
                   onChanged: (value) async {
                     if (value) {
-                      String? pin = await registerPin(context);
+                      String? pin = await choosePin(context);
                       if (pin != null) {
                         settings.appPin.value = pin;
                       }
