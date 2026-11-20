@@ -63,13 +63,17 @@ class UserPage extends StatelessWidget {
                                 children: [
                                   const SizedBox(height: 8),
                                   UserPostRow(
-                                    title: 'Uploads',
+                                    title: AppLocalizations.of(
+                                      context,
+                                    )!.uploads,
                                     count: stats?.postUploadCount,
                                     params: uploads,
                                     onAll: () => open(uploads),
                                   ),
                                   UserPostRow(
-                                    title: 'Favorites',
+                                    title: AppLocalizations.of(
+                                      context,
+                                    )!.favorites,
                                     count: stats?.favoriteCount,
                                     params: favorites,
                                     onAll: () => open(favorites),
@@ -392,10 +396,14 @@ class UserInfo extends StatelessWidget {
               ),
             Card(
               child: ExpandablePanel(
-                controller: Expandables.of(context, 'info', expanded: false),
-                header: const ListTile(
-                  leading: Icon(Icons.info_outline),
-                  title: Text('Info'),
+                controller: Expandables.of(
+                  context,
+                  AppLocalizations.of(context)!.infoLC,
+                  expanded: false,
+                ),
+                header: ListTile(
+                  leading: const Icon(Icons.info_outline),
+                  title: Text(AppLocalizations.of(context)!.info),
                 ),
                 collapsed: const SizedBox.shrink(),
                 expanded: Padding(
@@ -431,31 +439,67 @@ class UserInfo extends StatelessWidget {
                           AppLocalizations.of(context)!.rankLC,
                           stats.levelString?.toLowerCase(),
                         ),
-                        info(Icons.upload, 'posts', stats.postUploadCount),
-                        info(Icons.edit, 'edits', stats.postUpdateCount),
-                        info(Icons.favorite, 'favorites', stats.favoriteCount),
-                        info(Icons.comment, 'comments', stats.commentCount),
-                        info(Icons.forum, 'forum', stats.forumPostCount),
+                        info(
+                          Icons.upload,
+                          AppLocalizations.of(context)!.postsLC,
+                          stats.postUploadCount,
+                        ),
+                        info(
+                          Icons.edit,
+                          AppLocalizations.of(context)!.editsLC,
+                          stats.postUpdateCount,
+                        ),
+                        info(
+                          Icons.favorite,
+                          AppLocalizations.of(context)!.favoritesLC,
+                          stats.favoriteCount,
+                        ),
+                        info(
+                          Icons.comment,
+                          AppLocalizations.of(context)!.commentsLC,
+                          stats.commentCount,
+                        ),
+                        info(
+                          Icons.forum,
+                          AppLocalizations.of(context)!.forumLC,
+                          stats.forumPostCount,
+                        ),
                         if (stats.poolUpdateCount case final count?
                             when count != 0)
-                          info(Icons.collections, 'pool edits', count),
+                          info(
+                            Icons.collections,
+                            AppLocalizations.of(context)!.poolEdits,
+                            count,
+                          ),
                         if (stats.artistUpdateCount case final count?
                             when count != 0)
-                          info(Icons.brush, 'artist edits', count),
+                          info(
+                            Icons.brush,
+                            AppLocalizations.of(context)!.artistEdits,
+                            count,
+                          ),
                         if (stats.wikiUpdateCount case final count?
                             when count != 0)
-                          info(Icons.menu_book, 'wiki edits', count),
+                          info(
+                            Icons.menu_book,
+                            AppLocalizations.of(context)!.wikiEdits,
+                            count,
+                          ),
                         if (stats.noteUpdateCount case final count?
                             when count != 0)
-                          info(Icons.sticky_note_2, 'note edits', count),
+                          info(
+                            Icons.sticky_note_2,
+                            AppLocalizations.of(context)!.noteEdits,
+                            count,
+                          ),
                         info(
                           Icons.trending_up,
-                          'upload karma',
+                          AppLocalizations.of(context)!.uploadKarma,
                           stats.uploadKarma,
                         ),
                         info(
                           Icons.hourglass_empty,
-                          'upload slots',
+                          AppLocalizations.of(context)!.uploadSlots,
                           stats.canUploadFree ? null : stats.uploadSlots,
                         ),
                         if ((

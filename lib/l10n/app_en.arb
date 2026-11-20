@@ -140,6 +140,9 @@
       }
     }
   },
+
+  "add": "Add",
+  "subtract": "Subtract",
   "unblock": "Unblock",
   "block": "Block",
   "blacklist": "Blacklist",
@@ -148,6 +151,8 @@
   "about": "About",
   "aboutLC": "about",
   "comission": "Comission",
+  "seeAll": "See all",
+
   "info": "Info",
   "infoLC": "info",
   "idLC": "id",
@@ -158,6 +163,14 @@
   "favoritesLC": "favorites",
   "comissionLC": "comission",
   "forumLC": "forum",
+  "poolEdits": "pool edits",
+  "artistEdits": "artist edits",
+  "wikiEdits": "wiki edits",
+  "noteEdits": "note edits",
+  "uploadKarma": "upload karma",
+  "uploadSlots": "upload slots",
+
+  "wikis": "Wikis",
 
   "history": "History",
   "historySubtitle": "{num} pages visited",
@@ -265,10 +278,6 @@
   "users": "Users",
   "replies": "Replies",
   "tags": "Tags",
-
-  "wikis": "Wikis",
-  "add": "Add",
-  "subtract": "Subtract",
 
   "tasks": "Tasks",
   "tasksEmpty": "No tasks",

@@ -216,7 +216,7 @@ class SubtractTagAction extends StatelessWidget {
 
     return ActionButton(
       icon: const Icon(Icons.zoom_out),
-      label: const Text('Subtract'),
+      label: Text(AppLocalizations.of(context)!.subtract),
       onTap: () {
         Navigator.of(context).maybePop();
         controller.subtractTag(tag);

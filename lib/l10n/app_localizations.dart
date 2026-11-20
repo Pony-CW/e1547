@@ -615,6 +615,48 @@ abstract class AppLocalizations {
   /// **'forum'**
   String get forumLC;
 
+  /// No description provided for @poolEdits.
+  ///
+  /// In en, this message translates to:
+  /// **'pool edits'**
+  String get poolEdits;
+
+  /// No description provided for @artistEdits.
+  ///
+  /// In en, this message translates to:
+  /// **'artist edits'**
+  String get artistEdits;
+
+  /// No description provided for @wikiEdits.
+  ///
+  /// In en, this message translates to:
+  /// **'wiki edits'**
+  String get wikiEdits;
+
+  /// No description provided for @noteEdits.
+  ///
+  /// In en, this message translates to:
+  /// **'note edits'**
+  String get noteEdits;
+
+  /// No description provided for @uploadKarma.
+  ///
+  /// In en, this message translates to:
+  /// **'upload karma'**
+  String get uploadKarma;
+
+  /// No description provided for @uploadSlots.
+  ///
+  /// In en, this message translates to:
+  /// **'upload slots'**
+  String get uploadSlots;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAll;
+
   /// No description provided for @history.
   ///
   /// In en, this message translates to:

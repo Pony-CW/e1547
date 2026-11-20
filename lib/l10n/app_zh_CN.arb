@@ -140,6 +140,9 @@
       }
     }
   },
+
+  "add": "添加",
+  "subtract": "Subtract",
   "unblock": "取消屏蔽",
   "block": "屏蔽",
   "blacklist": "黑名单",
@@ -148,6 +151,8 @@
   "about": "关于",
   "aboutLC": "关于",
   "comission": "委托",
+  "seeAll": "查看全部",
+
   "info": "信息",
   "infoLC": "信息",
   "idLC": "id",
@@ -158,6 +163,14 @@
   "favoritesLC": "收藏",
   "comissionLC": "评论",
   "forumLC": "论坛",
+  "poolEdits": "帖子编辑",
+  "artistEdits": "艺术家编辑",
+  "wikiEdits": "维基编辑",
+  "noteEdits": "文本编辑",
+  "uploadKarma": "upload karma",
+  "uploadSlots": "upload slots",
+
+  "wikis": "Wikis",
 
   "history": "历史",
   "historySubtitle": "{num} 已访问",
@@ -265,10 +278,6 @@
   "users": "用户",
   "replies": "回复",
   "tags": "标签",
-
-  "wikis": "维基",
-  "add": "添加",
-  "subtract": "Subtract",
 
   "tasks": "任务",
   "tasksEmpty": "没有任务",

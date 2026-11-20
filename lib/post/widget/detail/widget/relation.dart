@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:e1547/client/client.dart';
+import 'package:e1547/l10n/app_localizations.dart';
 import 'package:e1547/post/post.dart';
 import 'package:e1547/query/query.dart';
 import 'package:e1547/shared/shared.dart';
@@ -151,7 +152,7 @@ class PostRelationTile extends StatelessWidget {
                       showChild: post != null,
                       child: Text(
                         artists.isEmpty
-                            ? 'no artist'
+                            ? AppLocalizations.of(context)!.noArtist
                             : artists.map(tagToName).join(', '),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -245,7 +246,7 @@ class PostRowSection extends StatelessWidget {
             onPressed: onAll,
             iconAlignment: IconAlignment.end,
             icon: const Icon(Icons.arrow_forward),
-            label: const Text('See all'),
+            label: Text(AppLocalizations.of(context)!.seeAll),
           ),
         ],
       ),

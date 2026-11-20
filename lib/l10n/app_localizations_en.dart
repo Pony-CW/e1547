@@ -283,6 +283,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forumLC => 'forum';
 
   @override
+  String get poolEdits => 'pool edits';
+
+  @override
+  String get artistEdits => 'artist edits';
+
+  @override
+  String get wikiEdits => 'wiki edits';
+
+  @override
+  String get noteEdits => 'note edits';
+
+  @override
+  String get uploadKarma => 'upload karma';
+
+  @override
+  String get uploadSlots => 'upload slots';
+
+  @override
+  String get seeAll => 'See all';
+
+  @override
   String get history => 'History';
 
   @override
